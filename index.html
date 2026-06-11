@@ -732,8 +732,8 @@ body.light .tab-btn.on svg { stroke: #2563EB; }
 ══════════════════════════════════════ */
 @media (max-width: 900px) {
   .sidenav { display: none; }
-  .main { margin-left: 0; padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)); }
-  body { padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)); }
+  .main { margin-left: 0; padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
   .tab-bar { display: flex; }
   .hero-stats { display: none; }
   .content-wrap { grid-template-columns: 1fr; }
@@ -802,11 +802,12 @@ body.light .tab-btn.on svg { stroke: #2563EB; }
 
 /* ── Safari browser mode: extra bottom padding for toolbar ── */
 body.safari-browser .tab-bar {
-  /* Safari browser toolbar is ~50px. Push tab bar up above it. */
-  margin-bottom: 50px;
+  /* bottom:0 on position:fixed already clears Safari's browser toolbar */
+  /* No margin-bottom needed — it was causing a scroll gap below the tab bar */
+  bottom: 0;
 }
 body.safari-browser .main {
-  padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)) !important;
+  padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)) !important;
 }
 /* Open Binder button: extra clearance for Safari browser toolbar */
 body.safari-browser #bv-view-cover > div:last-child {
@@ -1172,7 +1173,7 @@ body.light .btn-share-profile:hover { background: #fff; border-color: rgba(0,0,0
 ══════════════════════════════════ */
 @media (max-width: 900px) {
   .sidenav { display: none; }
-  .main { margin-left: 0; padding-bottom: calc(140px + env(safe-area-inset-bottom, 0px)); }
+  .main { margin-left: 0; padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px)); }
   .tab-bar { display: flex; }
   .profile-card { flex-direction: column; }
   .profile-actions { flex-direction: row; }
@@ -4372,7 +4373,7 @@ if ('serviceWorker' in navigator) {
   // ── Build version toast ──
   window.addEventListener('DOMContentLoaded', function() {
     var v = document.createElement('div');
-    v.textContent = 'Build v24 ✓';
+    v.textContent = 'Build v25 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4656,7 +4657,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v24</div>
+    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v25</div>
   </footer>
 
 </main>
@@ -15432,7 +15433,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v23';
+      const CACHE = 'binderverse-v24';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
