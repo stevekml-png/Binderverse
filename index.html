@@ -4333,15 +4333,22 @@ body.light .guild-sidebar { background: rgba(255,255,255,0.6); border-color: rgb
 (function() {
   var isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent);
   var isStandalone = window.navigator.standalone === true;
-  // Safari browser on iOS: not standalone, has toolbar at bottom
   if (isIOS && !isStandalone) {
     document.body.classList.add('safari-browser');
   }
-  // Also listen for resize (toolbar show/hide on scroll)
   window.addEventListener('resize', function() {
     if (isIOS && !isStandalone) {
       document.body.classList.add('safari-browser');
     }
+  });
+
+  // ── Build version toast (shows for 3s on load) ──
+  window.addEventListener('DOMContentLoaded', function() {
+    var v = document.createElement('div');
+    v.textContent = 'Build v16 ✓';
+    v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
+    document.body.appendChild(v);
+    setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
   });
 })();
 
