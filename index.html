@@ -4339,6 +4339,169 @@ body.light .guild-sidebar { background: rgba(255,255,255,0.6); border-color: rgb
   .msg-compose-attach { width: 44px; height: 44px; }
 }
 
+/* ══════════════════════════════════════
+   MOBILE HAMBURGER + DROPDOWN MENU
+══════════════════════════════════════ */
+
+/* Hamburger button — hidden on desktop */
+.nav-hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 40px; height: 40px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+  padding: 0;
+  margin-left: 6px;
+}
+.nav-hamburger span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--white);
+  border-radius: 2px;
+  transition: all 0.25s ease;
+}
+.nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+body.light .nav-hamburger {
+  background: rgba(0,0,0,0.06);
+  border-color: rgba(0,0,0,0.12);
+}
+
+/* Dropdown container */
+.mobile-nav-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 998; /* just below navbar (999) */
+  pointer-events: none;
+}
+.mobile-nav-menu.open {
+  display: block;
+  pointer-events: all;
+}
+
+/* Semi-transparent backdrop */
+.mobile-nav-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  animation: backdropFadeIn 0.2s ease;
+}
+@keyframes backdropFadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* The panel that slides down from the navbar */
+.mobile-nav-panel {
+  position: absolute;
+  top: var(--nav-h);
+  left: 0; right: 0;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border2);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  animation: panelSlideDown 0.22s cubic-bezier(0.4,0,0.2,1);
+  overflow: hidden;
+}
+@keyframes panelSlideDown {
+  from { opacity:0; transform: translateY(-8px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+body.light .mobile-nav-panel {
+  background: #FFFFFF;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+/* Each nav row */
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 15px 20px;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+  transition: background 0.15s;
+  -webkit-tap-highlight-color: transparent;
+}
+.mobile-nav-item:active { background: rgba(255,255,255,0.06); }
+body.light .mobile-nav-item:active { background: rgba(0,0,0,0.05); }
+
+/* Active page highlight */
+.mobile-nav-item.active {
+  color: var(--blue-lt, #60A5FA);
+  background: rgba(59,130,246,0.08);
+}
+.mobile-nav-item.active .mobile-nav-icon svg {
+  stroke: var(--blue-lt, #60A5FA);
+}
+
+/* Icon */
+.mobile-nav-icon {
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.mobile-nav-item.active .mobile-nav-icon { opacity: 1; }
+.mobile-nav-icon svg { width: 22px; height: 22px; }
+
+/* Badge */
+.mobile-nav-badge {
+  position: absolute;
+  right: 20px;
+  background: #EF4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 900;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Divider */
+.mobile-nav-divider {
+  height: 1px;
+  background: var(--border2);
+  margin: 4px 0;
+}
+
+/* On desktop: hide hamburger, show nothing extra */
+@media (min-width: 901px) {
+  .nav-hamburger { display: none !important; }
+  .mobile-nav-menu { display: none !important; }
+}
+
+/* On mobile: show hamburger, hide desktop-only nav icons */
+@media (max-width: 900px) {
+  .nav-hamburger { display: flex; }
+  /* Hide the desktop icon buttons in navbar on mobile */
+  .nav-icon-btn { display: none; }
+  /* Hide the old tab bar completely */
+  .tab-bar { display: none !important; }
+  /* Remove all bottom padding hacks — no tab bar at bottom anymore */
+  .main { padding-bottom: 24px !important; }
+  body { padding-bottom: 0 !important; }
+}
+
+
 </style>
 <script>
 // Force unregister ALL service workers on every load
@@ -4373,7 +4536,7 @@ if ('serviceWorker' in navigator) {
   // ── Build version toast ──
   window.addEventListener('DOMContentLoaded', function() {
     var v = document.createElement('div');
-    v.textContent = 'Build v25 ✓';
+    v.textContent = 'Build v26 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4429,8 +4592,52 @@ if ('serviceWorker' in navigator) {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
     </button>
     <div class="nav-avatar" id="nav-avatar" onclick="navigate('profile')" title="我的個人頁">CM</div>
+    <!-- Hamburger: mobile only -->
+    <button class="nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+<!-- ── Mobile dropdown menu ── -->
+<div id="mobile-nav-menu" class="mobile-nav-menu">
+  <div class="mobile-nav-backdrop" onclick="closeMobileMenu()"></div>
+  <div class="mobile-nav-panel">
+    <button class="mobile-nav-item" id="mnav-home" onclick="mobileNavTo('home')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="主頁" data-en="Home" data-ja="ホーム" data-ko="홈" data-fr="Accueil" data-es="Inicio" data-th="หน้าหลัก" data-id="Beranda" data-zh-cn="主页">主頁</span>
+    </button>
+    <button class="mobile-nav-item" id="mnav-binders" onclick="mobileNavTo('binders')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="相冊" data-en="Binders" data-ja="バインダー" data-ko="바인더" data-fr="Classeurs" data-es="Carpetas" data-th="ไบนเดอร์" data-id="Binder" data-zh-cn="相册">相冊</span>
+    </button>
+    <button class="mobile-nav-item" id="mnav-discover" onclick="mobileNavTo('discover')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="探索" data-en="Discover" data-ja="探索" data-ko="탐색" data-fr="Découvrir" data-es="Descubrir" data-th="สำรวจ" data-id="Jelajahi" data-zh-cn="探索">探索</span>
+    </button>
+    <button class="mobile-nav-item" id="mnav-messages" onclick="mobileNavTo('messages')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="訊息" data-en="Messages" data-ja="メッセージ" data-ko="메시지" data-fr="Messages" data-es="Mensajes" data-th="ข้อความ" data-id="Pesan" data-zh-cn="消息">訊息</span>
+      <span class="mobile-nav-badge" id="mnav-msg-badge" style="display:none"></span>
+    </button>
+    <button class="mobile-nav-item" id="mnav-guilds" onclick="mobileNavTo('guilds')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="公會" data-en="Guilds" data-ja="ギルド" data-ko="길드" data-fr="Guildes" data-es="Gremios" data-th="กิลด์" data-id="Guild" data-zh-cn="公会">公會</span>
+    </button>
+    <div class="mobile-nav-divider"></div>
+    <button class="mobile-nav-item" onclick="mobileNavTo('profile')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="我的頁面" data-en="Profile" data-ja="プロフィール" data-ko="프로필" data-fr="Profil" data-es="Perfil" data-th="โปรไฟล์" data-id="Profil" data-zh-cn="我的页面">我的頁面</span>
+    </button>
+    <button class="mobile-nav-item" onclick="openSettings();closeMobileMenu()">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="設定" data-en="Settings" data-ja="設定" data-ko="설정" data-fr="Paramètres" data-es="Ajustes" data-th="การตั้งค่า" data-id="Pengaturan" data-zh-cn="设置">設定</span>
+    </button>
+    <button class="mobile-nav-item" onclick="mobileNavTo('faq')">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="常見問題" data-en="FAQ" data-ja="よくある質問" data-ko="FAQ" data-fr="FAQ" data-es="FAQ" data-th="คำถามที่พบบ่อย" data-id="FAQ" data-zh-cn="常见问题">常見問題</span>
+    </button>
+  </div>
+</div>
 
 <!-- ══════════ SIDE NAV ══════════ -->
 <aside class="sidenav">
@@ -4657,7 +4864,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v25</div>
+    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v26</div>
   </footer>
 
 </main>
@@ -6712,6 +6919,8 @@ function navigate(page) {
     }
   }
   window.scrollTo(0,0);
+  // Update mobile hamburger menu active state
+  if (typeof updateMobileNavActive === 'function') updateMobileNavActive();
   // Re-apply active theme AFTER page is visible, then restore accent
   setTimeout(() => {
     const activeSw = document.querySelector('.theme-sw.on');
@@ -13402,11 +13611,72 @@ function bvUpdateMsgBadge() {
   // Navbar icon badge
   var navBadge = document.querySelector('.nav-icon-btn[onclick*="messages"] .nav-badge');
   if (navBadge) { navBadge.textContent = total; navBadge.style.display = total > 0 ? '' : 'none'; }
+  // Mobile nav menu badge
+  var mnavBadge = document.getElementById('mnav-msg-badge');
+  if (mnavBadge) { mnavBadge.textContent = total; mnavBadge.style.display = total > 0 ? 'flex' : 'none'; }
   // Hero sub text
   if (typeof updateMsgHeroSub === 'function') updateMsgHeroSub();
   // Binder tile badges — show dot on binders that have pending trade inquiries
   bvUpdateBinderInquiryBadges();
 }
+
+
+// ══════════════════════════════════════
+// MOBILE HAMBURGER DROPDOWN NAV
+// ══════════════════════════════════════
+function toggleMobileMenu() {
+  var menu = document.getElementById('mobile-nav-menu');
+  var btn  = document.getElementById('nav-hamburger');
+  if (!menu) return;
+  var isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    closeMobileMenu();
+  } else {
+    menu.classList.add('open');
+    btn && btn.classList.add('open');
+    updateMobileNavActive();
+  }
+}
+
+function closeMobileMenu() {
+  var menu = document.getElementById('mobile-nav-menu');
+  var btn  = document.getElementById('nav-hamburger');
+  if (menu) menu.classList.remove('open');
+  if (btn)  btn.classList.remove('open');
+}
+
+function mobileNavTo(page) {
+  closeMobileMenu();
+  navigate(page);
+}
+
+function updateMobileNavActive() {
+  // Highlight the current page in the menu
+  var pages = ['home','binders','discover','messages','guilds','profile'];
+  pages.forEach(function(p) {
+    var el = document.getElementById('mnav-' + p);
+    if (el) {
+      el.classList.toggle('active', currentPage === p);
+    }
+  });
+  // Sync message badge
+  var msgBadge = document.getElementById('mnav-msg-badge');
+  var tabBadge = document.getElementById('tab-badge-3');
+  if (msgBadge && tabBadge) {
+    var count = tabBadge.textContent;
+    if (count && count !== '0') {
+      msgBadge.textContent = count;
+      msgBadge.style.display = 'flex';
+    } else {
+      msgBadge.style.display = 'none';
+    }
+  }
+}
+
+// Close menu when pressing Escape
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeMobileMenu();
+});
 
 // Show red inquiry dot on binder tiles that have received trade messages
 function bvUpdateBinderInquiryBadges() {
@@ -15433,7 +15703,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v24';
+      const CACHE = 'binderverse-v25';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
