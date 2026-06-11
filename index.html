@@ -815,6 +815,9 @@ body.safari-browser #bv-view-cover > div:last-child {
 body.safari-browser #mobile-more-menu > div {
   bottom: calc(78px + 50px) !important;
 }
+body.safari-browser .card-detail-modal {
+  padding-top: 56px !important;
+}
 
 @media (max-width: 360px) {
   /* Already icon-only at this size */
@@ -3258,12 +3261,21 @@ body.light .card-detail-confidence-val { color: #6d28d9 !important; }
 }
 /* Mobile: stack back to column on narrow screens */
 @media (max-width: 540px) {
-  .card-detail-modal { align-items: flex-end; padding: 0; }
+  /* Full-screen card detail on mobile — fills from top to bottom */
+  .card-detail-modal {
+    align-items: stretch;
+    padding: 0;
+    /* Start below the Safari address bar */
+    padding-top: max(56px, env(safe-area-inset-top, 56px));
+  }
   .card-detail-sheet {
     flex-direction: column;
     border-radius: 20px 20px 0 0;
-    height: 92vh; /* dvh = dynamic viewport height, accounts for Safari chrome */
-    max-height: 92vh;
+    /* Full height minus the top padding above */
+    height: 100%;
+    max-height: 100%;
+    /* Extra bottom padding for Safari browser toolbar */
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
   /* Image row: horizontal strip — image left, title/badge right */
   .card-detail-img-wrap {
@@ -3271,7 +3283,7 @@ body.light .card-detail-confidence-val { color: #6d28d9 !important; }
     border-bottom: 1px solid rgba(255,255,255,0.07);
     padding: 12px 14px; flex-shrink: 0;
     display: flex; flex-direction: row; align-items: center; gap: 12px;
-    max-height: 30dvh;
+    max-height: 120px;
   }
   .card-detail-img { max-width: 80px; flex-shrink: 0; }
   .card-detail-name { font-size: 15px; }
@@ -4345,7 +4357,7 @@ body.light .guild-sidebar { background: rgba(255,255,255,0.6); border-color: rgb
   // ── Build version toast ──
   window.addEventListener('DOMContentLoaded', function() {
     var v = document.createElement('div');
-    v.textContent = 'Build v18 ✓';
+    v.textContent = 'Build v19 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -8152,6 +8164,10 @@ function openMobileChat() {
   if (!chat || window.innerWidth > 900) return;
 
   chat.classList.add('mobile-open');
+
+  // Hide tab bar so it doesn't overlap compose area
+  var _tb = document.getElementById('tab-bar');
+  if (_tb) _tb.style.display = 'none';
 
   // Remove any stale inline styles
   chat.style.removeProperty('bottom');
@@ -15399,12 +15415,18 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v1';
+      const CACHE = 'binderverse-v18';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
       });
-      self.addEventListener('activate', e => { e.waitUntil(clients.claim()); });
+      self.addEventListener('activate', e => {
+  e.waitUntil(
+    caches.keys().then(keys => Promise.all(
+      keys.filter(k => k !== CACHE).map(k => caches.delete(k))
+    )).then(() => clients.claim())
+  );
+});
       self.addEventListener('fetch', e => {
         e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
       });
