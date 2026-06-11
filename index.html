@@ -4499,6 +4499,15 @@ body.light .mobile-nav-item:active { background: rgba(0,0,0,0.05); }
   /* Remove all bottom padding hacks — no tab bar at bottom anymore */
   .main { padding-bottom: 24px !important; }
   body { padding-bottom: 0 !important; }
+  /* Navbar search: constrain width so it doesn't overlap lang selector */
+  .nav-search { flex: 1; min-width: 0; max-width: 160px; }
+  .nav-search input { font-size: 12px; }
+  /* Hide nav-spacer so logo + search + lang + hamburger fit cleanly */
+  .nav-spacer { display: none; }
+  /* Tighten navbar padding */
+  .navbar { gap: 6px; padding: 0 10px; }
+  /* Make lang select more compact */
+  #lang-select { padding: 5px 18px 5px 8px; font-size: 10px; }
 }
 
 
@@ -4535,8 +4544,13 @@ if ('serviceWorker' in navigator) {
 
   // ── Build version toast ──
   window.addEventListener('DOMContentLoaded', function() {
+    // Shorten search placeholder on mobile
+    if (window.innerWidth <= 900) {
+      var inp = document.getElementById('search-input');
+      if (inp) inp.placeholder = '搜尋…';
+    }
     var v = document.createElement('div');
-    v.textContent = 'Build v26 ✓';
+    v.textContent = 'Build v27 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4864,7 +4878,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v26</div>
+    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v27</div>
   </footer>
 
 </main>
@@ -15703,7 +15717,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v25';
+      const CACHE = 'binderverse-v26';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
