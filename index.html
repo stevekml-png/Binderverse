@@ -4610,7 +4610,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v31 ✓';
+    v.textContent = 'Build v32 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4938,7 +4938,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v31</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v32</div>
   </footer>
 
 </main>
@@ -15799,30 +15799,7 @@ setTimeout(()=>{
 
 <script>
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    // Inline service worker via blob
-    const swCode = `
-      const CACHE = 'binderverse-v30';
-      self.addEventListener('install', e => {
-        e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
-        self.skipWaiting();
-      });
-      self.addEventListener('activate', e => {
-  e.waitUntil(
-    caches.keys().then(keys => Promise.all(
-      keys.filter(k => k !== CACHE).map(k => caches.delete(k))
-    )).then(() => clients.claim())
-  );
-});
-      self.addEventListener('fetch', e => {
-        e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-      });
-    `;
-    const blob = new Blob([swCode], {type:'application/javascript'});
-    const url  = URL.createObjectURL(blob);
-    navigator.serviceWorker.register(url).catch(()=>{});
-  });
-}
+  // Service worker disabled — no caching, always loads fresh
 </script>
 
 
