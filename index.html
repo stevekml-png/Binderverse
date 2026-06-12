@@ -4544,13 +4544,15 @@ if ('serviceWorker' in navigator) {
 
   // ── Build version toast ──
   window.addEventListener('DOMContentLoaded', function() {
-    // Shorten search placeholder on mobile
+    // Shorten search placeholder on mobile (language-aware)
     if (window.innerWidth <= 900) {
       var inp = document.getElementById('search-input');
-      if (inp) inp.placeholder = '搜尋…';
+      var _sp = {'zh':'搜尋…','zh-tw':'搜尋…','zh-cn':'搜索…','en':'Search…','ja':'検索…','ko':'검색…','fr':'Chercher…','es':'Buscar…','th':'ค้นหา…','id':'Cari…'};
+      var _cl = localStorage.getItem('bv_lang') || 'zh';
+      if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v28 ✓';
+    v.textContent = 'Build v29 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4878,7 +4880,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v28</div>
+    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v29</div>
   </footer>
 
 </main>
@@ -7921,7 +7923,8 @@ function setLang(l) {
   }
 
   const strings = LANG_STRINGS[l] || LANG_STRINGS['en'];
-  document.getElementById('search-input').placeholder = window.innerWidth <= 900 ? '搜尋…' : strings.search;
+  var _shortPh = {'zh':'搜尋…','zh-tw':'搜尋…','zh-cn':'搜索…','en':'Search…','ja':'検索…','ko':'검색…','fr':'Chercher…','es':'Buscar…','th':'ค้นหา…','id':'Cari…'};
+  document.getElementById('search-input').placeholder = window.innerWidth <= 900 ? (_shortPh[l] || '搜尋…') : strings.search;
 
   localStorage.setItem('bv_lang', l);
 
@@ -15717,7 +15720,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v27';
+      const CACHE = 'binderverse-v28';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
