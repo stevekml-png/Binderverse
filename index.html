@@ -945,7 +945,12 @@ body.light .btn-share-profile:hover { background: #fff; border-color: rgba(0,0,0
   padding: 4px 12px; border-radius: 20px; cursor: pointer;
   font-size: 12px; font-weight: 800; white-space: nowrap;
   border: 1px solid var(--border2); background: rgba(255,255,255,0.04);
-  color: var(--dim); transition: all 0.15s;
+  color: var(--text-muted); transition: all 0.15s;
+}
+body.light .priv-chip {
+  border-color: rgba(30,40,80,0.2);
+  background: rgba(30,40,80,0.04);
+  color: rgba(30,40,80,0.7);
 }
 .priv-chip:hover { background: rgba(255,255,255,0.08); color: var(--white); }
 .priv-chip.on.public  { background: rgba(34,197,94,0.15);  border-color: rgba(34,197,94,0.4);  color: var(--green-lt); }
@@ -1179,7 +1184,11 @@ body.light .btn-share-profile:hover { background: #fff; border-color: rgba(0,0,0
   .profile-actions { flex-direction: row; }
   .binder-grid { padding: 0 14px 40px; }
   .card-grid { padding: 0 14px 40px; }
-  .profile-wrap { padding: 16px 14px 0; }
+  .profile-wrap { padding: 12px 14px 0; }
+  /* Cap banner height on mobile so it doesn't stretch */
+  .profile-card { padding: 16px 14px 12px; gap: 14px; }
+  .prof-avatar { width: 64px !important; height: 64px !important; font-size: 22px !important; }
+  .pw-swoosh { max-height: 220px; }
   .tab-pill-wrap { padding: 0 14px; }
 }
 @media (max-width: 600px) {
@@ -2715,7 +2724,7 @@ body.light .edit-profile-title { color: #1A1E30; border-bottom-color: rgba(0,0,0
 .setup-emoji-opt { aspect-ratio:1;border-radius:7px;font-size:18px;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(255,255,255,0.04);border:1.5px solid transparent;transition:all 0.15s; }
 .setup-emoji-opt:hover { background:rgba(59,130,246,0.15);transform:scale(1.1); }
 .setup-tag-grid { display:flex;flex-wrap:wrap;gap:6px; }
-.setup-tag-opt { padding:8px 12px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.06);color:var(--muted);transition:all 0.15s;display:flex;align-items:center;gap:5px; }
+.setup-tag-opt { padding:8px 12px;border-radius:9px;font-size:12px;font-weight:800;cursor:pointer;border:1.5px solid rgba(255,255,255,0.12);background:var(--border2);color:var(--muted);transition:all 0.15s;display:flex;align-items:center;gap:5px; }
 .setup-tag-opt.on { border-color:var(--blue,#3B82F6);background:rgba(59,130,246,0.12);color:var(--blue-lt,#60A5FA); }
 .setup-input { width:100%;background:rgba(255,255,255,0.06);border:1.5px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--white);font-family:'Nunito',sans-serif;font-size:13px;padding:10px 13px;transition:border-color 0.15s;outline:none;display:block; }
 .setup-input:focus { border-color:rgba(59,130,246,0.5); }
@@ -4548,6 +4557,15 @@ body.light .mobile-nav-item:active { background: rgba(0,0,0,0.05); }
   .navbar { gap: 6px; padding: 0 10px; }
   /* Make lang select more compact */
   #lang-select { padding: 5px 18px 5px 8px; font-size: 10px; }
+  /* Cap banner heights on mobile — prevent SVG backgrounds from stretching */
+  .profile-wrap { max-height: 340px; overflow: hidden; }
+  .guild-hero { max-height: 280px; overflow: hidden; }
+  /* Compact profile card on mobile */
+  .profile-card { padding: 16px 14px 12px !important; gap: 12px !important; }
+  .prof-avatar { width: 60px !important; height: 60px !important; font-size: 20px !important; }
+  .prof-username { font-size: 20px !important; }
+  .prof-stats-row { gap: 12px !important; padding: 10px 14px !important; }
+  .prof-stat-val { font-size: 16px !important; }
 }
 
 
@@ -4592,7 +4610,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v30 ✓';
+    v.textContent = 'Build v31 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4920,7 +4938,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v30</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v31</div>
   </footer>
 
 </main>
@@ -6476,11 +6494,11 @@ if ('serviceWorker' in navigator) {
         <div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,0.08);overflow:hidden;">
           <div id="storage-bar-fill" style="height:100%;border-radius:3px;background:linear-gradient(90deg,#3B82F6,#7c3aed);width:0%;transition:width 0.5s;"></div>
         </div>
-        <span id="storage-pct-label" style="font-size:10px;font-weight:800;color:var(--dim);">0%</span>
+        <span id="storage-pct-label" style="font-size:10px;font-weight:800;color:var(--text-muted);">0%</span>
       </div>
       <div style="display:flex;justify-content:space-between;margin-bottom:12px;">
-        <span id="storage-used-label" style="font-size:10px;color:var(--dim);">0 MB used</span>
-        <span id="storage-quota-label" style="font-size:10px;color:var(--dim);">of 500 MB</span>
+        <span id="storage-used-label" style="font-size:10px;color:var(--text-muted);">0 MB used</span>
+        <span id="storage-quota-label" style="font-size:10px;color:var(--text-muted);">of 500 MB</span>
       </div>
       <!-- Breakdown -->
       <div id="storage-breakdown" style="display:flex;flex-direction:column;gap:5px;margin-bottom:12px;"></div>
@@ -11584,13 +11602,13 @@ function updateStorageUI() {
     var rows = [
       {icon:'🃏', label:al==='zh'?'卡片圖片':'Card photos', mb:cardsMB, color:'#3B82F6'},
       {icon:'🎨', label:al==='zh'?'封面主題':'Cover themes', mb:themesMB, color:'#7c3aed'},
-      {icon:'⚙️', label:al==='zh'?'應用程式數據':'App data', mb:otherMB, color:'rgba(255,255,255,0.3)'},
+      {icon:'⚙️', label:al==='zh'?'應用程式數據':'App data', mb:otherMB, color:'var(--text-muted)'},
     ];
     breakdown.innerHTML = rows.map(function(r){
       var pctR = quotaMB > 0 ? Math.min(100, r.mb / quotaMB * 100) : 0;
       return '<div style="display:flex;align-items:center;gap:6px;">'
         +'<span style="font-size:12px;width:18px;">'+r.icon+'</span>'
-        +'<span style="font-size:10px;color:var(--dim);flex:1;">'+r.label+'</span>'
+        +'<span style="font-size:10px;color:var(--text-muted);flex:1;">'+r.label+'</span>'
         +'<div style="width:60px;height:3px;border-radius:2px;background:rgba(255,255,255,0.06);overflow:hidden;"><div style="width:'+pctR.toFixed(1)+'%;height:100%;background:'+r.color+';border-radius:2px;"></div></div>'
         +'<span style="font-size:10px;color:var(--dim);width:42px;text-align:right;">'+r.mb.toFixed(1)+' MB</span>'
         +'</div>';
@@ -15784,7 +15802,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v29';
+      const CACHE = 'binderverse-v30';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
