@@ -4644,7 +4644,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v38 ✓';
+    v.textContent = 'Build v39 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4972,7 +4972,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v38</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v39</div>
   </footer>
 
 </main>
@@ -15006,11 +15006,28 @@ function updatePriceOptions() {
   const sel = document.getElementById('df-price');
   if (!sel) return;
   const al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn') ? 'zh' : lang;
-  const cur = CURRENCIES.find(c => c.code === d_filters.currency) || CURRENCIES[0];
-  // Rebuild options
+
+  // Look up currency by code (CURRENCIES is keyed by HK/US/GB etc, values have .code)
+  const curCode = d_filters.currency || 'HKD';
+  const cur = Object.values(CURRENCIES).find(c => c.code === curCode)
+           || Object.values(CURRENCIES)[0];
+
+  const sym = cur.symbol;
+  const p1  = cur.p1;
+  const p2  = cur.p2;
+  const fmt = (n) => cur.dec > 0 ? n.toFixed(cur.dec) : Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, cur.thou);
+
+  // Generate price range labels dynamically from p1/p2
+  const ranges = [
+    { val: 'under_p1',   label: { zh:`${sym}${fmt(p1)} 以下`,      en:`Under ${sym}${fmt(p1)}`,      ja:`${sym}${fmt(p1)}未満`,    ko:`${sym}${fmt(p1)} 미만`,    fr:`Moins de ${sym}${fmt(p1)}`,  es:`Menos de ${sym}${fmt(p1)}`, th:`ต่ำกว่า ${sym}${fmt(p1)}`, id:`Di bawah ${sym}${fmt(p1)}` } },
+    { val: 'p1_to_p2',   label: { zh:`${sym}${fmt(p1)}–${fmt(p2)}`, en:`${sym}${fmt(p1)}–${fmt(p2)}`, ja:`${sym}${fmt(p1)}〜${fmt(p2)}`, ko:`${sym}${fmt(p1)}–${fmt(p2)}`, fr:`${sym}${fmt(p1)}–${fmt(p2)}`, es:`${sym}${fmt(p1)}–${fmt(p2)}`, th:`${sym}${fmt(p1)}–${fmt(p2)}`, id:`${sym}${fmt(p1)}–${fmt(p2)}` } },
+    { val: 'p2_to_p2x2', label: { zh:`${sym}${fmt(p2)}–${fmt(p2*2)}`, en:`${sym}${fmt(p2)}–${fmt(p2*2)}`, ja:`${sym}${fmt(p2)}〜${fmt(p2*2)}`, ko:`${sym}${fmt(p2)}–${fmt(p2*2)}`, fr:`${sym}${fmt(p2)}–${fmt(p2*2)}`, es:`${sym}${fmt(p2)}–${fmt(p2*2)}`, th:`${sym}${fmt(p2)}–${fmt(p2*2)}`, id:`${sym}${fmt(p2)}–${fmt(p2*2)}` } },
+    { val: 'over_p2x2',  label: { zh:`${sym}${fmt(p2*2)} 以上`,     en:`Over ${sym}${fmt(p2*2)}`,      ja:`${sym}${fmt(p2*2)}以上`,  ko:`${sym}${fmt(p2*2)} 이상`,  fr:`Plus de ${sym}${fmt(p2*2)}`, es:`Más de ${sym}${fmt(p2*2)}`, th:`มากกว่า ${sym}${fmt(p2*2)}`, id:`Di atas ${sym}${fmt(p2*2)}` } },
+  ];
+
   const anyLbls = { zh:'任何價格','zh-cn':'任何价格',en:'Any Price',ja:'すべての価格',ko:'모든 가격',fr:'Tous prix',es:'Cualquier precio',th:'ราคาใดก็ได้',id:'Semua harga' };
   let html = `<option value="all">${anyLbls[al]||anyLbls.en}</option>`;
-  cur.ranges.forEach(r => {
+  ranges.forEach(r => {
     const lbl = r.label[al] || r.label['en'];
     html += `<option value="${r.val}"${d_filters.price===r.val?' selected':''}>${lbl}</option>`;
   });
