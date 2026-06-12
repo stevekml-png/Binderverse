@@ -4575,20 +4575,24 @@ body.light .mobile-nav-item:active { background: rgba(0,0,0,0.05); }
   .profile-card { padding: 10px 12px 8px !important; gap: 10px !important; flex-direction: row !important; align-items: flex-start !important; }
   .profile-avatar-wrap .profile-avatar { width: 52px !important; height: 52px !important; font-size: 18px !important; min-width: 52px !important; }
   .profile-info { flex: 1; min-width: 0; }
-  .profile-name { font-size: 18px !important; }
-  .profile-bv-code { font-size: 9px !important; }
+  .profile-name { font-size: 18px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+  .profile-name-row { flex-wrap: nowrap !important; align-items: center !important; gap: 6px !important; overflow: hidden !important; }
+  .profile-bv-code { font-size: 9px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 160px !important; }
   .profile-handle { font-size: 10px !important; margin-bottom: 3px !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   /* Hide bio inside banner on mobile — saves ~30-40px */
   .profile-bio { display: none !important; }
-  .profile-tags { margin-bottom: 4px !important; gap: 3px !important; }
-  .profile-tag { font-size: 9px !important; padding: 1px 6px !important; }
+  .profile-tags { margin-bottom: 4px !important; gap: 3px !important; flex-wrap: nowrap !important; overflow-x: auto !important; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .profile-tags::-webkit-scrollbar { display: none; }
+  .profile-tag { font-size: 9px !important; padding: 1px 6px !important; white-space: nowrap !important; flex-shrink: 0 !important; }
   /* Stats row horizontal, compact */
   .profile-stats { gap: 10px !important; flex-wrap: nowrap !important; margin-bottom: 6px !important; }
   .stat-item-num { font-size: 14px !important; }
   .stat-item-lbl { font-size: 8px !important; }
-  /* Action buttons side by side */
-  .profile-actions { flex-direction: row !important; gap: 6px !important; }
-  .profile-actions .btn { font-size: 10px !important; padding: 5px 8px !important; }
+  /* Action buttons: move below info, full width row */
+  .profile-card { flex-wrap: wrap !important; }
+  .profile-info { width: calc(100% - 62px) !important; }
+  .profile-actions { flex-direction: row !important; gap: 6px !important; width: 100% !important; margin-top: 6px !important; }
+  .profile-actions .btn { flex: 1 !important; font-size: 10px !important; padding: 6px 8px !important; text-align: center !important; justify-content: center !important; }
   /* Privacy row compact */
   .profile-privacy-row { padding: 5px 12px 8px !important; gap: 6px !important; }
   .privacy-label { font-size: 10px !important; }
@@ -4637,7 +4641,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v35 ✓';
+    v.textContent = 'Build v36 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4965,7 +4969,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v35</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v36</div>
   </footer>
 
 </main>
