@@ -918,7 +918,7 @@ body.light .profile-wrap {
   color: #FFFFFF; cursor: pointer; white-space: nowrap;
   transition: all 0.15s; backdrop-filter: blur(4px);
 }
-.btn-edit-profile:hover { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.45); }
+.btn-edit-profile:hover { background: rgba(0,0,0,0.5); border-color:var(--text-muted); }
 body.light .btn-edit-profile { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.2); color: #1A1E30; }
 body.light .btn-edit-profile:hover { background: #fff; border-color: rgba(0,0,0,0.35); }
 .btn-share-profile {
@@ -928,7 +928,7 @@ body.light .btn-edit-profile:hover { background: #fff; border-color: rgba(0,0,0,
   color: #FFFFFF; cursor: pointer; white-space: nowrap;
   transition: all 0.15s; backdrop-filter: blur(4px);
 }
-.btn-share-profile:hover { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.45); }
+.btn-share-profile:hover { background: rgba(0,0,0,0.5); border-color:var(--text-muted); }
 body.light .btn-share-profile { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.2); color: #1A1E30; }
 body.light .btn-share-profile:hover { background: #fff; border-color: rgba(0,0,0,0.35); }
 
@@ -950,7 +950,7 @@ body.light .btn-share-profile:hover { background: #fff; border-color: rgba(0,0,0
 .priv-chip:hover { background: rgba(255,255,255,0.08); color: var(--white); }
 .priv-chip.on.public  { background: rgba(34,197,94,0.15);  border-color: rgba(34,197,94,0.4);  color: var(--green-lt); }
 .priv-chip.on.friends { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.4); color: var(--blue-lt); }
-.priv-chip.on.private { background: rgba(255,255,255,0.08);border-color: rgba(255,255,255,0.2);color: var(--white); }
+.priv-chip.on.private { background: rgba(255,255,255,0.08);border-color:var(--text-dim);color: var(--white); }
 
 /* ══════════════════════════════════
    BINDER TAB PILLS
@@ -1156,7 +1156,7 @@ body.light .btn-share-profile:hover { background: #fff; border-color: rgba(0,0,0
 .btn-copy-link.done { background: rgba(34,197,94,0.15); border-color: rgba(34,197,94,0.35); color: var(--green-lt); }
 .share-opts { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
 .share-opt { flex: 1; padding: 9px 5px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 9px; font-size: 12px; font-weight: 800; color: var(--white); cursor: pointer; text-align: center; transition: all 0.15s; min-width: 70px; }
-.share-opt:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+.share-opt:hover { background: rgba(255,255,255,0.18); border-color:var(--text-dim); }
 
 /* Add card button */
 .btn-add-card { display: flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 10px; background: rgba(34,197,94,0.14); border: 1px solid rgba(34,197,94,0.35); font-size: 12.5px; font-weight: 800; color: var(--green-lt); cursor: pointer; transition: all 0.15s; }
@@ -1351,21 +1351,21 @@ body.light .sidebar-pill { background: #FFFFFF; box-shadow: 0 4px 20px rgba(0,0,
   overflow: visible;
 }
 /* Filters inside hero always readable against gradient */
-.discover-hero .d-filter { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.75); }
-.discover-hero .d-filter.on { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); color: #FFFFFF; }
+.discover-hero .d-filter { background: rgba(255,255,255,0.12); border-color:var(--text-dim); color: rgba(255,255,255,0.75); }
+.discover-hero .d-filter.on { background: rgba(255,255,255,0.25); border-color:var(--text-muted); color: #FFFFFF; }
 .discover-hero .d-filter:hover { background: rgba(255,255,255,0.2); color: #FFFFFF; }
-.discover-hero .d-filter-label { color: rgba(255,255,255,0.5); }
-.discover-hero .d-filter-toggle { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.75); }
+.discover-hero .d-filter-label { color:var(--text-muted); }
+.discover-hero .d-filter-toggle { background: rgba(255,255,255,0.12); border-color:var(--text-dim); color: rgba(255,255,255,0.75); }
 .discover-hero .d-filter-toggle.on { background: rgba(34,197,94,0.3); border-color: rgba(34,197,94,0.6); color: #FFFFFF; }
 .discover-hero .discover-hero-title { color: #FFFFFF; text-shadow: 0 1px 4px rgba(0,0,0,0.2); }
 .discover-hero .discover-hero-sub { color: rgba(255,255,255,0.7); }
-.discover-hero .discover-search-input { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); color: #FFFFFF; }
-.discover-hero .discover-search-input::placeholder { color: rgba(255,255,255,0.4); }
-body.light .discover-hero .d-filter { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.85); }
+.discover-hero .discover-search-input { background: rgba(255,255,255,0.15); border-color:var(--text-dim); color: #FFFFFF; }
+.discover-hero .discover-search-input::placeholder { color:var(--text-muted); }
+body.light .discover-hero .d-filter { background: rgba(255,255,255,0.2); border-color:var(--text-dim); color: rgba(255,255,255,0.85); }
 body.light .discover-hero .d-filter.on { background: rgba(255,255,255,0.35); border-color: #FFFFFF; color: #FFFFFF; }
 body.light .discover-hero .discover-hero-title { color: #FFFFFF; }
 body.light .discover-hero .discover-hero-sub { color: rgba(255,255,255,0.75); }
-body.light .discover-hero .discover-search-input { background: rgba(255,255,255,0.3); border-color: rgba(255,255,255,0.4); color: #1A1E30; }
+body.light .discover-hero .discover-search-input { background: rgba(255,255,255,0.3); border-color:var(--text-muted); color: #1A1E30; }
 body.light .discover-hero .discover-search-input::placeholder { color: rgba(30,40,80,0.4); }
 .discover-hero-title {
   font-family: 'Bebas Neue',sans-serif;
@@ -1428,7 +1428,7 @@ body.light .discover-hero .discover-search-input::placeholder { color: rgba(30,4
   border-color: rgba(251,191,36,0.5);
   color: var(--gold);
 }
-.d-filter:hover { color: var(--white); border-color: rgba(255,255,255,0.2); }
+.d-filter:hover { color: var(--white); border-color:var(--text-dim); }
 .d-filter-toggle {
   padding: 5px 12px; border-radius: 16px;
   background: rgba(255,255,255,0.06);
@@ -1818,7 +1818,7 @@ body.light .faq-item.open { border-color: rgba(59,130,246,0.3); }
 .d-filter-group { display: flex; flex-direction: column; gap: 4px; }
 .d-filter-group-label {
   font-size: 10px; font-weight: 900; letter-spacing: 0.1em;
-  color: rgba(255,255,255,0.5); text-transform: uppercase;
+  color:var(--text-muted); text-transform: uppercase;
 }
 .d-select {
   appearance: none; -webkit-appearance: none;
@@ -1836,8 +1836,8 @@ body.light .faq-item.open { border-color: rgba(59,130,246,0.3); }
   transition: border-color 0.15s, background 0.15s;
 }
 .d-select:focus, .d-select:hover {
-  border-color: rgba(255,255,255,0.5);
-  background-color: rgba(255,255,255,0.2);
+  border-color:var(--text-muted);
+  background-color:var(--text-dim);
 }
 .d-select option { background: #1A1E30; color: #F8FAFC; font-weight: 700; }
 .d-filter-toggles {
@@ -1943,7 +1943,7 @@ body.light .faq-item.open { border-color: rgba(59,130,246,0.3); }
   background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.08);
   transition: all 0.15s; width: 100%;
 }
-.msg-priv-opt:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.15); }
+.msg-priv-opt:hover { background: rgba(255,255,255,0.08); border-color:var(--text-dim); }
 .msg-priv-opt.on {
   background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.4);
 }
@@ -2137,7 +2137,7 @@ body.light .msg-inquiry-text   { color: rgba(15,18,41,0.85); }
   line-height: 1.45; font-style: italic;
 }
 .msg-bubble-row.me .msg-translation {
-  border-left-color: rgba(255,255,255,0.3);
+  border-left-color:var(--text-dim);
   background: rgba(255,255,255,0.08);
   color: rgba(255,255,255,0.65);
 }
@@ -2350,7 +2350,7 @@ body.light .msg-bubble-row [style*="rgba(139,92,246,0.12)"] { background: rgba(9
 body.light .msg-bubble-row [style*="rgba(0,0,0,0.2)"] { background: rgba(0,0,0,0.06) !important; }
 body.light .msg-bubble-row [style*="color:#fff"] { color: #0F1229 !important; }
 body.light .msg-bubble-row [style*="color:rgba(255,255,255,0.8)"] { color: rgba(15,18,41,0.8) !important; }
-body.light .msg-bubble-row [style*="color:rgba(255,255,255,0.45)"] { color: rgba(15,18,41,0.5) !important; }
+body.light .msg-bubble-row [style*="color:var(--text-muted)"] { color: rgba(15,18,41,0.5) !important; }
 body.light .msg-bubble-row [style*="color:rgba(139,92,246,0.7)"] { color: #6d28d9 !important; }
 body.light .msg-thread        { border-bottom-color: rgba(0,0,0,0.06); }
 body.light .msg-thread.active { background: rgba(59,130,246,0.1); }
@@ -2424,7 +2424,7 @@ body.light .msg-new-inner     { background: #fff; }
   font-family: 'Nunito',sans-serif; display: flex; align-items: center; gap: 5px;
   transition: all 0.15s;
 }
-.prof-edit-btn:hover { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.45); }
+.prof-edit-btn:hover { background: rgba(0,0,0,0.5); border-color:var(--text-muted); }
 body.light .prof-edit-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.2); color: #1A1E30; }
 body.light .prof-edit-btn:hover { background: #fff; }
 .prof-share-btn {
@@ -2433,7 +2433,7 @@ body.light .prof-edit-btn:hover { background: #fff; }
   color: #FFFFFF; cursor: pointer; font-family: 'Nunito',sans-serif;
   transition: all 0.15s; backdrop-filter: blur(4px);
 }
-.prof-share-btn:hover { background: rgba(0,0,0,0.5); border-color: rgba(255,255,255,0.45); }
+.prof-share-btn:hover { background: rgba(0,0,0,0.5); border-color:var(--text-muted); }
 body.light .prof-share-btn { background: rgba(255,255,255,0.8); border-color: rgba(0,0,0,0.2); color: #1A1E30; }
 body.light .prof-share-btn:hover { background: #fff; border-color: rgba(0,0,0,0.35); }
 .prof-bio {
@@ -2851,7 +2851,7 @@ body.light .setup-emoji-opt { background:rgba(0,0,0,0.04); }
   font-size: 11px; font-weight: 800; color: var(--muted); transition: all 0.15s;
   display: flex; align-items: center; justify-content: center; gap: 4px;
 }
-.ob-loc-chip:hover { border-color: rgba(255,255,255,0.2); }
+.ob-loc-chip:hover { border-color:var(--text-dim); }
 .ob-loc-chip.on { border-color: var(--blue,#3B82F6); background: rgba(59,130,246,0.12); color: var(--blue-lt,#60A5FA); }
 .ob-loc-other { grid-column: 1/-1; }
 /* Privacy */
@@ -3133,7 +3133,7 @@ body.light .binder-detail-actions{border-color:rgba(0,0,0,0.07);}
   padding: 5px 0; font-size: 12px; color: var(--muted); line-height: 1.4;
 }
 .sub-feature .chk { color: #4ade80; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
-.sub-feature .x { color: rgba(255,255,255,0.2); font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+.sub-feature .x { color:var(--text-dim); font-size: 13px; flex-shrink: 0; margin-top: 1px; }
 .sub-feature .hl { color: var(--white); font-weight: 800; }
 .sub-cta {
   margin: 16px 20px 20px; padding: 12px; border-radius: 12px;
@@ -3247,7 +3247,7 @@ body.light .card-detail-confidence-val { color: #6d28d9 !important; }
 }
 .card-detail-price-label { font-size: 10px; font-weight: 900; color: rgba(34,197,94,0.7); text-transform: uppercase; margin-bottom: 4px; }
 .card-detail-price-value { font-size: 24px; font-weight: 900; color: #4ade80; letter-spacing: -0.02em; }
-.card-detail-price-sub { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 3px; }
+.card-detail-price-sub { font-size: 10px; color:var(--text-dim); margin-top: 3px; }
 .card-detail-trade-badge {
   display: inline-flex; align-items: center; gap: 5px;
   padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 800;
@@ -3407,7 +3407,7 @@ body.light .guild-identity-name {
   background: rgba(234,88,12,0.25); border: 1px solid rgba(234,88,12,0.5);
   font-size: 11px; font-weight: 900; color: #FB923C;
 }
-.guild-identity-sep { color: rgba(255,255,255,0.25); font-size: 12px; }
+.guild-identity-sep { color:var(--text-dim); font-size: 12px; }
 .guild-identity-meta > span:not(.guild-identity-badge):not(.guild-identity-sep) {
   font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7);
 }
@@ -3671,7 +3671,7 @@ body.light .guild-identity-sep { color: rgba(30,40,80,0.2); }
   background: rgba(255,255,255,0.04); transition: all 0.15s;
   font-family: 'Nunito', sans-serif;
 }
-.ob-lang-btn:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+.ob-lang-btn:hover { background: rgba(255,255,255,0.08); border-color:var(--text-dim); }
 .ob-lang-btn.on { background: rgba(59,130,246,0.15); border-color: rgba(59,130,246,0.5); }
 .ob-lang-flag { font-size: 22px; display: block; margin-bottom: 4px; }
 .ob-lang-name { font-size: 11px; font-weight: 800; color: var(--white); display: block; }
@@ -4552,7 +4552,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v29 ✓';
+    v.textContent = 'Build v30 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4880,7 +4880,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:rgba(255,255,255,0.2);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v29</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v30</div>
   </footer>
 
 </main>
@@ -6614,7 +6614,7 @@ if ('serviceWorker' in navigator) {
       <button class="share-opt" onclick="shareBinderVia('Weibo')" style="background:#C41230;border-color:#C41230;color:#fff;">🔴 微博</button>
       <button class="share-opt" onclick="shareBinderVia('XHS')" style="background:#FE2C55;border-color:#FE2C55;color:#fff;">📕 小紅書</button>
       <button class="share-opt" onclick="shareBinderVia('QQ')" style="background:rgba(18,183,245,0.1);border-color:rgba(18,183,245,0.3);color:#12b7f5;">🐧 QQ</button>
-      <button class="share-opt" onclick="shareBinderVia('Douyin')" style="background:rgba(0,0,0,0.15);border-color:rgba(255,255,255,0.2);color:#fff;">🎵 抖音</button>
+      <button class="share-opt" onclick="shareBinderVia('Douyin')" style="background:rgba(0,0,0,0.15);border-color:var(--text-dim);color:#fff;">🎵 抖音</button>
     </div>
     <!-- Hashtag preview -->
     <div style="background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.18);border-radius:9px;padding:9px 12px;margin-bottom:10px;">
@@ -9399,7 +9399,7 @@ function openShareModal() {
     const img = document.createElement('img');
     img.src = qrUrl; img.width = 100; img.height = 100;
     img.alt = 'QR Code'; img.style.borderRadius = '8px';
-    img.onerror = function(){ this.parentElement.innerHTML = '<div style="font-size:10px;color:#999;text-align:center;padding:8px">QR unavailable offline</div>'; };
+    img.onerror = function(){ this.parentElement.innerHTML = '<div style="font-size:10px;color:var(--text-muted);text-align:center;padding:8px">QR unavailable offline</div>'; };
     qrBox.innerHTML = ''; qrBox.appendChild(img);
   }
 }
@@ -10422,14 +10422,14 @@ function bvOpenAITheme() {
   modal.innerHTML = '<div style="background:#1E2240;border-radius:20px 20px 0 0;border:1px solid rgba(139,92,246,0.3);width:100%;padding:20px;">'
     +'<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);margin:0 auto 16px;"></div>'
     +'<div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:4px;">✨ '+(al==='zh'?'AI 封面場景':'AI Cover Scene')+'</div>'
-    +'<div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:16px;">'+(al==='zh'?'輸入描述，AI 生成封面背景照片':'Type a description — AI generates your cover photo')+'</div>'
+    +'<div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">'+(al==='zh'?'輸入描述，AI 生成封面背景照片':'Type a description — AI generates your cover photo')+'</div>'
     +'<div style="display:flex;gap:8px;margin-bottom:16px;">'
     +'<input id="bv-scene-prompt" placeholder="'+(al==='zh'?'例如：富士山日出、深海珊瑚礁...':'e.g. Mount Fuji sunrise, deep sea coral reef...')+'" '
     +'style="flex:1;padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:13px;outline:none;" />'
     +'<button onclick="bvGenerateScene()" style="padding:10px 16px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;">✨ '+(al==='zh'?'生成':'Generate')+'</button>'
     +'</div>'
     +'<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:14px;">'+btnHtml+'</div>'
-    +'<div style="font-size:10px;color:rgba(255,255,255,0.3);text-align:center;margin-bottom:12px;">'+(al==='zh'?'💡 正式版本將使用 AI 生成真實場景照片':'💡 Production version uses real AI-generated photorealistic images')+'</div>'
+    +'<div style="font-size:10px;color:var(--text-dim);text-align:center;margin-bottom:12px;">'+(al==='zh'?'💡 正式版本將使用 AI 生成真實場景照片':'💡 Production version uses real AI-generated photorealistic images')+'</div>'
     +'<button onclick="bvCloseAIModal()" style="width:100%;padding:10px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">'+(al==='zh'?'取消':'Cancel')+'</button>'
     +'</div>';
   document.body.appendChild(modal);
@@ -10487,7 +10487,7 @@ function bvRenderCards() {
     empty.onclick = function(){ document.getElementById('bv-file-input').click(); };
     empty.innerHTML = '<div style="font-size:40px;margin-bottom:10px;">🃏</div>'
       +'<div style="font-size:14px;font-weight:900;color:#fff;margin-bottom:6px;">'+(al==='zh'?'新增卡片':'Add Cards')+'</div>'
-      +'<div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:14px;">'+(al==='zh'?'點擊選擇圖片':'Tap to choose photos')+'</div>'
+      +'<div style="font-size:11px;color:var(--text-muted);margin-bottom:14px;">'+(al==='zh'?'點擊選擇圖片':'Tap to choose photos')+'</div>'
       +'<div style="display:inline-block;padding:8px 20px;background:#3B82F6;border-radius:9px;color:white;font-size:12px;font-weight:800;">'+(al==='zh'?'🖼️ 選擇圖片':'🖼️ Choose Photos')+'</div>';
     body.innerHTML = '';
     body.appendChild(empty);
@@ -10828,11 +10828,11 @@ function openNewBinderFlow(binder) {
     + '<div style="width:24px;height:2px;background:rgba(255,255,255,0.2);border-radius:1px;"></div>'
     + '<div style="width:24px;height:24px;border-radius:50%;background:#3B82F6;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:white;">2</div>'
     + '<div style="width:24px;height:2px;background:rgba(255,255,255,0.2);border-radius:1px;"></div>'
-    + '<div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:rgba(255,255,255,0.4);">3</div>'
+    + '<div style="width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:var(--text-muted);">3</div>'
     + '</div>'
-    + '<div style="font-size:14px;font-weight:900;color:rgba(255,255,255,0.5);margin-bottom:4px;">'+( step2L[al]||step2L.en)+'</div>'
+    + '<div style="font-size:14px;font-weight:900;color:var(--text-muted);margin-bottom:4px;">'+( step2L[al]||step2L.en)+'</div>'
     + '<div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:6px;">✅ '+(titles[al]||titles.en)+'</div>'
-    + '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:20px;">'+(subL[al]||subL.en)+'</div>'
+    + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">'+(subL[al]||subL.en)+'</div>'
     // Upload area
     + '<input type="file" id="bv-create-file" accept="image/*" multiple style="display:none" onchange="bvCreateUploadWithScan(this)"/>'
     + '<input type="file" id="bv-create-camera" accept="image/*" capture="environment" style="display:none" onchange="bvCreateUploadWithScan(this)"/>'
@@ -10842,7 +10842,7 @@ function openNewBinderFlow(binder) {
     + '<button onclick="bvCreateClickCamera()" style="padding:11px 14px;border-radius:11px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">📷</button>'
     + '</div>'
     + '<div style="display:flex;gap:8px;">'
-    + '<button onclick="bvCreateSkipToTheme()" style="flex:1;padding:11px;border-radius:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">'+(skipL[al]||skipL.en)+'</button>'
+    + '<button onclick="bvCreateSkipToTheme()" style="flex:1;padding:11px;border-radius:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">'+(skipL[al]||skipL.en)+'</button>'
     + '<button onclick="bvCreateGoToTheme()" style="flex:1;padding:11px;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;" id="bv-create-next-btn">'+(nextL[al]||nextL.en)+'</button>'
     + '</div>'
     + '</div>';
@@ -10901,17 +10901,17 @@ function bvUpdateCreatePreview() {
   if (!preview) return;
   var cards=[]; try{cards=JSON.parse(localStorage.getItem('bv_cards_'+bid)||'[]');}catch(e){}
   if (cards.length===0) {
-    preview.innerHTML = '<div style="border:2px dashed rgba(255,255,255,0.12);border-radius:10px;padding:20px;text-align:center;color:rgba(255,255,255,0.3);font-size:12px;">No cards yet — choose photos above</div>';
+    preview.innerHTML = '<div style="border:2px dashed rgba(255,255,255,0.12);border-radius:10px;padding:20px;text-align:center;color:var(--text-dim);font-size:12px;">No cards yet — choose photos above</div>';
     return;
   }
   var html='<div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin-bottom:8px;">';
   for(var i=0;i<Math.min(cards.length,10);i++){
     html+='<div style="aspect-ratio:2.5/3.5;border-radius:5px;overflow:hidden;border:1px solid rgba(255,255,255,0.15);"><img src="'+cards[i]+'" style="width:100%;height:100%;object-fit:cover;display:block;"/></div>';
   }
-  if(cards.length>10) html+='<div style="aspect-ratio:2.5/3.5;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:rgba(255,255,255,0.4);">+' + (cards.length-10) + '</div>';
+  if(cards.length>10) html+='<div style="aspect-ratio:2.5/3.5;border-radius:5px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--text-muted);">+' + (cards.length-10) + '</div>';
   html+='</div>';
   var al=(lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
-  html+='<div style="font-size:11px;color:rgba(255,255,255,0.4);text-align:center;">'+cards.length+(al==='zh'?' 張卡片已準備好':' cards ready')+'</div>';
+  html+='<div style="font-size:11px;color:var(--text-muted);text-align:center;">'+cards.length+(al==='zh'?' 張卡片已準備好':' cards ready')+'</div>';
   preview.innerHTML=html;
 }
 
@@ -10966,9 +10966,9 @@ function bvShowCreateThemeStep() {
     + '<div style="width:24px;height:2px;background:rgba(255,255,255,0.2);border-radius:1px;"></div>'
     + '<div style="width:24px;height:24px;border-radius:50%;background:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;color:white;">3</div>'
     + '</div>'
-    + '<div style="font-size:14px;font-weight:900;color:rgba(255,255,255,0.5);margin-bottom:4px;">'+(step3L[al]||step3L.en)+'</div>'
+    + '<div style="font-size:14px;font-weight:900;color:var(--text-muted);margin-bottom:4px;">'+(step3L[al]||step3L.en)+'</div>'
     + '<div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:6px;">✨ '+(al==='zh'?'為你的相冊創建封面':'Create your binder cover')+'</div>'
-    + '<div style="font-size:12px;color:rgba(255,255,255,0.4);margin-bottom:16px;">'+(subL2[al]||subL2.en)+'</div>'
+    + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;">'+(subL2[al]||subL2.en)+'</div>'
     // Prompt input
     + '<div style="display:flex;gap:8px;margin-bottom:12px;">'
     + '<input id="bv-create-prompt" placeholder="'+(al==='zh'?'例如：日落時的富士山、深海珊瑚礁...':'e.g. Mount Fuji at sunset, deep sea coral reef...')+'" '
@@ -10978,10 +10978,10 @@ function bvShowCreateThemeStep() {
     // Scene presets
     + '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:16px;">'+sceneBtns+'</div>'
     // Selected preview
-    + '<div id="bv-create-scene-preview" style="height:60px;border-radius:10px;margin-bottom:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;color:rgba(255,255,255,0.3);">'+(al==='zh'?'選擇場景後預覽將顯示於此':'Scene preview appears here after selection')+'</div>'
+    + '<div id="bv-create-scene-preview" style="height:60px;border-radius:10px;margin-bottom:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--text-dim);">'+(al==='zh'?'選擇場景後預覽將顯示於此':'Scene preview appears here after selection')+'</div>'
     // Buttons
     + '<div style="display:flex;gap:8px;">'
-    + '<button onclick="bvCreateRevealCover()" style="flex:1;padding:11px;border-radius:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">'+(skipRevL[al]||skipRevL.en)+'</button>'
+    + '<button onclick="bvCreateRevealCover()" style="flex:1;padding:11px;border-radius:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">'+(skipRevL[al]||skipRevL.en)+'</button>'
     + '<button onclick="bvCreateRevealCover()" style="flex:2;padding:11px;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;" id="bv-reveal-btn">'+(revealL[al]||revealL.en)+'</button>'
     + '</div>'
     + '</div>';
@@ -11415,7 +11415,7 @@ function showUpgradePrompt(feature) {
     + '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 18px;"></div>'
     + '<div style="font-size:32px;text-align:center;margin-bottom:12px;">✨</div>'
     + '<div style="font-size:15px;font-weight:900;color:#fff;text-align:center;margin-bottom:8px;">' + m + '</div>'
-    + (isInTrial() && getDaysLeftInTrial()>0 ? '<div style="font-size:11px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:16px;">'+(al==='zh'?'試用期還有 '+getDaysLeftInTrial()+' 天':'Trial ends in '+getDaysLeftInTrial()+' days')+'</div>' : '')
+    + (isInTrial() && getDaysLeftInTrial()>0 ? '<div style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:16px;">'+(al==='zh'?'試用期還有 '+getDaysLeftInTrial()+' 天':'Trial ends in '+getDaysLeftInTrial()+' days')+'</div>' : '')
     + '<div style="display:flex;gap:8px;margin-top:16px;">'
     + '<button onclick="closeUpgradePrompt()" style="flex:1;padding:11px;border-radius:11px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">'+(al==='zh'?'暫時不用':'Not now')+'</button>'
     + '<button onclick="closeUpgradePromptAndSubscribe()" style="flex:2;padding:11px;border-radius:11px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;">💎 '+(al==='zh'?'查看升級計劃':'See Upgrade Plans')+'</button>'
@@ -11472,7 +11472,7 @@ function showWelcomeGift() {
     + '<div style="text-align:center;font-size:48px;margin-bottom:4px;">🎁</div>'
     + '<div style="text-align:center;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px;">' + (titleL[al]||titleL.en) + '</div>'
     + '<div style="text-align:center;font-size:16px;font-weight:800;color:#60A5FA;margin-bottom:6px;">' + (greetL[al]||greetL.en) + '</div>'
-    + '<div style="text-align:center;font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:20px;">' + (subL[al]||subL.en) + '</div>'
+    + '<div style="text-align:center;font-size:12px;color:var(--text-muted);margin-bottom:20px;">' + (subL[al]||subL.en) + '</div>'
     // Gift items
     + '<div style="background:rgba(0,0,0,0.2);border-radius:14px;padding:4px 14px 8px;margin-bottom:16px;">'
     + giftHTML
@@ -11484,7 +11484,7 @@ function showWelcomeGift() {
     // CTA
     + '<button onclick="closeWelcomeGift()" style="width:100%;padding:14px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:15px;font-weight:900;cursor:pointer;letter-spacing:0.02em;box-shadow:0 4px 20px rgba(59,130,246,0.4);">'
     + (startL[al]||startL.en) + '</button>'
-    + '<div style="text-align:center;font-size:10px;color:rgba(255,255,255,0.25);margin-top:10px;">' + (noteL[al]||noteL.en) + '</div>'
+    + '<div style="text-align:center;font-size:10px;color:var(--text-dim);margin-top:10px;">' + (noteL[al]||noteL.en) + '</div>'
     + '</div>';
 
   document.body.appendChild(modal);
@@ -11625,11 +11625,11 @@ function showScanningModal(dataUrl, remaining) {
     + '<div style="font-size:13px;color:rgba(255,255,255,0.55);margin-bottom:16px;">'+(al==='zh'?'識別遊戲類型、卡名、套裝和稀有度':'Identifying game, card name, set & rarity')+'</div>'
     + '<div style="display:flex;flex-direction:column;gap:10px;" id="scan-steps">'
     + '<div class="scan-step" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.6);" data-step="1"><span class="step-icon" style="font-size:14px;">⏳</span>'+(al==='zh'?'檢測遊戲類型...':'Detecting game type...')+'</div>'
-    + '<div class="scan-step" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.35);" data-step="2"><span class="step-icon" style="font-size:14px;">⏳</span>'+(al==='zh'?'識別卡牌名稱...':'Reading card name...')+'</div>'
-    + '<div class="scan-step" style="display:flex;align-items:center;gap:8px;font-size:13px;color:rgba(255,255,255,0.35);" data-step="3"><span class="step-icon" style="font-size:14px;">⏳</span>'+(al==='zh'?'檢測套裝和稀有度...':'Detecting set & rarity...')+'</div>'
+    + '<div class="scan-step" style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);" data-step="2"><span class="step-icon" style="font-size:14px;">⏳</span>'+(al==='zh'?'識別卡牌名稱...':'Reading card name...')+'</div>'
+    + '<div class="scan-step" style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-dim);" data-step="3"><span class="step-icon" style="font-size:14px;">⏳</span>'+(al==='zh'?'檢測套裝和稀有度...':'Detecting set & rarity...')+'</div>'
     + '</div>'
     + '</div></div>'
-    + (remaining > 0 ? '<div style="text-align:center;font-size:12px;color:rgba(255,255,255,0.35);padding-top:4px;">'+(al==='zh'?'還有 '+remaining+' 張卡等待掃描':''+remaining+' more card'+(remaining>1?'s':'')+' in queue')+'</div>' : '')
+    + (remaining > 0 ? '<div style="text-align:center;font-size:12px;color:var(--text-dim);padding-top:4px;">'+(al==='zh'?'還有 '+remaining+' 張卡等待掃描':''+remaining+' more card'+(remaining>1?'s':'')+' in queue')+'</div>' : '')
     + '</div>';
   
   document.body.appendChild(modal);
@@ -11802,15 +11802,15 @@ function showScanReviewModal(dataUrl, result, remaining) {
       + '<div style="flex-shrink:0;" class="scan-modal-img-col">'
       + '<div style="width:110px;aspect-ratio:2.5/3.5;border-radius:14px;overflow:hidden;border:2.5px solid rgba(139,92,246,0.5);box-shadow:0 8px 32px rgba(139,92,246,0.2);">'
       + '<img src="'+dataUrl+'" style="width:100%;height:100%;object-fit:cover;display:block;" /></div>'
-      + (scan.isMock ? '<div style="font-size:9px;color:rgba(255,255,255,0.3);text-align:center;margin-top:5px;">Demo scan</div>' : '')
+      + (scan.isMock ? '<div style="font-size:9px;color:var(--text-dim);text-align:center;margin-top:5px;">Demo scan</div>' : '')
       + '</div>'
       // Fields
       + '<div style="flex:1;display:flex;flex-direction:column;gap:13px;">'
       + '<div style="font-size:11px;color:rgba(139,92,246,0.8);display:flex;align-items:center;gap:5px;"><div style="width:7px;height:7px;border-radius:50%;background:#a78bfa;flex-shrink:0;"></div>'+(al==='zh'?'紫色 = AI 填寫（可修改）':'Purple = AI filled (tap to edit)')+'</div>'
       // Game
-      + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'遊戲':'GAME')+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+gameChips+'</div></div>'
+      + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'遊戲':'GAME')+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+gameChips+'</div></div>'
       // Type
-      + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'卡牌類型':'TYPE')+'</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+typeChips+'</div></div>'
+      + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'卡牌類型':'TYPE')+'</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+typeChips+'</div></div>'
       // Name
       + '<div><div style="font-size:10px;font-weight:900;color:rgba(139,92,246,0.8);text-transform:uppercase;margin-bottom:6px;">✦ '+(al==='zh'?'卡牌名稱':'CARD NAME')+'</div>'
       + '<input id="scan-name-input" value="'+scan.name+'" onchange="scan_state.name=this.value" style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(139,92,246,0.1);border:1.5px solid rgba(139,92,246,0.4);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;outline:none;box-sizing:border-box;" /></div>'
@@ -11820,7 +11820,7 @@ function showScanReviewModal(dataUrl, result, remaining) {
       // Rarity
       + '<div><div style="font-size:10px;font-weight:900;color:rgba(139,92,246,0.8);text-transform:uppercase;margin-bottom:6px;">✦ '+(al==='zh'?'稀有度':'RARITY')+'</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+rarityBtns+'</div></div>'
       // Condition — hidden when graded
-      + (!scan.graded ? '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'品相（你選擇）':'CONDITION (you choose)')+'</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+condBtns+'</div></div>' : '')
+      + (!scan.graded ? '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'品相（你選擇）':'CONDITION (you choose)')+'</div><div style="display:flex;flex-wrap:wrap;gap:4px;">'+condBtns+'</div></div>' : '')
       // Graded card detection banner — shown when AI detects a slab
       + (scan.graded ? '<div style="padding:14px 16px;border-radius:12px;background:rgba(180,0,20,0.25);border:2px solid rgba(255,80,80,0.6);display:flex;align-items:center;gap:14px;">'
         + '<div style="background:'+(({PSA:'#D4001F',BGS:'#1A6CC8',CGC:'#007A3D',SGC:'#FF6600',ACE:'#7C3AED',CSG:'#0891B2'})[scan.grading_company]||'#D4001F')+';color:#fff;font-size:13px;font-weight:900;padding:5px 12px;border-radius:7px;flex-shrink:0;letter-spacing:0.05em;">'+(scan.grading_company||'PSA')+'</div>'
@@ -11836,7 +11836,7 @@ function showScanReviewModal(dataUrl, result, remaining) {
       + '<div style="font-size:10px;font-weight:900;color:rgba(34,197,94,0.7);text-transform:uppercase;margin-bottom:4px;">💰 '+(al==='zh'?'市場參考價':'EST. MARKET PRICE')+'</div>'
       + '<div style="display:flex;align-items:baseline;gap:8px;">'
       + '<span style="font-size:22px;font-weight:900;color:#4ade80;">'+getEstimatedPrice(scan.game, scan.rarity, scan.condition)+'</span>'
-      + '<span style="font-size:11px;color:rgba(255,255,255,0.4);">'+(al==='zh'?'參考數據':'reference only')+'</span>'
+      + '<span style="font-size:11px;color:var(--text-muted);">'+(al==='zh'?'參考數據':'reference only')+'</span>'
       + '</div></div>'
       // Trade toggle + asking price
       + '<div style="border-radius:12px;background:rgba(255,255,255,0.05);border:1.5px solid '+(scan.tradeable?'rgba(59,130,246,0.4)':'rgba(255,255,255,0.1)')+';">'
@@ -11851,7 +11851,7 @@ function showScanReviewModal(dataUrl, result, remaining) {
           + '<span style="font-size:16px;font-weight:900;color:#60A5FA;">'+getUserCurrency().symbol+'</span>'
           + '<input id="scan-asking-price" type="text" inputmode="decimal" pattern="[0-9]*\\.?[0-9]*" placeholder="0.00" value="'+(scan.askingPrice||'')+'" oninput="this.value=this.value.replace(/[^0-9.]/g,\'\');scan_state.askingPrice=this.value" style="flex:1;padding:10px 4px;background:transparent;border:none;color:#fff;font-family:Nunito,sans-serif;font-size:18px;font-weight:900;outline:none;box-sizing:border-box;min-width:0;" />'
           + '</div>'
-          + '<div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:6px;">'+(al==='zh'?'留空則顯示「面議」':'Leave blank to show "Price on request"')+'</div>'
+          + '<div style="font-size:10px;color:var(--text-dim);margin-top:6px;">'+(al==='zh'?'留空則顯示「面議」':'Leave blank to show "Price on request"')+'</div>'
           + '</div>'
         : '')
       + '</div>'
@@ -11988,7 +11988,7 @@ function bvHandleUploadWithScan(input) {
   modal.innerHTML = '<div style="background:#1E2240;border-radius:20px 20px 0 0;border:1px solid rgba(139,92,246,0.3);width:100%;padding:24px;">'
     + '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 18px;"></div>'
     + '<div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:6px;">' + (titleL[al]||titleL.en) + '</div>'
-    + '<div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:20px;">' + (subL[al]||subL.en) + '</div>'
+    + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">' + (subL[al]||subL.en) + '</div>'
     + '<div style="display:flex;gap:8px;margin-bottom:8px;">'
     + '<button onclick="closeScanChoiceAndScan()" style="flex:1;padding:13px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;">' + (scanL[al]||scanL.en) + '</button>'
     + '</div>'
@@ -12169,7 +12169,7 @@ function showGraceBanner() {
   banner.innerHTML = '<span style="font-size:20px;">' + icon + '</span>'
     + '<div style="flex:1;">'
     + '<div style="font-size:12px;font-weight:900;color:' + (isUrgent?'#f87171':'#fbbf24') + ';">' + (countMsg[al]||countMsg.en) + '</div>'
-    + '<div style="font-size:10px;color:rgba(255,255,255,0.5);margin-top:1px;">' + (daysMsg[al]||daysMsg.en) + '</div>'
+    + '<div style="font-size:10px;color:var(--text-muted);margin-top:1px;">' + (daysMsg[al]||daysMsg.en) + '</div>'
     + '</div>'
     + '<div style="display:flex;flex-direction:column;gap:4px;">'
     + '<button onclick="bvGoSubscription()" style="padding:5px 9px;border-radius:7px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:10px;font-weight:800;cursor:pointer;">' + (upgradeL[al]||upgradeL.en) + '</button>'
@@ -12233,11 +12233,11 @@ function showChooseBindersModal() {
         + '<div style="width:32px;height:32px;border-radius:8px;background:'+b.bg+';display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;">' + b.emoji + '</div>'
         + '<div style="flex:1;min-width:0;">'
         + '<div style="font-size:12px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + b.name + '</div>'
-        + '<div style="font-size:10px;color:rgba(255,255,255,0.4);">' + (b.cards||0) + (al==='zh'?' 張卡':' cards')
+        + '<div style="font-size:10px;color:var(--text-muted);">' + (b.cards||0) + (al==='zh'?' 張卡':' cards')
         + (daysLeft!==null ? ' · <span style="color:'+(isUrgent?'#f87171':'#fbbf24')+'">⏱ '+(al==='zh'?daysLeft+' 天':daysLeft+' days left')+'</span>' : '')
         + '</div></div>'
         // Export button
-        + '<button onclick="event.stopPropagation();exportBinderPDF(this.dataset.bid)" data-bid="'+b.id+'" style="padding:3px 7px;border-radius:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.4);font-size:9px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;">' + (exportL[al]||exportL.en) + '</button>'
+        + '<button onclick="event.stopPropagation();exportBinderPDF(this.dataset.bid)" data-bid="'+b.id+'" style="padding:3px 7px;border-radius:6px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-size:9px;font-weight:800;cursor:pointer;font-family:Nunito,sans-serif;">' + (exportL[al]||exportL.en) + '</button>'
         + '</div>';
     }).join('');
 
@@ -12246,7 +12246,7 @@ function showChooseBindersModal() {
       + '<div style="padding:20px 20px 14px;border-bottom:1px solid rgba(255,255,255,0.07);flex-shrink:0;">'
       + '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 16px;"></div>'
       + '<div style="font-size:16px;font-weight:900;color:#fff;margin-bottom:6px;">🔒 ' + (titleL[al]||titleL.en) + '</div>'
-      + '<div style="font-size:12px;color:rgba(255,255,255,0.45);line-height:1.5;">' + (subL[al]||subL.en) + '</div>'
+      + '<div style="font-size:12px;color:var(--text-muted);line-height:1.5;">' + (subL[al]||subL.en) + '</div>'
       // Selection counter
       + '<div style="margin-top:10px;padding:6px 12px;border-radius:8px;background:rgba(255,255,255,0.05);display:flex;align-items:center;gap:8px;">'
       + '<div style="font-size:12px;font-weight:800;color:'+(atLimit?'#fbbf24':'#60A5FA')+';">' + selCount + ' / ' + limit + ' ' + (al==='zh'?'已選擇':'selected') + '</div>'
@@ -12257,7 +12257,7 @@ function showChooseBindersModal() {
       + '<div style="overflow-y:auto;flex:1;padding:14px 20px;" id="choose-binders-list">' + listHTML + '</div>'
       // Footer
       + '<div style="padding:12px 20px;border-top:1px solid rgba(255,255,255,0.07);display:flex;gap:8px;flex-shrink:0;">'
-      + '<button onclick="closeChooseModal()" style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.5);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">' + (cancelL[al]||cancelL.en) + '</button>'
+      + '<button onclick="closeChooseModal()" style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">' + (cancelL[al]||cancelL.en) + '</button>'
       + '<button onclick="confirmChosenBinders()" style="flex:1;padding:10px;border-radius:10px;background:'+(atLimit?'#3B82F6':'rgba(255,255,255,0.08)')+';border:none;color:'+(atLimit?'white':'rgba(255,255,255,0.4)')+';font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;">' + (confirmL[al]||confirmL.en) + '</button>'
       + '</div>'
       + '</div>';
@@ -12321,7 +12321,7 @@ function exportBinderPDF(bid) {
       priceDisplay = (!isNaN(numP) && numP > 0) ? cur.symbol + numP.toFixed(cur.dec) : (al2==='zh'?'面議':'On request');
     }
     return '<tr>'
-      + '<td style="color:#888;font-size:11px;">'+(i+1)+'</td>'
+      + '<td style="color:var(--text-muted);font-size:11px;">'+(i+1)+'</td>'
       + '<td><strong>'+(c.name||'—')+'</strong></td>'
       + '<td>'+(gameMap[c.game]||c.game||'—')+'</td>'
       + '<td>'+(c.set||'—')+'</td>'
@@ -12336,7 +12336,7 @@ function exportBinderPDF(bid) {
     + '<title>'+binderName+' — Binderverse</title>'
     + '<style>'
     + 'body{font-family:system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 20px;color:#1a1a2e;}'
-    + 'h1{font-size:24px;font-weight:900;margin-bottom:4px;}h2{font-size:13px;color:#666;font-weight:400;margin-bottom:24px;}'
+    + 'h1{font-size:24px;font-weight:900;margin-bottom:4px;}h2{font-size:13px;color:var(--text-muted);font-weight:400;margin-bottom:24px;}'
     + 'table{width:100%;border-collapse:collapse;font-size:13px;}'
     + 'th{background:#1a1a2e;color:#fff;padding:8px 10px;text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:0.05em;}'
     + 'td{padding:8px 10px;border-bottom:1px solid #e8e8f0;vertical-align:middle;}'
@@ -12404,13 +12404,13 @@ function showLockedBinderModal(binder) {
     + '<div style="width:48px;height:48px;border-radius:12px;background:'+binder.bg+';display:inline-flex;align-items:center;justify-content:center;font-size:24px;">'+binder.emoji+'</div>'
     + '<div style="font-size:14px;font-weight:900;color:#fff;margin-top:6px;">'+binder.name+'</div>'
     + '</div>'
-    + '<div style="font-size:12px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:12px;line-height:1.5;">' + ((bodyL[al]||bodyL.en)) + '</div>'
+    + '<div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:12px;line-height:1.5;">' + ((bodyL[al]||bodyL.en)) + '</div>'
     + '<div style="padding:8px 12px;border-radius:8px;background:'+(isUrgent?'rgba(239,68,68,0.1)':'rgba(251,191,36,0.1)')+';border:1px solid '+(isUrgent?'rgba(239,68,68,0.3)':'rgba(251,191,36,0.3)')+';text-align:center;font-size:11px;font-weight:800;color:'+(isUrgent?'#f87171':'#fbbf24')+';margin-bottom:16px;">' + (daysL[al]||daysL.en) + '</div>'
     + '<div style="display:flex;flex-direction:column;gap:8px;">'
     + '<button onclick="closeLockedAndSubscribe()" style="width:100%;padding:12px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:white;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;cursor:pointer;">' + (upgradeL[al]||upgradeL.en) + '</button>'
     + '<button onclick="closeLockedAndChoose()" style="width:100%;padding:10px;border-radius:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.6);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">' + (chooseL[al]||chooseL.en) + '</button>'
-    + '<button onclick="closeLockedAndExport()" style="width:100%;padding:10px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:rgba(255,255,255,0.4);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">' + (exportL[al]||exportL.en) + '</button>'
-    + '<button onclick="closeLockedModal()" style="width:100%;padding:8px;border-radius:12px;background:none;border:none;color:rgba(255,255,255,0.25);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">' + (al==='zh'?'關閉':'Close') + '</button>'
+    + '<button onclick="closeLockedAndExport()" style="width:100%;padding:10px;border-radius:12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">' + (exportL[al]||exportL.en) + '</button>'
+    + '<button onclick="closeLockedModal()" style="width:100%;padding:8px;border-radius:12px;background:none;border:none;color:var(--text-dim);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">' + (al==='zh'?'關閉':'Close') + '</button>'
     + '</div>'
     + '</div>';
 
@@ -12658,7 +12658,7 @@ function showCurrencyPicker() {
   modal.innerHTML = '<div style="background:#1E2240;border-radius:20px 20px 0 0;border:1px solid rgba(255,255,255,0.1);width:100%;padding:20px;max-height:80vh;overflow-y:auto;">'
     +'<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 16px;"></div>'
     +'<div style="font-size:15px;font-weight:900;color:#fff;margin-bottom:4px;">🌍 '+(al==='zh'?'選擇貨幣':'Select Currency')+'</div>'
-    +'<div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:16px;">'+(al==='zh'?'所有價格均以港幣（HKD）結算，換算僅供參考':'All prices billed in HKD. Other currencies are approximate.')+'</div>'
+    +'<div style="font-size:11px;color:var(--text-muted);margin-bottom:16px;">'+(al==='zh'?'所有價格均以港幣（HKD）結算，換算僅供參考':'All prices billed in HKD. Other currencies are approximate.')+'</div>'
     +list
     +'</div>';
   
@@ -12792,8 +12792,8 @@ function confirmDeleteBinder(bid, name) {
   modal.innerHTML = '<div style="background:#1E2240;border-radius:20px;border:1px solid rgba(239,68,68,0.3);width:100%;max-width:380px;padding:24px;">'
     +'<div style="text-align:center;font-size:40px;margin-bottom:12px;">🗑️</div>'
     +'<div style="font-size:16px;font-weight:900;color:#fff;text-align:center;margin-bottom:12px;">'+(titleL[al]||titleL.en)+'</div>'
-    +'<div style="font-size:13px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:6px;font-weight:800;">'+(b?b.name:'')+'</div>'
-    +'<div style="font-size:12px;color:rgba(255,255,255,0.4);text-align:center;margin-bottom:20px;line-height:1.5;">'
+    +'<div style="font-size:13px;color:var(--text-muted);text-align:center;margin-bottom:6px;font-weight:800;">'+(b?b.name:'')+'</div>'
+    +'<div style="font-size:12px;color:var(--text-muted);text-align:center;margin-bottom:20px;line-height:1.5;">'
     +(al==='zh'?'此相冊內的 '+cards+' 張卡片照片將被永久刪除':''+cards+' card photo'+(cards!==1?'s':'')+' will be permanently deleted')
     +'</div>'
     +'<div style="display:flex;flex-direction:column;gap:8px;">'
@@ -13146,7 +13146,7 @@ function openCardDetail(cardIndex, binderId) {
     priceVal.style.cssText = 'font-size:28px;font-weight:900;color:#60A5FA;letter-spacing:-0.02em;';
     priceVal.textContent = askingPriceStr;
     var priceSub = document.createElement('div');
-    priceSub.style.cssText = 'font-size:10px;color:rgba(255,255,255,0.3);margin-top:3px;';
+    priceSub.style.cssText = 'font-size:10px;color:var(--text-dim);margin-top:3px;';
     priceSub.textContent = al==='zh' ? '賣家叫價 · 可議價' : 'Seller asking price · Negotiable';
     priceBox.appendChild(priceLabel);
     priceBox.appendChild(priceVal);
@@ -13294,11 +13294,11 @@ function bvCDEdit() {
       + '<div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,0.09);position:sticky;top:0;background:#2C3260;z-index:1;display:flex;align-items:center;justify-content:space-between;">'
       + '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);position:absolute;top:10px;left:50%;transform:translateX(-50%);"></div>'
       + '<div style="font-size:15px;font-weight:900;color:#fff;margin-top:8px;">✏️ '+(al==='zh'?'編輯卡牌資料':'Edit Card')+'</div>'
-      + '<button onclick="document.getElementById(\'bvcd-edit-sheet\').remove()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-size:16px;font-weight:900;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">✕</button>'
+      + '<button onclick="document.getElementById(\'bvcd-edit-sheet\').remove()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--text-muted);font-size:16px;font-weight:900;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">✕</button>'
       + '</div>'
       + '<div style="padding:18px 20px 30px;display:flex;flex-direction:column;gap:14px;">'
       // Game
-      + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:7px;">'+(al==='zh'?'遊戲':'GAME')+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+gameChips+'</div></div>'
+      + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px;">'+(al==='zh'?'遊戲':'GAME')+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+gameChips+'</div></div>'
       // Name
       + '<div><div style="font-size:10px;font-weight:900;color:rgba(139,92,246,0.8);text-transform:uppercase;margin-bottom:6px;">✦ '+(al==='zh'?'卡牌名稱':'CARD NAME')+'</div>'
       + '<input id="bvce-name" value="'+es.name.replace(/"/g,'&quot;')+'" oninput="window._bvES.name=this.value" style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(139,92,246,0.35);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;outline:none;box-sizing:border-box;"/></div>'
@@ -13313,12 +13313,12 @@ function bvCDEdit() {
       + '<button onclick="window._bvES.graded=!window._bvES.graded;window.bvCDEditRender()" style="width:44px;height:24px;border-radius:12px;background:'+(es.graded?'#D4001F':'rgba(255,255,255,0.15)')+';position:relative;border:none;cursor:pointer;flex-shrink:0;"><div style="position:absolute;top:3px;'+(es.graded?'right':'left')+':3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div></button>'
       + '<div>'
       + '<div style="font-size:13px;font-weight:900;color:'+(es.graded?'#fca5a5':'rgba(255,255,255,0.5)')+';">🏆 '+(al==='zh'?'鑑定卡（已入盒）':'Graded Card (in slab)')+'</div>'
-      + '<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:1px;">'+(al==='zh'?'PSA / BGS / CGC / SGC 等':'PSA / BGS / CGC / SGC etc.')+'</div>'
+      + '<div style="font-size:10px;color:var(--text-dim);margin-top:1px;">'+(al==='zh'?'PSA / BGS / CGC / SGC 等':'PSA / BGS / CGC / SGC etc.')+'</div>'
       + '</div></div>'
       + (es.graded ? (
           // Grading company selector
           '<div style="margin-bottom:10px;">'
-          + '<div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'鑑定公司':'GRADING COMPANY')+'</div>'
+          + '<div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'鑑定公司':'GRADING COMPANY')+'</div>'
           + '<div style="display:flex;flex-wrap:wrap;gap:5px;">'
           + ['PSA','BGS','CGC','SGC','ACE','CSG'].map(function(gc){
               var gcColors = {PSA:'#D4001F',BGS:'#1A6CC8',CGC:'#007A3D',SGC:'#FF6600',ACE:'#7C3AED',CSG:'#0891B2'};
@@ -13328,15 +13328,15 @@ function bvCDEdit() {
           + '</div></div>'
           // Grade input
           + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
-          + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'評分':'GRADE')+'</div>'
+          + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'評分':'GRADE')+'</div>'
           + '<input id="bvce-grade" type="text" value="'+es.grade.replace(/"/g,'&quot;')+'" oninput="window._bvES.grade=this.value" placeholder="e.g. 9.5, 10, A" style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(212,0,31,0.35);color:#fff;font-family:Nunito,sans-serif;font-size:16px;font-weight:900;outline:none;box-sizing:border-box;"/></div>'
-          + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'認證編號（選填）':'CERT # (optional)')+'</div>'
+          + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'認證編號（選填）':'CERT # (optional)')+'</div>'
           + '<input id="bvce-cert" type="text" value="'+es.cert_number.replace(/"/g,'&quot;')+'" oninput="window._bvES.cert_number=this.value" placeholder="e.g. 12345678" style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;outline:none;box-sizing:border-box;"/></div>'
           + '</div>'
         ) : '')
       + '</div>'
       // Condition — hidden when graded (irrelevant for slabbed cards)
-      + (!es.graded ? '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:7px;">'+(al==='zh'?'品相':'CONDITION')+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+condChips+'</div></div>' : '')
+      + (!es.graded ? '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:7px;">'+(al==='zh'?'品相':'CONDITION')+'</div><div style="display:flex;flex-wrap:wrap;gap:5px;">'+condChips+'</div></div>' : '')
       // Trade toggle
       + '<div style="border-radius:12px;background:rgba(255,255,255,0.05);border:1.5px solid '+(es.tradeable?'rgba(59,130,246,0.4)':'rgba(255,255,255,0.12)')+';padding:12px 14px;">'
       + '<div style="display:flex;align-items:center;gap:10px;">'
@@ -13347,7 +13347,7 @@ function bvCDEdit() {
         + '<span style="font-size:14px;font-weight:900;color:#60A5FA;">'+cur.symbol+'</span>'
         + '<input id="bvce-price" type="text" inputmode="decimal" value="'+es.askingPrice+'" oninput="this.value=this.value.replace(/[^0-9.]/g,\'\');window._bvES.askingPrice=this.value" placeholder="0.00" style="flex:1;padding:8px 4px;background:transparent;border:none;color:#fff;font-family:Nunito,sans-serif;font-size:16px;font-weight:900;outline:none;"/>'
         + '</div>'
-        + '<div style="font-size:10px;color:rgba(255,255,255,0.35);margin-top:4px;">'+(al==='zh'?'留空則顯示「面議」':'Leave blank to show "Price on request"')+'</div>'
+        + '<div style="font-size:10px;color:var(--text-dim);margin-top:4px;">'+(al==='zh'?'留空則顯示「面議」':'Leave blank to show "Price on request"')+'</div>'
         : '')
       + '</div>'
       // Sold toggle
@@ -13355,7 +13355,7 @@ function bvCDEdit() {
       + '<button onclick="window._bvES.sold=!window._bvES.sold;window.bvCDEditRender()" style="width:44px;height:24px;border-radius:12px;background:'+(es.sold?'#EF4444':'rgba(255,255,255,0.15)')+';position:relative;border:none;cursor:pointer;flex-shrink:0;"><div style="position:absolute;top:3px;'+(es.sold?'right':'left')+':3px;width:18px;height:18px;border-radius:50%;background:white;box-shadow:0 1px 4px rgba(0,0,0,0.3);"></div></button>'
       + '<div>'
       + '<div style="font-size:13px;font-weight:900;color:'+(es.sold?'#f87171':'rgba(255,255,255,0.5)')+';">🔴 '+(al==='zh'?'標記為已售出':'Mark as Sold')+'</div>'
-      + '<div style="font-size:10px;color:rgba(255,255,255,0.3);margin-top:2px;">'+(es.sold ? (al==='zh'?'此卡已顯示「已售出」標記':'Card is showing SOLD badge') : (al==='zh'?'開啟後會在相冊上顯示「已售出」':'Turns on SOLD badge on the binder grid'))+'</div>'
+      + '<div style="font-size:10px;color:var(--text-dim);margin-top:2px;">'+(es.sold ? (al==='zh'?'此卡已顯示「已售出」標記':'Card is showing SOLD badge') : (al==='zh'?'開啟後會在相冊上顯示「已售出」':'Turns on SOLD badge on the binder grid'))+'</div>'
       + '</div>'
       + '</div>'
       + '<button onclick="document.getElementById(\'bvcd-edit-sheet\').remove()" style="flex:1;padding:13px;border-radius:13px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">'+(al==='zh'?'取消':'Cancel')+'</button>'
@@ -13482,32 +13482,32 @@ function bvCDMsg() {
     + '<div style="padding:14px 20px 12px;border-bottom:1px solid rgba(255,255,255,0.09);position:sticky;top:0;background:#2C3260;z-index:1;display:flex;align-items:center;justify-content:space-between;">'
     + '<div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.2);position:absolute;top:8px;left:50%;transform:translateX(-50%);"></div>'
     + '<div style="font-size:15px;font-weight:900;color:#fff;margin-top:6px;">💬 '+(al==='zh'?'詢問交易':'Ask to Trade')+'</div>'
-    + '<button onclick="document.getElementById(\'bvcd-msg-sheet\').remove()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.5);font-size:16px;font-weight:900;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">✕</button>'
+    + '<button onclick="document.getElementById(\'bvcd-msg-sheet\').remove()" style="background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--text-muted);font-size:16px;font-weight:900;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;">✕</button>'
     + '</div>'
     + '<div style="padding:18px 20px 28px;display:flex;flex-direction:column;gap:13px;">'
     // Card reference mini card
     + '<div style="display:flex;gap:12px;align-items:center;padding:12px;background:rgba(255,255,255,0.05);border-radius:12px;border:1px solid rgba(255,255,255,0.1);">'
     + cardPreview
     + '<div style="flex:1;min-width:0;">'
-    + '<div style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:3px;">'+(al==='zh'?'詢問卡牌':'Card Reference')+'</div>'
+    + '<div style="font-size:9px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px;">'+(al==='zh'?'詢問卡牌':'Card Reference')+'</div>'
     + '<div style="font-size:14px;font-weight:900;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+(m.name||'—')+'</div>'
-    + '<div style="font-size:11px;color:rgba(255,255,255,0.45);margin-top:2px;">'+(m.set||'')+(ap?' · '+cur.symbol+ap:'')+'</div>'
+    + '<div style="font-size:11px;color:var(--text-muted);margin-top:2px;">'+(m.set||'')+(ap?' · '+cur.symbol+ap:'')+'</div>'
     + '</div></div>'
     // To / From — read-only display
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
     + '<div style="padding:10px 12px;background:rgba(255,255,255,0.05);border-radius:10px;border:1px solid rgba(255,255,255,0.1);">'
-    + '<div style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:3px;">To</div>'
+    + '<div style="font-size:9px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px;">To</div>'
     + '<div style="font-size:13px;font-weight:900;color:#60A5FA;">@'+ownerName+'</div>'
     + '</div>'
     + '<div style="padding:10px 12px;background:rgba(255,255,255,0.05);border-radius:10px;border:1px solid rgba(255,255,255,0.1);">'
-    + '<div style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:3px;">From</div>'
+    + '<div style="font-size:9px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:3px;">From</div>'
     + '<div style="font-size:13px;font-weight:900;color:#c4b5fd;">@'+myName+'</div>'
     + '</div></div>'
     // Subject — editable
-    + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'主旨':'Subject')+'</div>'
+    + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'主旨':'Subject')+'</div>'
     + '<input id="bvcm-subject" value="'+subject.replace(/"/g,'&quot;')+'" style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:12px;font-weight:700;outline:none;box-sizing:border-box;"/></div>'
     // Message body
-    + '<div><div style="font-size:10px;font-weight:900;color:rgba(255,255,255,0.4);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'訊息內容':'Message')+'</div>'
+    + '<div><div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;margin-bottom:6px;">'+(al==='zh'?'訊息內容':'Message')+'</div>'
     + '<textarea id="bvcm-body" rows="5" style="width:100%;padding:12px;border-radius:10px;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:700;outline:none;resize:vertical;box-sizing:border-box;line-height:1.5;">'+defaultMsg+'</textarea></div>'
     // Send button
     + '<button onclick="bvCDMsgSend(\''+ownerName+'\',\''+bid+'\','+idx+')" style="width:100%;padding:14px;border-radius:13px;background:linear-gradient(135deg,#059669,#10B981);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;cursor:pointer;box-shadow:0 4px 16px rgba(16,185,129,0.35);">✉️ '+(al==='zh'?'發送訊息':'Send Message')+'</button>'
@@ -13841,7 +13841,7 @@ function bvEnlargeCard(cardIndex) {
 
   // Zoom hint label
   var hint = document.createElement('div');
-  hint.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);pointer-events:none;';
+  hint.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;color:var(--text-muted);pointer-events:none;';
   hint.textContent = '⟲ Scroll to zoom · Drag to pan · ⛶ Full page';
 
   lb.appendChild(controls);
@@ -15720,7 +15720,7 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     // Inline service worker via blob
     const swCode = `
-      const CACHE = 'binderverse-v28';
+      const CACHE = 'binderverse-v29';
       self.addEventListener('install', e => {
         e.waitUntil(caches.open(CACHE).then(c => c.addAll(['./', './index.html'])).catch(()=>{}));
         self.skipWaiting();
@@ -15793,7 +15793,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
     <!-- QR Code (uses qrcode.js from CDN) -->
     <div class="share-qr">
       <div class="share-qr-box" id="share-qr-box">
-        <div style="font-size:11px;color:#666;text-align:center;padding:8px">QR Code<br>loading…</div>
+        <div style="font-size:11px;color:var(--text-muted);text-align:center;padding:8px">QR Code<br>loading…</div>
       </div>
     </div>
 
@@ -15819,9 +15819,9 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
       <div id="bd-thumb" style="width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;background:linear-gradient(135deg,#1a1f40,#2d1b5e)">✨</div>
       <div style="flex:1;min-width:0;">
         <div id="bd-title" style="font-size:15px;font-weight:900;color:#fff;">相冊名稱</div>
-        <div id="bd-meta" style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:2px;">0 cards</div>
+        <div id="bd-meta" style="font-size:11px;color:var(--text-muted);margin-top:2px;">0 cards</div>
       </div>
-      <button onclick="closeBinderDetail()" style="background:none;border:none;color:rgba(255,255,255,0.4);font-size:20px;cursor:pointer;padding:4px 8px;">✕</button>
+      <button onclick="closeBinderDetail()" style="background:none;border:none;color:var(--text-muted);font-size:20px;cursor:pointer;padding:4px 8px;">✕</button>
     </div>
 
     <!-- Scrollable body -->
@@ -15835,7 +15835,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
       <div id="card-upload-zone" style="border:2px dashed rgba(59,130,246,0.4);border-radius:12px;padding:28px 16px;text-align:center;cursor:pointer;background:rgba(59,130,246,0.05);margin-bottom:12px;" onclick="event.stopPropagation()">
         <div style="font-size:32px;margin-bottom:8px;">🃏</div>
         <div class="t" style="font-size:13px;font-weight:800;color:#fff;margin-bottom:4px;" data-zh="新增卡片到相冊" data-en="Add Cards to Binder" data-zh-cn="添加卡片" data-ja="カードを追加" data-ko="카드 추가" data-fr="Ajouter cartes" data-es="Agregar cartas" data-th="เพิ่มการ์ด" data-id="Tambah Kartu">新增卡片到相冊</div>
-        <div class="t" style="font-size:11px;color:rgba(255,255,255,0.45);margin-bottom:12px;" data-zh="從圖庫選擇或拍照" data-en="Choose from library or take a photo" data-zh-cn="从相册选择或拍照" data-ja="ライブラリまたは撮影" data-ko="라이브러리 또는 촬영" data-fr="Bibliothèque ou photo" data-es="Biblioteca o foto" data-th="เลือกหรือถ่ายรูป" data-id="Pilih atau foto">從圖庫選擇或拍照</div>
+        <div class="t" style="font-size:11px;color:var(--text-muted);margin-bottom:12px;" data-zh="從圖庫選擇或拍照" data-en="Choose from library or take a photo" data-zh-cn="从相册选择或拍照" data-ja="ライブラリまたは撮影" data-ko="라이브러리 또는 촬영" data-fr="Bibliothèque ou photo" data-es="Biblioteca o foto" data-th="เลือกหรือถ่ายรูป" data-id="Pilih atau foto">從圖庫選擇或拍照</div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
           <button onclick="event.stopPropagation();document.getElementById('card-file-input').click()" style="padding:8px 16px;border-radius:9px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">
             🖼️ <span class="t" data-zh="選擇圖片" data-en="Choose Photos" data-zh-cn="选择图片" data-ja="写真を選択" data-ko="사진 선택" data-fr="Choisir" data-es="Elegir" data-th="เลือกรูป" data-id="Pilih">選擇圖片</span>
@@ -15910,7 +15910,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
             <div id="bv-cover-name" style="font-size:22px;font-weight:900;color:#fff;text-shadow:0 2px 12px rgba(0,0,0,0.9);line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Binder</div>
             <div style="display:flex;align-items:center;gap:8px;margin-top:3px;">
               <div id="bv-cover-meta" style="font-size:12px;color:rgba(255,255,255,0.55);">0 cards</div>
-              <div id="bv-theme-label" style="font-size:10px;color:rgba(255,255,255,0.35);font-style:italic;" ></div>
+              <div id="bv-theme-label" style="font-size:10px;color:var(--text-dim);font-style:italic;" ></div>
             </div>
           </div>
         </div>
@@ -15993,7 +15993,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
         style="padding:6px 12px;border-radius:10px;background:var(--panel,#13162A);border:1.5px solid rgba(128,128,128,0.3);color:var(--white,#fff);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;outline:none;appearance:none;-webkit-appearance:none;padding-right:28px;">
       </select>
     </div>
-    <div id="sub-currency-note" style="display:none;font-size:10px;color:rgba(255,255,255,0.3);margin-bottom:8px;text-align:center;"></div>
+    <div id="sub-currency-note" style="display:none;font-size:10px;color:var(--text-dim);margin-bottom:8px;text-align:center;"></div>
     <div class="sub-toggle">
       <button class="sub-toggle-btn on" id="sub-monthly-btn" onclick="subSetBilling('monthly')">
         <span class="t" data-zh="月付" data-en="Monthly" data-zh-cn="月付" data-ja="月払い" data-ko="월결제" data-fr="Mensuel" data-es="Mensual" data-th="รายเดือน" data-id="Bulanan">月付</span>
@@ -16183,7 +16183,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
         </div>
       </div>
     </div>
-    <div style="margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.04);font-size:10px;color:rgba(255,255,255,0.35);line-height:1.6;">
+    <div style="margin-top:12px;padding:10px 12px;border-radius:8px;background:rgba(255,255,255,0.04);font-size:10px;color:var(--text-dim);line-height:1.6;">
       💡 <span class="t" data-zh="存檔 ≠ 鎖定。存檔是因閒置而自動壓縮，隨時可恢復；鎖定是因降級超出上限，需要升級或選擇保留才能解鎖，且有 90 天刪除期限。" data-en="Archived ≠ Locked. Archived = auto-compressed due to inactivity, restore anytime. Locked = over tier limit after downgrade, requires upgrade or selection to unlock, with 90-day deletion deadline." data-zh-cn="存档≠锁定。存档因闲置自动压缩，随时可恢复；锁定因降级超限，需升级或选择才能解锁，有90天删除期限。" data-ja="アーカイブ≠ロック。アーカイブ＝非活動による自動圧縮、いつでも復元可能。ロック＝ダウングレード後の上限超過、アップグレードか選択が必要、90日削除期限あり。" data-ko="보관됨 ≠ 잠김. 보관됨 = 비활성으로 인한 자동 압축, 언제든 복원 가능. 잠김 = 다운그레이드 후 한도 초과, 업그레이드나 선택 필요, 90일 삭제 기한." data-fr="Archivé ≠ Verrouillé. Archivé = compressé automatiquement par inactivité, restaurable à tout moment. Verrouillé = dépassement de limite après rétrogradage, nécessite une mise à niveau ou une sélection, délai de suppression de 90 jours." data-es="Archivado ≠ Bloqueado. Archivado = comprimido automáticamente por inactividad, restaurable en cualquier momento. Bloqueado = exceso de límite tras degradación, requiere actualización o selección, plazo de eliminación de 90 días." data-th="เก็บถาวร ≠ ล็อก เก็บถาวร = บีบอัดอัตโนมัติเนื่องจากไม่ได้ใช้งาน กู้คืนได้ตลอดเวลา ล็อก = เกินขีดจำกัดหลังดาวน์เกรด ต้องอัปเกรดหรือเลือก มีกำหนดลบ 90 วัน" data-id="Diarsipkan ≠ Terkunci. Diarsipkan = dikompresi otomatis karena tidak aktif, dapat dipulihkan kapan saja. Terkunci = melebihi batas setelah downgrade, memerlukan upgrade atau pilihan, tenggat penghapusan 90 hari.">存檔 ≠ 鎖定。存檔是因閒置而自動壓縮，隨時可恢復；鎖定是因降級超出上限，需要升級或選擇保留才能解鎖，且有 90 天刪除期限。</span>
     </div>
   </div>
@@ -16206,7 +16206,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
       <span style="color:#fbbf24;font-weight:800;" class="t" data-zh="精英版" data-en="Elite" data-zh-cn="精英版">精英版</span>
       <span class="t" data-zh="— 12 個月後自動存檔" data-en="— Auto-archived after 12 months of inactivity" data-zh-cn="— 12个月后自动存档">— 12 個月後自動存檔</span>
     </div>
-    <div style="margin-top:10px;font-size:10px;color:rgba(255,255,255,0.3);line-height:1.6;" class="t" data-zh="📦 存檔 = 壓縮 + 唯讀，隨時點擊恢復。存檔前 7 天收到通知。🔒 鎖定（降級後超出上限）= 90 天後永久刪除，可升級或選擇保留解鎖。" data-en="📦 Archived = compressed + read-only, tap to restore anytime. 7-day warning before archiving. 🔒 Locked (downgrade over limit) = permanently deleted after 90 days, upgrade or choose to keep to unlock." data-zh-cn="📦 存档=压缩+只读，随时点击恢复。存档前7天通知。🔒 锁定（降级超限）=90天后永久删除，可升级或选择保留。" data-ja="📦 アーカイブ=圧縮+読み取り専用、タップでいつでも復元。7日前に通知。🔒 ロック（ダウングレード上限超過）=90日後に永久削除、アップグレードか選択で解除。" data-ko="📦 보관됨 = 압축+읽기전용, 탭하여 언제든 복원. 7일 전 알림. 🔒 잠김 (다운그레이드 한도 초과) = 90일 후 영구 삭제, 업그레이드 또는 선택하여 해제." data-fr="📦 Archivé = compressé + lecture seule, tapez pour restaurer. Avertissement 7 jours avant. 🔒 Verrouillé (rétrogradage limite dépassée) = suppression définitive après 90 jours." data-es="📦 Archivado = comprimido + solo lectura, toca para restaurar. Aviso 7 días antes. 🔒 Bloqueado (degradación límite superada) = eliminación permanente después de 90 días." data-th="📦 เก็บถาวร = บีบอัด + อ่านได้อย่างเดียว แตะเพื่อกู้คืนได้ตลอดเวลา แจ้งเตือนล่วงหน้า 7 วัน 🔒 ล็อก (ดาวน์เกรดเกินขีดจำกัด) = ลบถาวรหลัง 90 วัน" data-id="📦 Diarsipkan = dikompresi + hanya baca, ketuk untuk memulihkan. Peringatan 7 hari sebelumnya. 🔒 Terkunci (downgrade melebihi batas) = dihapus permanen setelah 90 hari.">📦 存檔 = 壓縮 + 唯讀，隨時點擊恢復。存檔前 7 天收到通知。🔒 鎖定（降級後超出上限）= 90 天後永久刪除，可升級或選擇保留解鎖。</div>
+    <div style="margin-top:10px;font-size:10px;color:var(--text-dim);line-height:1.6;" class="t" data-zh="📦 存檔 = 壓縮 + 唯讀，隨時點擊恢復。存檔前 7 天收到通知。🔒 鎖定（降級後超出上限）= 90 天後永久刪除，可升級或選擇保留解鎖。" data-en="📦 Archived = compressed + read-only, tap to restore anytime. 7-day warning before archiving. 🔒 Locked (downgrade over limit) = permanently deleted after 90 days, upgrade or choose to keep to unlock." data-zh-cn="📦 存档=压缩+只读，随时点击恢复。存档前7天通知。🔒 锁定（降级超限）=90天后永久删除，可升级或选择保留。" data-ja="📦 アーカイブ=圧縮+読み取り専用、タップでいつでも復元。7日前に通知。🔒 ロック（ダウングレード上限超過）=90日後に永久削除、アップグレードか選択で解除。" data-ko="📦 보관됨 = 압축+읽기전용, 탭하여 언제든 복원. 7일 전 알림. 🔒 잠김 (다운그레이드 한도 초과) = 90일 후 영구 삭제, 업그레이드 또는 선택하여 해제." data-fr="📦 Archivé = compressé + lecture seule, tapez pour restaurer. Avertissement 7 jours avant. 🔒 Verrouillé (rétrogradage limite dépassée) = suppression définitive après 90 jours." data-es="📦 Archivado = comprimido + solo lectura, toca para restaurar. Aviso 7 días antes. 🔒 Bloqueado (degradación límite superada) = eliminación permanente después de 90 días." data-th="📦 เก็บถาวร = บีบอัด + อ่านได้อย่างเดียว แตะเพื่อกู้คืนได้ตลอดเวลา แจ้งเตือนล่วงหน้า 7 วัน 🔒 ล็อก (ดาวน์เกรดเกินขีดจำกัด) = ลบถาวรหลัง 90 วัน" data-id="📦 Diarsipkan = dikompresi + hanya baca, ketuk untuk memulihkan. Peringatan 7 hari sebelumnya. 🔒 Terkunci (downgrade melebihi batas) = dihapus permanen setelah 90 hari.">📦 存檔 = 壓縮 + 唯讀，隨時點擊恢復。存檔前 7 天收到通知。🔒 鎖定（降級後超出上限）= 90 天後永久刪除，可升級或選擇保留解鎖。</div>
   </div>
 
 </main>
