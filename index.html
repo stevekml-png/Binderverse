@@ -4644,7 +4644,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v39 ✓';
+    v.textContent = 'Build v40 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4972,7 +4972,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v39</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v40</div>
   </footer>
 
 </main>
@@ -12606,24 +12606,24 @@ function faqToggle(i) {
 // Fixed local prices per tier (collector=tier1, elite=tier2)
 // Format: { symbol, collector_monthly, elite_monthly, decimals, thousands }
 var CURRENCIES = {
-  HK: { code:'HKD', symbol:'HK$', name:'Hong Kong Dollar', p1:68,    p2:128,    dec:0, thou:',' },
-  US: { code:'USD', symbol:'US$', name:'US Dollar',         p1:8.99,  p2:16.99,  dec:2, thou:',' },
-  GB: { code:'GBP', symbol:'£',   name:'British Pound',     p1:6.99,  p2:12.99,  dec:2, thou:',' },
-  EU: { code:'EUR', symbol:'€',   name:'Euro',              p1:7.99,  p2:15.99,  dec:2, thou:'.' },
-  JP: { code:'JPY', symbol:'¥',   name:'Japanese Yen',      p1:1399,  p2:2699,   dec:0, thou:',' },
-  KR: { code:'KRW', symbol:'₩',   name:'Korean Won',        p1:13499, p2:25299,  dec:0, thou:',' },
-  TW: { code:'TWD', symbol:'NT$', name:'New Taiwan Dollar', p1:279,   p2:519,    dec:0, thou:',' },
-  CN: { code:'CNY', symbol:'¥',   name:'Chinese Yuan',      p1:59,    p2:119,    dec:0, thou:',' },
-  SG: { code:'SGD', symbol:'S$',  name:'Singapore Dollar',  p1:11.90, p2:20.90,  dec:2, thou:',' },
-  AU: { code:'AUD', symbol:'A$',  name:'Australian Dollar', p1:12.99, p2:23.99,  dec:2, thou:',' },
-  TH: { code:'THB', symbol:'฿',   name:'Thai Baht',         p1:288,   p2:538,    dec:0, thou:',' },
-  ID: { code:'IDR', symbol:'Rp',  name:'Indonesian Rupiah', p1:158888,p2:258888, dec:0, thou:',' },
-  MY: { code:'MYR', symbol:'RM',  name:'Malaysian Ringgit', p1:35.99, p2:66.99,  dec:2, thou:',' },
-  CA: { code:'CAD', symbol:'C$',  name:'Canadian Dollar',    p1:12.99, p2:22.99,  dec:2, thou:',' },
-  FR: { code:'EUR', symbol:'€',   name:'Euro',              p1:7.99,  p2:15.99,  dec:2, thou:'.' },
-  DE: { code:'EUR', symbol:'€',   name:'Euro',              p1:7.99,  p2:15.99,  dec:2, thou:'.' },
-  IT: { code:'EUR', symbol:'€',   name:'Euro',              p1:7.99,  p2:15.99,  dec:2, thou:'.' },
-  ES: { code:'EUR', symbol:'€',   name:'Euro',              p1:7.99,  p2:15.99,  dec:2, thou:'.' },
+  HK: { code:'HKD', symbol:'HK$', name:'Hong Kong Dollar', r1:100,   r2:500,   r3:2000,  dec:0, thou:',' },
+  US: { code:'USD', symbol:'US$', name:'US Dollar',         r1:13,    r2:65,    r3:260,   dec:0, thou:',' },
+  GB: { code:'GBP', symbol:'£',   name:'British Pound',     r1:10,    r2:50,    r3:200,   dec:0, thou:',' },
+  EU: { code:'EUR', symbol:'€',   name:'Euro',              r1:11,    r2:55,    r3:220,   dec:0, thou:'.' },
+  JP: { code:'JPY', symbol:'¥',   name:'Japanese Yen',      r1:2000,  r2:10000, r3:40000, dec:0, thou:',' },
+  KR: { code:'KRW', symbol:'₩',   name:'Korean Won',        r1:18000, r2:90000, r3:360000,dec:0, thou:',' },
+  TW: { code:'TWD', symbol:'NT$', name:'New Taiwan Dollar', r1:400,   r2:2000,  r3:8000,  dec:0, thou:',' },
+  CN: { code:'CNY', symbol:'¥',   name:'Chinese Yuan',      r1:95,    r2:470,   r3:1880,  dec:0, thou:',' },
+  SG: { code:'SGD', symbol:'S$',  name:'Singapore Dollar',  r1:18,    r2:88,    r3:350,   dec:0, thou:',' },
+  AU: { code:'AUD', symbol:'A$',  name:'Australian Dollar', r1:20,    r2:100,   r3:400,   dec:0, thou:',' },
+  TH: { code:'THB', symbol:'฿',   name:'Thai Baht',         r1:460,   r2:2300,  r3:9200,  dec:0, thou:',' },
+  ID: { code:'IDR', symbol:'Rp',  name:'Indonesian Rupiah', r1:200000,r2:1000000,r3:4000000,dec:0,thou:',' },
+  MY: { code:'MYR', symbol:'RM',  name:'Malaysian Ringgit', r1:60,    r2:300,   r3:1200,  dec:0, thou:',' },
+  CA: { code:'CAD', symbol:'C$',  name:'Canadian Dollar',   r1:18,    r2:90,    r3:360,   dec:0, thou:',' },
+  FR: { code:'EUR', symbol:'€',   name:'Euro',              r1:11,    r2:55,    r3:220,   dec:0, thou:'.' },
+  DE: { code:'EUR', symbol:'€',   name:'Euro',              r1:11,    r2:55,    r3:220,   dec:0, thou:'.' },
+  IT: { code:'EUR', symbol:'€',   name:'Euro',              r1:11,    r2:55,    r3:220,   dec:0, thou:'.' },
+  ES: { code:'EUR', symbol:'€',   name:'Euro',              r1:11,    r2:55,    r3:220,   dec:0, thou:'.' },
 };
 
 // Country by language/profile preference
@@ -15013,16 +15013,15 @@ function updatePriceOptions() {
            || Object.values(CURRENCIES)[0];
 
   const sym = cur.symbol;
-  const p1  = cur.p1;
-  const p2  = cur.p2;
-  const fmt = (n) => cur.dec > 0 ? n.toFixed(cur.dec) : Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, cur.thou);
+  const fmt = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, cur.thou);
 
-  // Generate price range labels dynamically from p1/p2
+  // Generate price range labels from r1/r2/r3 card price tiers
+  const r1 = cur.r1, r2 = cur.r2, r3 = cur.r3;
   const ranges = [
-    { val: 'under_p1',   label: { zh:`${sym}${fmt(p1)} 以下`,      en:`Under ${sym}${fmt(p1)}`,      ja:`${sym}${fmt(p1)}未満`,    ko:`${sym}${fmt(p1)} 미만`,    fr:`Moins de ${sym}${fmt(p1)}`,  es:`Menos de ${sym}${fmt(p1)}`, th:`ต่ำกว่า ${sym}${fmt(p1)}`, id:`Di bawah ${sym}${fmt(p1)}` } },
-    { val: 'p1_to_p2',   label: { zh:`${sym}${fmt(p1)}–${fmt(p2)}`, en:`${sym}${fmt(p1)}–${fmt(p2)}`, ja:`${sym}${fmt(p1)}〜${fmt(p2)}`, ko:`${sym}${fmt(p1)}–${fmt(p2)}`, fr:`${sym}${fmt(p1)}–${fmt(p2)}`, es:`${sym}${fmt(p1)}–${fmt(p2)}`, th:`${sym}${fmt(p1)}–${fmt(p2)}`, id:`${sym}${fmt(p1)}–${fmt(p2)}` } },
-    { val: 'p2_to_p2x2', label: { zh:`${sym}${fmt(p2)}–${fmt(p2*2)}`, en:`${sym}${fmt(p2)}–${fmt(p2*2)}`, ja:`${sym}${fmt(p2)}〜${fmt(p2*2)}`, ko:`${sym}${fmt(p2)}–${fmt(p2*2)}`, fr:`${sym}${fmt(p2)}–${fmt(p2*2)}`, es:`${sym}${fmt(p2)}–${fmt(p2*2)}`, th:`${sym}${fmt(p2)}–${fmt(p2*2)}`, id:`${sym}${fmt(p2)}–${fmt(p2*2)}` } },
-    { val: 'over_p2x2',  label: { zh:`${sym}${fmt(p2*2)} 以上`,     en:`Over ${sym}${fmt(p2*2)}`,      ja:`${sym}${fmt(p2*2)}以上`,  ko:`${sym}${fmt(p2*2)} 이상`,  fr:`Plus de ${sym}${fmt(p2*2)}`, es:`Más de ${sym}${fmt(p2*2)}`, th:`มากกว่า ${sym}${fmt(p2*2)}`, id:`Di atas ${sym}${fmt(p2*2)}` } },
+    { val: 'under_r1', label: { zh:`${sym}${fmt(r1)} 以下`,       en:`Under ${sym}${fmt(r1)}`,      ja:`${sym}${fmt(r1)}未満`,     ko:`${sym}${fmt(r1)} 미만`,    fr:`Moins de ${sym}${fmt(r1)}`,  es:`Menos de ${sym}${fmt(r1)}`, th:`ต่ำกว่า ${sym}${fmt(r1)}`,  id:`Di bawah ${sym}${fmt(r1)}` } },
+    { val: 'r1_to_r2', label: { zh:`${sym}${fmt(r1)}–${fmt(r2)}`, en:`${sym}${fmt(r1)}–${fmt(r2)}`, ja:`${sym}${fmt(r1)}〜${fmt(r2)}`, ko:`${sym}${fmt(r1)}–${fmt(r2)}`, fr:`${sym}${fmt(r1)}–${fmt(r2)}`, es:`${sym}${fmt(r1)}–${fmt(r2)}`, th:`${sym}${fmt(r1)}–${fmt(r2)}`, id:`${sym}${fmt(r1)}–${fmt(r2)}` } },
+    { val: 'r2_to_r3', label: { zh:`${sym}${fmt(r2)}–${fmt(r3)}`, en:`${sym}${fmt(r2)}–${fmt(r3)}`, ja:`${sym}${fmt(r2)}〜${fmt(r3)}`, ko:`${sym}${fmt(r2)}–${fmt(r3)}`, fr:`${sym}${fmt(r2)}–${fmt(r3)}`, es:`${sym}${fmt(r2)}–${fmt(r3)}`, th:`${sym}${fmt(r2)}–${fmt(r3)}`, id:`${sym}${fmt(r2)}–${fmt(r3)}` } },
+    { val: 'over_r3',  label: { zh:`${sym}${fmt(r3)} 以上`,        en:`Over ${sym}${fmt(r3)}`,       ja:`${sym}${fmt(r3)}以上`,     ko:`${sym}${fmt(r3)} 이상`,    fr:`Plus de ${sym}${fmt(r3)}`,   es:`Más de ${sym}${fmt(r3)}`,  th:`มากกว่า ${sym}${fmt(r3)}`, id:`Di atas ${sym}${fmt(r3)}` } },
   ];
 
   const anyLbls = { zh:'任何價格','zh-cn':'任何价格',en:'Any Price',ja:'すべての価格',ko:'모든 가격',fr:'Tous prix',es:'Cualquier precio',th:'ราคาใดก็ได้',id:'Semua harga' };
