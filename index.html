@@ -4683,7 +4683,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v48 ✓';
+    v.textContent = 'Build v49 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5011,7 +5011,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v48</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v49</div>
   </footer>
 
 </main>
@@ -11326,10 +11326,40 @@ function subSetBilling(mode) {
   document.getElementById('sub-monthly-btn').classList.toggle('on', mode==='monthly');
   document.getElementById('sub-annual-btn').classList.toggle('on', mode==='annual');
   updatePriceDisplay(mode);
-  // Update period labels
+  // Update period labels with annual total
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
-  var periodL = {zh:mode==='monthly'?'每月':'每月（按年計費，省15%）',en:mode==='monthly'?'per month':'per month (billed annually, save 15%)','zh-cn':mode==='monthly'?'每月':'每月（按年计费）',ja:mode==='monthly'?'月あたり':'月あたり（年払い）',ko:mode==='monthly'?'월':'월 (연간 청구)',fr:mode==='monthly'?'par mois':'par mois (annuel)',es:mode==='monthly'?'por mes':'por mes (anual)',th:mode==='monthly'?'ต่อเดือน':'ต่อเดือน (จ่ายรายปี)',id:mode==='monthly'?'per bulan':'per bulan (tahunan)'};
-  document.querySelectorAll('.sub-period').forEach(function(el){ el.textContent = periodL[al]||periodL.en; });
+  var cur = getUserCurrency();
+  var prices = MONTHLY_PRICES[cur.code] || MONTHLY_PRICES.HKD;
+
+  function fmtAmt(n) {
+    if (prices.dec === 0) return cur.symbol + Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, prices.thou||',');
+    return cur.symbol + n.toFixed(prices.dec);
+  }
+
+  var annualC = fmtAmt(prices.collector * 10); // 10 months price
+  var annualE = fmtAmt(prices.elite * 10);
+
+  if (mode === 'monthly') {
+    var periodL = {zh:'每月',en:'per month','zh-cn':'每月',ja:'月あたり',ko:'월',fr:'par mois',es:'por mes',th:'ต่อเดือน',id:'per bulan'};
+    document.querySelectorAll('.sub-period').forEach(function(el){ el.textContent = periodL[al]||periodL.en; });
+  } else {
+    // Show annual total under each card's price
+    var els = document.querySelectorAll('.sub-period');
+    var annuals = [annualC, annualE];
+    var i = 0;
+    document.querySelectorAll('.sub-card:not(.free-card) .sub-period').forEach(function(el) {
+      var total = annuals[i] || annuals[0];
+      var lbl = {zh:'每月 · 按年計費 '+total,en:'per month · billed '+total+'/yr','zh-cn':'每月 · 按年计费 '+total,ja:'月あたり · 年払い '+total,ko:'월 · 연간 '+total+' 청구',fr:'par mois · facturé '+total+'/an',es:'por mes · facturado '+total+'/año',th:'ต่อเดือน · เรียกเก็บ '+total+'/ปี',id:'per bulan · tagihan '+total+'/thn'};
+      el.textContent = lbl[al] || lbl.en;
+      i++;
+    });
+    // Free card period stays unchanged
+    var freePeriod = document.querySelector('.sub-card:first-child .sub-period');
+    if (freePeriod) {
+      var fp = {zh:'永久免費',en:'Forever free','zh-cn':'永久免费',ja:'永久無料',ko:'영원히 무료',fr:'Gratuit pour toujours',es:'Gratis para siempre',th:'ฟรีตลอดไป',id:'Gratis selamanya'};
+      freePeriod.textContent = fp[al]||fp.en;
+    }
+  }
 }
 
 function subGetStarted(tier) {
@@ -11384,12 +11414,20 @@ function showSubPaymentModal(tier) {
   if (!modal) return;
 
   document.getElementById('spm-tier-name').textContent = icon + ' ' + name;
+  var prices = MONTHLY_PRICES[cur.code] || MONTHLY_PRICES.HKD;
+  var monthlyOrig = (MONTHLY_PRICES[cur.code]||MONTHLY_PRICES.HKD)[tier];
+  function fmtP(n) {
+    if (prices.dec===0) return cur.symbol+Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g,prices.thou||',');
+    return cur.symbol+n.toFixed(prices.dec);
+  }
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
   var priceLabel;
   if (billing === 'annual') {
-    var annualTotal = price * 12;
-    priceLabel = cur.symbol + annualTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, cur.thou||',') + '/yr (' + cur.symbol + price + '/mo)';
+    var annualTotal = monthlyOrig * 10; // 2 months free
+    var freeMsg = {zh:'（相當於送 2 個月！）',en:'(2 months free!)', 'zh-cn':'（相当于送2个月！）',ja:'（2ヶ月無料！）',ko:'（2개월 무료!）',fr:'(2 mois offerts!)',es:'(¡2 meses gratis!)',th:'(ฟรี 2 เดือน!)',id:'(2 bulan gratis!)'};
+    priceLabel = fmtP(annualTotal) + '/yr ' + (freeMsg[al]||freeMsg.en);
   } else {
-    priceLabel = price + '/mo';
+    priceLabel = fmtP(price) + '/mo';
   }
   document.getElementById('spm-price').textContent = priceLabel;
   document.getElementById('spm-tier').value = tier;
@@ -12897,27 +12935,33 @@ function formatPrice(amount, cur) {
 
 function getTierPrice(tier, billing, cur) {
   // Clean monthly prices per currency (rounded to natural local numbers)
+  // Monthly prices — .99 pricing aligned to local App Store tiers
   var MONTHLY_PRICES = {
-    HKD: { collector: 68,    elite: 128    },
-    USD: { collector: 10,    elite: 18     },
-    GBP: { collector: 8,     elite: 15     },
-    EUR: { collector: 9,     elite: 17     },
-    JPY: { collector: 1500,  elite: 2800   },
-    KRW: { collector: 14000, elite: 26000  },
-    TWD: { collector: 300,   elite: 580    },
-    CNY: { collector: 68,    elite: 128    },
-    SGD: { collector: 14,    elite: 26     },
-    AUD: { collector: 15,    elite: 28     },
-    THB: { collector: 350,   elite: 650    },
-    IDR: { collector: 155000,elite: 290000 },
-    MYR: { collector: 45,    elite: 85     },
-    CAD: { collector: 14,    elite: 26     },
+    HKD: { collector: 68,      elite: 128,    dec: 0, thou: ','  },
+    USD: { collector: 8.99,    elite: 16.99,  dec: 2, thou: ','  },
+    GBP: { collector: 6.99,    elite: 12.99,  dec: 2, thou: ','  },
+    EUR: { collector: 7.99,    elite: 14.99,  dec: 2, thou: '.'  },
+    JPY: { collector: 1399,    elite: 2699,   dec: 0, thou: ','  },
+    KRW: { collector: 13199,   elite: 24799,  dec: 0, thou: ','  },
+    TWD: { collector: 279,     elite: 518,    dec: 0, thou: ','  },
+    CNY: { collector: 59,      elite: 119,    dec: 0, thou: ','  },
+    SGD: { collector: 11.99,   elite: 20.99,  dec: 2, thou: ','  },
+    AUD: { collector: 12.99,   elite: 23.99,  dec: 2, thou: ','  },
+    CAD: { collector: 12.99,   elite: 22.99,  dec: 2, thou: ','  },
+    THB: { collector: 289,     elite: 539,    dec: 0, thou: ','  },
+    IDR: { collector: 155499,  elite: 292699, dec: 0, thou: '.'  },
+    MYR: { collector: 35.99,   elite: 66.99,  dec: 2, thou: ','  },
   };
   var prices = MONTHLY_PRICES[cur.code] || MONTHLY_PRICES.HKD;
   var monthly = prices[tier] || prices.collector;
   if (billing === 'annual') {
-    // Annual = 85% of monthly (save 15%), shown as monthly equivalent
-    monthly = Math.round(monthly * 0.85);
+    // Annual = 10 months price (2 months free = ~16.7% off)
+    // Return monthly equivalent for display
+    if (prices.dec === 0) {
+      monthly = Math.round(monthly * 10 / 12);
+    } else {
+      monthly = Math.round(monthly * 10 / 12 * 100) / 100;
+    }
   }
   return monthly;
 }
@@ -12936,10 +12980,11 @@ function updatePriceDisplay(billing) {
     var amtEl = document.getElementById('sub-amount-'+t.key);
     if (symEl) symEl.textContent = cur.symbol;
     if (amtEl) {
-      if (cur.dec === 0) {
-        amtEl.textContent = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, cur.thou||',');
+      var prices = MONTHLY_PRICES[cur.code] || MONTHLY_PRICES.HKD;
+      if (prices.dec === 0) {
+        amtEl.textContent = Math.round(price).toString().replace(/\B(?=(\d{3})+(?!\d))/g, prices.thou||',');
       } else {
-        amtEl.textContent = price.toFixed(cur.dec);
+        amtEl.textContent = price.toFixed(prices.dec);
       }
     }
   });
@@ -13050,6 +13095,8 @@ function selectCurrencyFromDropdown(country) {
   localStorage.setItem('bv_currency', country);
   _selectedCurrency = CURRENCIES[country] || CURRENCIES.HK;
   updatePriceDisplay(_subBilling);
+  // Also refresh billing labels (they include currency amounts)
+  if (typeof subSetBilling === 'function') subSetBilling(_subBilling);
   // Show note if not HKD
   var noteEl = document.getElementById('sub-currency-note');
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
@@ -16422,9 +16469,9 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
         <span class="t" data-zh="月付" data-en="Monthly" data-zh-cn="月付" data-ja="月払い" data-ko="월결제" data-fr="Mensuel" data-es="Mensual" data-th="รายเดือน" data-id="Bulanan">月付</span>
       </button>
       <button class="sub-toggle-btn" id="sub-annual-btn" onclick="subSetBilling('annual')">
-        <span class="t" data-zh="年付" data-en="Annual" data-zh-cn="年付" data-ja="年払い" data-ko="연결제" data-fr="Annuel" data-es="Anual" data-th="รายปี" data-id="Tahunan">年付</span>
+        <span class="t" data-zh="年付（送 2 個月）" data-en="Annual (2 free)" data-zh-cn="年付（送2个月）" data-ja="年払い（2ヶ月無料）" data-ko="연결제（2개월 무료）" data-fr="Annuel (2 mois offerts)" data-es="Anual (2 meses gratis)" data-th="รายปี (ฟรี 2 เดือน)" data-id="Tahunan (2 bulan gratis)">年付（送 2 個月）</span>
       </button>
-      <span class="sub-save-badge t" data-zh="省 15%" data-en="Save 15%" data-zh-cn="省15%" data-ja="15%節約" data-ko="15% 절약" data-fr="Économisez 15%" data-es="Ahorra 15%" data-th="ประหยัด 15%" data-id="Hemat 15%">省 15%</span>
+      <span class="sub-save-badge t" data-zh="送 2 個月" data-en="2 months free" data-zh-cn="送2个月" data-ja="2ヶ月無料" data-ko="2개월 무료" data-fr="2 mois offerts" data-es="2 meses gratis" data-th="ฟรี 2 เดือน" data-id="2 bulan gratis">送 2 個月</span>
     </div>
   </div>
 
