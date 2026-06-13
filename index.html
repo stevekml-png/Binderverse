@@ -2165,6 +2165,14 @@ body.light .msg-inquiry-text   { color: rgba(15,18,41,0.85); }
   background: rgba(255,255,255,0.08);
   color: var(--text-muted);
 }
+.msg-delete-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 10px; padding: 2px 4px; border-radius: 5px;
+  margin-top: 2px; display: inline-flex; align-items: center;
+  opacity: 0; transition: opacity 0.2s; color: var(--dim);
+}
+.msg-bubble-row:hover .msg-delete-btn { opacity: 0.5; }
+.msg-delete-btn:hover { opacity: 1 !important; color: #f87171; }
 .msg-translate-btn {
   background: none; border: none; cursor: pointer;
   font-size: 10px; font-weight: 800; color: var(--dim);
@@ -4644,7 +4652,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v41 ✓';
+    v.textContent = 'Build v42 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4687,7 +4695,7 @@ if ('serviceWorker' in navigator) {
       <option value="fr">🇫🇷 Français</option>
       <option value="es">🇪🇸 Español</option>
     </select>
-    <button class="nav-icon-btn" onclick="toast('➕ ' + t_('addBinder'))">
+    <button class="nav-icon-btn" onclick="navigate('binders');setTimeout(openNewBinder,300)" title="Create Binder">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
     <button class="nav-icon-btn has-dot" onclick="toastNotif()">
@@ -4839,7 +4847,7 @@ if ('serviceWorker' in navigator) {
       <p class="hero-sub t" data-zh="探索全球集卡愛好者社群。搜尋稀有卡片、加入公會、與同好交易。" data-en="Explore a community built for card collectors. Find rare cards, join guilds and trade." data-ja="カードコレクターのコミュニティ。レアカードを探し、ギルドに参加しよう。" data-ko="카드 컬렉터 커뮤니티. 희귀 카드 찾기, 길드 가입, 교환." data-fr="Une communauté pour collectionneurs. Cartes rares, guildes, échanges." data-es="Una comunidad global para coleccionistas. Cartas raras, gremios, intercambios." data-th="ชุมชนนักสะสมการ์ดทั่วโลก ค้นหาการ์ดหายาก เข้าร่วมกิลด์" data-id="Komunitas kolektor kartu global. Temukan kartu langka, bergabung guild.">探索全球集卡愛好者社群。搜尋稀有卡片、加入公會、與同好交易。</p>
       <div class="hero-btns">
         <button class="btn-primary" onclick="navigate('binders');setTimeout(openNewBinder,300)">✨ <span class="t" data-zh="AI 生成我的相冊" data-en="AI Generate My Binder" data-zh-cn="AI 生成我的相册" data-ja="AIバインダー生成" data-ko="AI 바인더 생성" data-fr="Générer avec IA" data-es="Generar con IA" data-th="AI สร้างไบนเดอร์" data-id="Buat Binder dengan AI">AI 生成我的相冊</span></button>
-        <button class="btn-secondary" onclick="navigate('discover')"><span class="t" data-zh="探索收藏 →" data-en="Browse Collections →" data-zh-cn="探索收藏 →" data-ja="コレクションを見る →" data-ko="컬렉션 탐색 →" data-fr="Explorer →" data-es="Explorar →" data-th="เรียกดูคอลเลกชัน →" data-id="Jelajahi Koleksi →">探索收藏 →</span></button>
+        <button class="btn-secondary" onclick="navigate('discover')"><span class="t" data-zh="探索相冊 →" data-en="Explore Binders →" data-zh-cn="探索相册 →" data-ja="バインダーを探す →" data-ko="바인더 탐색 →" data-fr="Explorer les Classeurs →" data-es="Explorar Carpetas →" data-th="เรียกดูคอลเลกชัน →" data-id="Jelajahi Koleksi →">探索相冊 →</span></button>
       </div>
     </div>
 <!-- hero-stats hidden at launch — uncomment when real data available
@@ -4972,7 +4980,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v41</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v42</div>
   </footer>
 
 </main>
@@ -5681,6 +5689,9 @@ if ('serviceWorker' in navigator) {
           <option value="apply">Apply — GM approves</option>
           <option value="invite">Invite Only</option>
         </select>
+        <div style="margin-bottom:12px;padding:8px 12px;border-radius:8px;background:rgba(251,191,36,0.08);border:1px solid rgba(251,191,36,0.2);font-size:11px;color:rgba(251,191,36,0.85);font-family:Nunito,sans-serif;">
+          💡 <span class="t" data-zh="公會圖標可在創建後於公會管理頁面上傳或 AI 生成" data-en="Guild symbol can be uploaded or AI-generated in the Guild Master dashboard after creation" data-zh-cn="公会图标可在创建后于管理页面上传或AI生成" data-ja="ギルドシンボルは作成後にGMダッシュボードでアップロードまたはAI生成できます" data-ko="길드 심볼은 생성 후 GM 대시보드에서 업로드하거나 AI로 생성할 수 있습니다">公會圖標可在創建後於公會管理頁面上傳或 AI 生成</span>
+        </div>
         <div class="cgm-actions">
           <button class="cgm-create-btn" onclick="createGuild()">⚔️ <span class="t" data-zh="創建公會" data-en="Create Guild" data-zh-cn="创建公会" data-ja="作成" data-ko="만들기" data-fr="Créer" data-es="Crear">創建公會</span></button>
           <button class="cgm-cancel-btn" onclick="closeCreateGuild()"><span class="t" data-zh="取消" data-en="Cancel" data-zh-cn="取消" data-ja="キャンセル" data-ko="취소" data-fr="Annuler" data-es="Cancelar">取消</span></button>
@@ -5737,7 +5748,7 @@ if ('serviceWorker' in navigator) {
     <div style="margin-top:28px;padding:18px;border-radius:14px;background:var(--panel,#13162A);border:1px solid rgba(255,255,255,0.08);text-align:center;">
       <div style="font-size:14px;font-weight:900;color:var(--white);margin-bottom:6px;" class="t" data-zh="找不到答案？" data-en="Can't find your answer?" data-zh-cn="找不到答案？" data-ja="答えが見つからない？" data-ko="답을 찾지 못했나요?" data-fr="Vous ne trouvez pas votre réponse?" data-es="¿No encuentras tu respuesta?" data-th="ไม่พบคำตอบ?" data-id="Tidak menemukan jawaban?">找不到答案？</div>
       <div style="font-size:12px;color:var(--dim);margin-bottom:12px;" class="t" data-zh="我們的支援團隊隨時為你提供協助" data-en="Our support team is here to help" data-zh-cn="我们的支持团队随时为您提供帮助" data-ja="サポートチームがお手伝いします" data-ko="지원팀이 도와드립니다" data-fr="Notre équipe de support est là pour vous aider" data-es="Nuestro equipo de soporte está aquí para ayudarte" data-th="ทีมสนับสนุนของเราพร้อมช่วยเหลือ" data-id="Tim dukungan kami siap membantu">我們的支援團隊隨時為你提供協助</div>
-      <button style="padding:9px 20px;border-radius:10px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;" class="t" data-zh="聯繫我們" data-en="Contact Support" data-zh-cn="联系我们" data-ja="サポートに連絡" data-ko="지원 문의" data-fr="Contacter le support" data-es="Contactar soporte" data-th="ติดต่อสนับสนุน" data-id="Hubungi Dukungan">聯繫我們</button>
+      <button onclick="showFooterModal('contact')" style="padding:9px 20px;border-radius:10px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;" class="t" data-zh="聯繫我們" data-en="Contact Support" data-zh-cn="联系我们" data-ja="サポートに連絡" data-ko="지원 문의" data-fr="Contacter le support" data-es="Contactar soporte" data-th="ติดต่อสนับสนุน" data-id="Hubungi Dukungan">聯繫我們</button>
     </div>
 
   </div>
@@ -6512,7 +6523,7 @@ if ('serviceWorker' in navigator) {
       <span style="margin-left:auto;color:var(--blue-lt)">›</span>
     </button>
     <!-- Redo Onboarding -->
-    <button onclick="closeSettings();setTimeout(()=>navigate('onboarding'),100)" style="width:100%;margin-bottom:8px;padding:9px 14px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px">
+    <button onclick="closeSettings();localStorage.removeItem('bv_ob_done');localStorage.removeItem('bv_ob_name');localStorage.removeItem('bv_ob_avatar');localStorage.removeItem('bv_ob_bio');localStorage.removeItem('bv_ob_games');setTimeout(()=>navigate('onboarding'),100)"  style="width:100%;margin-bottom:8px;padding:9px 14px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px">
       <span style="font-size:18px">👤</span>
       <span class="t" data-zh="重新設定個人資料" data-en="Redo Profile Setup" data-zh-cn="重新设置个人资料" data-ja="プロフィール設定をやり直す" data-ko="프로필 설정 다시하기" data-fr="Refaire la configuration du profil" data-es="Reconfigurar perfil" data-th="ตั้งค่าโปรไฟล์ใหม่" data-id="Atur Ulang Profil">重新設定個人資料</span>
     </button>
@@ -8700,6 +8711,7 @@ function renderMessages(thread) {
       ${!isMe?`<div class="msg-bubble-av" style="background:${thread.color}">${thread.av}</div>`:''}
       <div>
         <div class="msg-bubble">${text}</div>
+        ${isMe ? `<button class="msg-delete-btn" onclick="deleteMessage('${msg.id}')" title="Delete message">🗑</button>` : ''}
         ${showTransBtn ? `<button class="msg-translate-btn" id="tbtn-${msg.id}"
           onclick="translateMessage('${msg.id}',${JSON.stringify(text)},'${lang}')">
           🌐 ${translBtnTxt}
@@ -8924,7 +8936,24 @@ const LANG_NAMES = {
   en:'English', ja:'Japanese', ko:'Korean', fr:'French', es:'Spanish', th:'Thai', id:'Indonesian'
 };
 
-async function translateMessage(msgId, text, targetLang) {
+async function deleteMessage(msgId) {
+  const delLabels = {zh:'刪除訊息？','zh-cn':'删除消息？',en:'Delete this message?',ja:'メッセージを削除？',ko:'메시지를 삭제?',fr:'Supprimer ce message?',es:'¿Eliminar mensaje?',th:'ลบข้อความนี้?',id:'Hapus pesan ini?'};
+  if (!confirm(delLabels[lang]||delLabels.en)) return;
+  // Find active thread and remove message
+  const thread = MSG_THREADS.find(t => t.id === _activeThreadId);
+  if (!thread || !thread.messages) return;
+  thread.messages = thread.messages.filter(m => m.id !== msgId);
+  // Remove from DOM
+  const el = document.getElementById('msg-bubble-'+msgId);
+  if (el) { el.style.opacity='0'; el.style.transition='opacity 0.2s'; setTimeout(()=>el.remove(),200); }
+  // Also remove by finding parent bubble row
+  const btn = document.getElementById('tbtn-'+msgId);
+  if (btn) { const row = btn.closest('.msg-bubble-row'); if(row){row.style.opacity='0';row.style.transition='opacity 0.2s';setTimeout(()=>row.remove(),200);} }
+  const toast_m = {zh:'訊息已刪除','zh-cn':'消息已删除',en:'Message deleted',ja:'メッセージを削除しました',ko:'메시지가 삭제되었습니다',fr:'Message supprimé',es:'Mensaje eliminado',th:'ลบข้อความแล้ว',id:'Pesan dihapus'};
+  toast(toast_m[lang]||toast_m.en);
+}
+
+function translateMessage(msgId, text, targetLang) {
   const btn = document.getElementById('tbtn-'+msgId);
   const box = document.getElementById('tbox-'+msgId);
   if (!btn || !box) return;
@@ -9540,11 +9569,20 @@ function shareViaApp(app) {
   };
   const msg = encodeURIComponent((msgMap[lang]||msgMap.en) + ' ' + url);
   const links = {
-    whatsapp: 'https://wa.me/?text=' + msg,
-    telegram: 'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(msgMap[lang]||msgMap.en),
-    instagram: null,  // Instagram doesn't support direct share links
-    line: 'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(url),
+    whatsapp:  'https://wa.me/?text=' + msg,
+    telegram:  'https://t.me/share/url?url=' + encodeURIComponent(url) + '&text=' + encodeURIComponent(msgMap[lang]||msgMap.en),
+    instagram: null,  // Instagram doesn't support direct share links — copy link instead
+    line:      'https://social-plugins.line.me/lineit/share?url=' + encodeURIComponent(url),
+    facebook:  'https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(url),
+    twitter:   'https://twitter.com/intent/tweet?text=' + msg,
+    weibo:     'https://service.weibo.com/share/share.php?url=' + encodeURIComponent(url) + '&title=' + encodeURIComponent(msgMap[lang]||msgMap.en),
+    wechat:    null,  // WeChat requires copy link then share in app
   };
+  if (app === 'wechat') {
+    copyShareLink();
+    const m = {zh:'連結已複製，請在微信中貼上分享','zh-cn':'链接已复制，请在微信中粘贴分享',en:'Link copied — paste in WeChat to share',ja:'リンクをコピーしました。WeChatで貼り付けてシェアしてください',ko:'링크 복사됨 — 위챗에서 붙여넣어 공유하세요',fr:'Lien copié — collez dans WeChat pour partager',es:'Enlace copiado — pega en WeChat para compartir',th:'คัดลอกลิงก์แล้ว — วางใน WeChat เพื่อแชร์',id:'Tautan disalin — tempel di WeChat untuk berbagi'};
+    toast(m[lang]||m.en); return;
+  }
   if (app === 'instagram') {
     copyShareLink();
     const m = {zh:'連結已複製，請貼到 Instagram','zh-cn':'链接已复制，请粘贴到 Instagram',en:'Link copied — paste it in Instagram',ja:'リンクをコピー — Instagramに貼り付けてください',ko:'링크 복사됨 — Instagram에 붙여넣기',fr:'Lien copié — collez-le sur Instagram',es:'Enlace copiado — pégalo en Instagram',th:'คัดลอกลิงก์แล้ว — วางใน Instagram',id:'Tautan disalin — tempel di Instagram'};
@@ -14659,15 +14697,15 @@ const FOOTER_CONTENT = {
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;">
           <div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">一般查詢</div>
-          <div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div>
+          <div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div>
         </div>
         <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;">
           <div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">商業合作</div>
-          <div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div>
+          <div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div>
         </div>
         <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;">
           <div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">平台安全 / 舉報</div>
-          <div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div>
+          <div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div>
         </div>
       </div>
     `},
@@ -14676,25 +14714,25 @@ const FOOTER_CONTENT = {
       <div style="display:flex;flex-direction:column;gap:10px;">
         <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;">
           <div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">General Enquiries</div>
-          <div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div>
+          <div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div>
         </div>
         <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;">
           <div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">Partnerships</div>
-          <div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div>
+          <div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div>
         </div>
         <div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;">
           <div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">Safety / Reports</div>
-          <div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div>
+          <div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div>
         </div>
       </div>
     `},
-    ja: { title:'お問い合わせ', sub:'ご連絡ください', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">一般お問い合わせ</div><div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">パートナーシップ</div><div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">安全・報告</div><div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div></div></div>` },
-    ko: { title:'문의하기', sub:'연락해 주세요', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">일반 문의</div><div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">파트너십</div><div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">안전·신고</div><div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div></div></div>` },
-    fr: { title:'Nous Contacter', sub:'Contactez-nous', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Questions générales</div><div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Partenariats</div><div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Sécurité</div><div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div></div></div>` },
-    es: { title:'Contacto', sub:'Contáctenos', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Consultas generales</div><div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Asociaciones</div><div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Seguridad</div><div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div></div></div>` },
+    ja: { title:'お問い合わせ', sub:'ご連絡ください', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">一般お問い合わせ</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">パートナーシップ</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">安全・報告</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div></div></div>` },
+    ko: { title:'문의하기', sub:'연락해 주세요', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">일반 문의</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">파트너십</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">안전·신고</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div></div></div>` },
+    fr: { title:'Nous Contacter', sub:'Contactez-nous', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Questions générales</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Partenariats</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Sécurité</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div></div></div>` },
+    es: { title:'Contacto', sub:'Contáctenos', body:`<div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Consultas generales</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Asociaciones</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;">Seguridad</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div></div></div>` },
     th: { title:'ติดต่อเรา', sub:'ติดต่อได้เลย', body:`<p>hello@binderverse.com</p><p>partners@binderverse.com</p><p>safety@binderverse.com</p>` },
     id: { title:'Hubungi Kami', sub:'Kami siap membantu', body:`<p>hello@binderverse.com</p><p>partners@binderverse.com</p><p>safety@binderverse.com</p>` },
-    'zh-cn': { title:'联系我们', sub:'与我们联系', body:`<p style="margin-bottom:14px;">如有任何查询、合作洽谈或技术支持，欢迎通过以下方式联系我们：</p><div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">一般查询</div><div style="color:var(--blue-lt);font-weight:800;">hello@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">商业合作</div><div style="color:var(--blue-lt);font-weight:800;">partners@binderverse.com</div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">平台安全/举报</div><div style="color:var(--blue-lt);font-weight:800;">safety@binderverse.com</div></div></div>` }
+    'zh-cn': { title:'联系我们', sub:'与我们联系', body:`<p style="margin-bottom:14px;">如有任何查询、合作洽谈或技术支持，欢迎通过以下方式联系我们：</p><div style="display:flex;flex-direction:column;gap:10px;"><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">一般查询</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:hello@binderverse.com" style="color:inherit;text-decoration:none;">hello@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">商业合作</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:partners@binderverse.com" style="color:inherit;text-decoration:none;">partners@binderverse.com</a></div></div><div style="background:rgba(255,255,255,0.05);border-radius:10px;padding:12px 14px;"><div style="font-size:11px;color:var(--dim);font-weight:700;margin-bottom:3px;">平台安全/举报</div><div style="color:var(--blue-lt);font-weight:800;"><a href="mailto:safety@binderverse.com" style="color:inherit;text-decoration:none;">safety@binderverse.com</a></div></div></div>` }
   },
   privacy: {
     zh: { title:'私隱政策', sub:'Privacy Policy · 最後更新：2026年1月', body:`
@@ -15917,6 +15955,10 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
     <div class="share-via-row">
       <button class="share-via-btn" onclick="shareViaApp('whatsapp')">💬 WhatsApp</button>
       <button class="share-via-btn" onclick="shareViaApp('telegram')">✈️ Telegram</button>
+      <button class="share-via-btn" onclick="shareViaApp('wechat')">🟢 WeChat</button>
+      <button class="share-via-btn" onclick="shareViaApp('weibo')">🔴 Weibo</button>
+      <button class="share-via-btn" onclick="shareViaApp('facebook')">📘 Facebook</button>
+      <button class="share-via-btn" onclick="shareViaApp('twitter')">🐦 X / Twitter</button>
       <button class="share-via-btn" onclick="shareViaApp('instagram')">📸 Instagram</button>
       <button class="share-via-btn" onclick="shareViaApp('line')">💚 LINE</button>
     </div>
