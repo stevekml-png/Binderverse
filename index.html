@@ -4683,7 +4683,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v46 ✓';
+    v.textContent = 'Build v47 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5011,7 +5011,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v46</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v47</div>
   </footer>
 
 </main>
@@ -6540,10 +6540,10 @@ if ('serviceWorker' in navigator) {
   </div>
   <div class="settings-footer">
     <!-- Subscription link -->
-    <button onclick="closeSettings();setTimeout(()=>navigate('subscription'),100)" style="width:100%;margin-bottom:8px;padding:10px 14px;border-radius:11px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(59,130,246,0.15));border:1px solid rgba(251,191,36,0.3);color:var(--white);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left">
+    <button id="settings-upgrade-btn" onclick="closeSettings();setTimeout(()=>navigate('subscription'),100)" style="width:100%;margin-bottom:8px;padding:10px 14px;border-radius:11px;background:linear-gradient(135deg,rgba(251,191,36,0.15),rgba(59,130,246,0.15));border:1px solid rgba(251,191,36,0.3);color:var(--white);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px;text-align:left">
       <span style="font-size:20px">💎</span>
-      <div><div class="t" data-zh="升級你的計劃" data-en="Upgrade Your Plan" data-zh-cn="升级计划" data-ja="プランをアップグレード" data-ko="플랜 업그레이드" data-fr="Mettre à niveau" data-es="Mejorar plan" data-th="อัปเกรดแผน" data-id="Upgrade Paket">升級你的計劃</div>
-      <div style="font-size:10px;color:var(--dim)" class="t" data-zh="查看收藏家版和精英版的功能" data-en="See Collector & Elite features" data-zh-cn="查看收藏家版和精英版功能" data-ja="コレクター・エリートプランを見る" data-ko="컬렉터 & 엘리트 기능 보기" data-fr="Voir les plans Collectionneur & Élite" data-es="Ver planes Coleccionista y Elite" data-th="ดูฟีเจอร์ Collector & Elite" data-id="Lihat fitur Collector & Elite">查看收藏家版和精英版的功能</div></div>
+      <div><div class="s-upgrade-title">升級你的計劃</div>
+      <div class="s-upgrade-sub" style="font-size:10px;color:var(--dim)">查看收藏家版和精英版的功能</div></div>
       <span style="margin-left:auto;color:var(--blue-lt)">›</span>
     </button>
     <!-- Install App -->
@@ -7023,6 +7023,9 @@ function navigate(page) {
     if (el) el.style.display = p===page ? '' : 'none';
   });
   // Render binders grid when navigating to binders page
+  if (page === 'subscription') {
+    setTimeout(function() { if (typeof renderSubPage === 'function') renderSubPage(); }, 100);
+  }
   if (page === 'binders') {
     if (typeof renderBinders3 === 'function') renderBinders3();
     setTimeout(function(){ deleteExpiredBinders(); showGraceBanner(); }, 200);
@@ -11331,14 +11334,151 @@ function subSetBilling(mode) {
 
 function subGetStarted(tier) {
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  if (tier === 'free') {
+    navigate('binders'); return;
+  }
+  // Show payment simulation modal
+  showSubPaymentModal(tier);
+}
+
+function getSubTier() {
+  return localStorage.getItem('bv_sub_tier') || 'free';
+}
+function getSubBilling() {
+  return localStorage.getItem('bv_sub_billing') || 'monthly';
+}
+function getSubExpiry() {
+  return localStorage.getItem('bv_sub_expiry') || null;
+}
+function setSubTier(tier, billing) {
+  localStorage.setItem('bv_sub_tier', tier);
+  localStorage.setItem('bv_sub_billing', billing || 'monthly');
+  // Set expiry date (30 days for monthly, 365 for annual)
+  var days = (billing === 'annual') ? 365 : 30;
+  var expiry = new Date();
+  expiry.setDate(expiry.getDate() + days);
+  localStorage.setItem('bv_sub_expiry', expiry.toISOString());
+  updateSubUI();
+}
+
+// Tier prices
+var SUB_PRICES = {
+  collector: { monthly: 'HK$68', annual: 'HK$612', monthlyNum: 68, annualNum: 612 },
+  elite:     { monthly: 'HK$128', annual: 'HK$1,152', monthlyNum: 128, annualNum: 1152 }
+};
+
+var SUB_NAMES = {
+  free:      { zh:'免費版', en:'Free', icon:'🃏' },
+  collector: { zh:'收藏家版', en:'Collector', icon:'💎' },
+  elite:     { zh:'精英版', en:'Elite', icon:'👑' }
+};
+
+function showSubPaymentModal(tier) {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var billing = document.getElementById('sub-monthly-btn')?.classList.contains('on') ? 'monthly' : 'annual';
+  var price = SUB_PRICES[tier][billing];
+  var name = SUB_NAMES[tier][al] || SUB_NAMES[tier].en;
+  var icon = SUB_NAMES[tier].icon;
+
+  var modal = document.getElementById('sub-payment-modal');
+  if (!modal) return;
+
+  document.getElementById('spm-tier-name').textContent = icon + ' ' + name;
+  document.getElementById('spm-price').textContent = price + (billing === 'monthly' ? '/mo' : '/yr');
+  document.getElementById('spm-tier').value = tier;
+  document.getElementById('spm-billing').value = billing;
+
+  // Update button text based on current tier
+  var currentTier = getSubTier();
+  var btn = document.getElementById('spm-confirm-btn');
+  if (btn) {
+    if (currentTier === tier) {
+      btn.textContent = al === 'zh' ? '已訂閱此計劃' : 'Already on this plan';
+      btn.disabled = true;
+    } else if (currentTier === 'elite' && tier === 'collector') {
+      btn.textContent = al === 'zh' ? '降級至 ' + name : 'Downgrade to ' + name;
+      btn.disabled = false;
+    } else {
+      btn.textContent = al === 'zh' ? '確認訂閱 ' + name : 'Subscribe to ' + name;
+      btn.disabled = false;
+    }
+  }
+  modal.style.display = 'flex';
+}
+
+function closeSubPaymentModal() {
+  var modal = document.getElementById('sub-payment-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function confirmSubPayment() {
+  var tier = document.getElementById('spm-tier').value;
+  var billing = document.getElementById('spm-billing').value;
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+
+  setSubTier(tier, billing);
+  closeSubPaymentModal();
+
+  var name = SUB_NAMES[tier][al] || SUB_NAMES[tier].en;
+  var icon = SUB_NAMES[tier].icon;
   var msgs = {
-    free: {zh:'你已在使用免費版！開始新增你的卡牌相冊吧 🃏',en:'You are on the free plan! Start adding your card binders 🃏'},
-    collector: {zh:'即將前往 HK$68 收藏家版升級頁面 💎',en:'Redirecting to Collector upgrade — HK$68/month 💎'},
-    elite: {zh:'即將前往 HK$128 精英版升級頁面 👑',en:'Redirecting to Elite upgrade — HK$128/month 👑'}
+    zh: icon + ' ' + name + ' 訂閱成功！歡迎使用進階功能。',
+    en: icon + ' ' + name + ' subscription activated! Enjoy your premium features.'
   };
-  var m = msgs[tier];
-  toast((m[al]||m.en));
-  if (tier==='free') { navigate('binders'); }
+  toast(msgs[al] || msgs.en);
+
+  // Refresh subscription page if open
+  if (typeof renderSubPage === 'function') renderSubPage();
+}
+
+function cancelSubscription() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var confirmMsgs = {
+    zh: '確定取消訂閱？你的計劃將在到期日後恢復為免費版。',
+    en: 'Cancel subscription? Your plan will revert to Free after the expiry date.'
+  };
+  if (!confirm(confirmMsgs[al] || confirmMsgs.en)) return;
+  localStorage.setItem('bv_sub_cancelled', 'true');
+  var msgs = {
+    zh: '訂閱已取消。到期日前仍可使用進階功能。',
+    en: 'Subscription cancelled. You can still use premium features until expiry.'
+  };
+  toast(msgs[al] || msgs.en);
+  updateSubUI();
+  if (typeof renderSubPage === 'function') renderSubPage();
+}
+
+function updateSubUI() {
+  // Update the upgrade button in settings
+  var tier = getSubTier();
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var upgradeBtn = document.getElementById('settings-upgrade-btn');
+  if (upgradeBtn) {
+    if (tier === 'free') {
+      upgradeBtn.querySelector('.s-upgrade-title').textContent = al==='zh' ? '升級你的計劃' : 'Upgrade Your Plan';
+      upgradeBtn.querySelector('.s-upgrade-sub').textContent = al==='zh' ? '查看收藏家版和精英版的功能' : 'See Collector & Elite features';
+    } else {
+      var name = SUB_NAMES[tier][al] || SUB_NAMES[tier].en;
+      var icon = SUB_NAMES[tier].icon;
+      upgradeBtn.querySelector('.s-upgrade-title').textContent = icon + ' ' + (al==='zh' ? '目前計劃：' : 'Current Plan: ') + name;
+      var expiry = getSubExpiry();
+      var cancelled = localStorage.getItem('bv_sub_cancelled');
+      if (expiry) {
+        var d = new Date(expiry);
+        var dateStr = d.toLocaleDateString(al==='zh'?'zh-HK':'en-US', {year:'numeric',month:'short',day:'numeric'});
+        upgradeBtn.querySelector('.s-upgrade-sub').textContent = (cancelled ? (al==='zh'?'到期日：':'Expires: ') : (al==='zh'?'續費日：':'Renews: ')) + dateStr;
+      }
+    }
+  }
+  // Update storage tier badge
+  var badge = document.getElementById('storage-tier-badge');
+  if (badge) {
+    var tierColors = { free:'rgba(100,116,139,0.3)', collector:'rgba(59,130,246,0.25)', elite:'rgba(251,191,36,0.25)' };
+    var tierTextColors = { free:'#94a3b8', collector:'#60A5FA', elite:'#FBBF24' };
+    badge.textContent = (SUB_NAMES[tier][al] || SUB_NAMES[tier].en);
+    badge.style.background = tierColors[tier];
+    badge.style.color = tierTextColors[tier];
+  }
 }
 
 function openSubscription() {
@@ -14140,6 +14280,7 @@ function closeModal(id) {
 
 function openSettings() {
   document.getElementById('s-backdrop').classList.add('show');
+  setTimeout(function() { if (typeof updateSubUI === 'function') updateSubUI(); }, 50);
   document.getElementById('s-drawer').classList.add('open');
   setTimeout(updateStorageUI, 100);
 }
@@ -14148,6 +14289,42 @@ function closeSettings() {
   document.getElementById('s-drawer').classList.remove('open');
   saveSettingsToStorage();
 }
+function renderSubPage() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var tier = getSubTier();
+  var banner = document.getElementById('sub-current-plan-banner');
+  if (!banner) return;
+  if (tier === 'free') { banner.style.display = 'none'; updateSubUI(); return; }
+  banner.style.display = 'block';
+  var name = (SUB_NAMES[tier]||{})[al] || (SUB_NAMES[tier]||{}).en || tier;
+  var icon = (SUB_NAMES[tier]||{}).icon || '';
+  document.getElementById('scpb-name').textContent = icon + ' ' + name;
+  var expiry = getSubExpiry();
+  var cancelled = localStorage.getItem('bv_sub_cancelled');
+  var expiryEl = document.getElementById('scpb-expiry');
+  if (expiry && expiryEl) {
+    var d = new Date(expiry);
+    var dateStr = d.toLocaleDateString(al==='zh'?'zh-HK':'en-US',{year:'numeric',month:'short',day:'numeric'});
+    expiryEl.textContent = (cancelled?(al==='zh'?'到期日：':'Expires: '):(al==='zh'?'下次扣費：':'Next billing: '))+dateStr;
+  }
+  var upgradeBtn = document.getElementById('scpb-upgrade-btn');
+  if (upgradeBtn) upgradeBtn.style.display = tier==='elite'?'none':'block';
+  var features = {
+    collector:{zh:['💾 5GB 儲存','🔍 無限 AI 掃描','📊 價格追蹤','🔔 交易通知'],en:['💾 5GB Storage','🔍 Unlimited AI Scans','📊 Price Tracking','🔔 Trade Alerts']},
+    elite:{zh:['💾 20GB 儲存','🤖 AI 自動分類','📈 市場分析','⚔️ 專屬公會','🎨 自訂主題','👑 精英徽章'],en:['💾 20GB Storage','🤖 AI Auto-Categorise','📈 Market Analytics','⚔️ Exclusive Guild','🎨 Custom Themes','👑 Elite Badge']}
+  };
+  var featuresEl = document.getElementById('scpb-features');
+  if (featuresEl && features[tier]) {
+    var list = features[tier][al]||features[tier].en;
+    featuresEl.innerHTML = list.map(function(f){return '<span style="font-size:10px;padding:3px 8px;border-radius:20px;background:rgba(255,255,255,0.07);color:var(--text-muted);white-space:nowrap;">'+f+'</span>';}).join('');
+  }
+  updateSubUI();
+}
+
+function showSubUpgradeOptions() {
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
 
 function setMode(mode) {
   const isLight = mode === 'light';
@@ -16189,6 +16366,23 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
 <!-- ══ END PAGE: BINDER VIEW ══ -->
 <!-- ══ PAGE: SUBSCRIPTION ══ -->
 <main class="main" id="page-subscription" style="display:none">
+  <!-- My Current Plan banner — shown when subscribed -->
+  <div id="sub-current-plan-banner" style="display:none;margin-bottom:20px;padding:16px 20px;border-radius:16px;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(59,130,246,0.12));border:1px solid rgba(251,191,36,0.25);">
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:11px;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:2px;" class="t" data-zh="目前計劃" data-en="Current Plan">Current Plan</div>
+        <div style="font-size:18px;font-weight:900;color:var(--white);" id="scpb-name">💎 Collector</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px;" id="scpb-expiry"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+        <button onclick="showSubUpgradeOptions()" id="scpb-upgrade-btn" style="padding:7px 14px;border-radius:9px;background:linear-gradient(135deg,#FBBF24,#F59E0B);border:none;color:#1A1400;font-family:'Nunito',sans-serif;font-size:11px;font-weight:900;cursor:pointer;" class="t" data-zh="升級計劃" data-en="Upgrade Plan">Upgrade Plan</button>
+        <button onclick="cancelSubscription()" style="padding:7px 14px;border-radius:9px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);color:#f87171;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;cursor:pointer;" class="t" data-zh="取消訂閱" data-en="Cancel Plan">Cancel Plan</button>
+      </div>
+    </div>
+    <!-- Feature highlights for current tier -->
+    <div id="scpb-features" style="margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;"></div>
+  </div>
+
   <div class="sub-header">
     <div class="sub-title t" data-zh="選擇你的計劃" data-en="Choose Your Plan" data-zh-cn="选择您的计划" data-ja="プランを選択" data-ko="플랜 선택" data-fr="Choisissez votre plan" data-es="Elige tu plan" data-th="เลือกแผน" data-id="Pilih Paket">選擇你的計劃</div>
     <div class="sub-sub t" data-zh="加入 Binderverse，讓你的收藏更有價值" data-en="Join Binderverse and make your collection count" data-zh-cn="加入Binderverse，让您的收藏更有价值" data-ja="Binderverseに参加してコレクションを活かそう" data-ko="Binderverse에 참여하여 컬렉션을 활용하세요" data-fr="Rejoignez Binderverse et valorisez votre collection" data-es="Únete y dale valor a tu colección" data-th="เข้าร่วม Binderverse และทำให้คอลเลกชันของคุณมีค่า" data-id="Bergabung dan buat koleksi Anda berarti">加入 Binderverse，讓你的收藏更有價值</div>
@@ -16417,6 +16611,38 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
 
 </main>
 <!-- ══ END PAGE: SUBSCRIPTION ══ -->
+
+<!-- ══ SUBSCRIPTION PAYMENT MODAL ══ -->
+<div id="sub-payment-modal" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:20px;" onclick="if(event.target===this)closeSubPaymentModal()">
+  <div style="background:var(--panel,#1A1E30);border-radius:20px;border:1px solid rgba(251,191,36,0.3);width:100%;max-width:400px;padding:28px;box-shadow:0 20px 60px rgba(0,0,0,0.5);">
+    <div style="text-align:center;margin-bottom:20px;">
+      <div style="font-size:48px;margin-bottom:8px;">💳</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:0.04em;color:var(--white);" id="spm-tier-name">Collector</div>
+      <div style="font-size:28px;font-weight:900;color:#FBBF24;margin:6px 0;" id="spm-price">HK$68/mo</div>
+    </div>
+    <input type="hidden" id="spm-tier" value="collector"/>
+    <input type="hidden" id="spm-billing" value="monthly"/>
+    <!-- Simulated card input -->
+    <div style="margin-bottom:12px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;" class="t" data-zh="卡號" data-en="Card Number">Card Number</div>
+      <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-size:13px;font-family:monospace;">4242 4242 4242 4242</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <div style="flex:1;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;" class="t" data-zh="到期日" data-en="Expiry">Expiry</div>
+        <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-size:13px;font-family:monospace;">12/28</div>
+      </div>
+      <div style="flex:1;">
+        <div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">CVV</div>
+        <div style="padding:10px 14px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-size:13px;font-family:monospace;">•••</div>
+      </div>
+    </div>
+    <div style="font-size:10px;color:var(--text-muted);text-align:center;margin-bottom:16px;" class="t" data-zh="此為模擬付款介面，不會收取實際費用" data-en="This is a simulated payment — no real charges">⚠️ This is a simulated payment — no real charges</div>
+    <button id="spm-confirm-btn" onclick="confirmSubPayment()" style="width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,#FBBF24,#F59E0B);border:none;color:#1A1400;font-family:'Nunito',sans-serif;font-size:14px;font-weight:900;cursor:pointer;margin-bottom:8px;">Subscribe Now</button>
+    <button onclick="closeSubPaymentModal()" style="width:100%;padding:10px;border-radius:12px;background:none;border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;" class="t" data-zh="取消" data-en="Cancel">Cancel</button>
+  </div>
+</div>
+<!-- ══ END SUBSCRIPTION PAYMENT MODAL ══ -->
 
 </body>
 </html>
