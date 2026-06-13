@@ -821,6 +821,18 @@ body.safari-browser .card-detail-modal {
   padding-top: 56px !important;
 }
 
+/* ── Footer modal overlay ── */
+#modal-footer {
+  display: none;
+  position: fixed; inset: 0; z-index: 800;
+  background: rgba(0,0,0,0.65);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+  padding: 20px;
+}
+#modal-footer.show { display: flex !important; }
+
 @media (max-width: 360px) {
   /* Already icon-only at this size */
   .tab-bar { height: calc(60px + env(safe-area-inset-bottom, 0px)); }
@@ -2170,6 +2182,11 @@ body.light .msg-inquiry-text   { color: rgba(15,18,41,0.85); }
   font-size: 10px; padding: 2px 4px; border-radius: 5px;
   margin-top: 2px; display: inline-flex; align-items: center;
   opacity: 0; transition: opacity 0.2s; color: var(--dim);
+}
+@media (max-width: 900px) {
+  /* On mobile: show delete button always (no hover) */
+  .msg-delete-btn { opacity: 0.45 !important; }
+  .msg-delete-btn:active { opacity: 1 !important; color: #f87171; }
 }
 .msg-bubble-row:hover .msg-delete-btn { opacity: 0.5; }
 .msg-delete-btn:hover { opacity: 1 !important; color: #f87171; }
