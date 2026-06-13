@@ -4669,7 +4669,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v44 ✓';
+    v.textContent = 'Build v45 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4997,7 +4997,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v44</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v45</div>
   </footer>
 
 </main>
@@ -6540,9 +6540,9 @@ if ('serviceWorker' in navigator) {
       <span style="margin-left:auto;color:var(--blue-lt)">›</span>
     </button>
     <!-- Redo Onboarding -->
-    <button onclick="closeSettings();localStorage.removeItem('bv_ob_done');localStorage.removeItem('bv_ob_name');localStorage.removeItem('bv_ob_avatar');localStorage.removeItem('bv_ob_bio');localStorage.removeItem('bv_ob_games');setTimeout(()=>navigate('onboarding'),100)"  style="width:100%;margin-bottom:8px;padding:9px 14px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px">
+    <button onclick="closeSettings();setTimeout(()=>{navigate('profile');setTimeout(()=>{var btn=document.querySelector('.btn-edit-profile');if(btn)btn.click();},300);},100)"  style="width:100%;margin-bottom:8px;padding:9px 14px;border-radius:11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);color:var(--muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:8px">
       <span style="font-size:18px">👤</span>
-      <span class="t" data-zh="重新設定個人資料" data-en="Redo Profile Setup" data-zh-cn="重新设置个人资料" data-ja="プロフィール設定をやり直す" data-ko="프로필 설정 다시하기" data-fr="Refaire la configuration du profil" data-es="Reconfigurar perfil" data-th="ตั้งค่าโปรไฟล์ใหม่" data-id="Atur Ulang Profil">重新設定個人資料</span>
+      <span class="t" data-zh="編輯個人資料" data-en="Edit My Profile" data-zh-cn="编辑个人资料" data-ja="プロフィール設定をやり直す" data-ko="프로필 설정 다시하기" data-fr="Refaire la configuration du profil" data-es="Reconfigurar perfil" data-th="ตั้งค่าโปรไฟล์ใหม่" data-id="Atur Ulang Profil">重新設定個人資料</span>
     </button>
     <!-- Storage manager — rich UI -->
     <div style="margin-bottom:12px;padding:14px;border-radius:12px;background:rgba(59,130,246,0.06);border:1px solid rgba(59,130,246,0.18);">
