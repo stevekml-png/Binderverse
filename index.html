@@ -4683,7 +4683,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v47 ✓';
+    v.textContent = 'Build v48 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5011,7 +5011,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v47</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v48</div>
   </footer>
 
 </main>
@@ -11384,7 +11384,14 @@ function showSubPaymentModal(tier) {
   if (!modal) return;
 
   document.getElementById('spm-tier-name').textContent = icon + ' ' + name;
-  document.getElementById('spm-price').textContent = price + (billing === 'monthly' ? '/mo' : '/yr');
+  var priceLabel;
+  if (billing === 'annual') {
+    var annualTotal = price * 12;
+    priceLabel = cur.symbol + annualTotal.toString().replace(/\B(?=(\d{3})+(?!\d))/g, cur.thou||',') + '/yr (' + cur.symbol + price + '/mo)';
+  } else {
+    priceLabel = price + '/mo';
+  }
+  document.getElementById('spm-price').textContent = priceLabel;
   document.getElementById('spm-tier').value = tier;
   document.getElementById('spm-billing').value = billing;
 
@@ -12889,14 +12896,30 @@ function formatPrice(amount, cur) {
 }
 
 function getTierPrice(tier, billing, cur) {
-  // tier: 'collector'|'elite'
-  // billing: 'monthly'|'annual'
-  var base = tier==='collector' ? cur.p1 : cur.p2;
+  // Clean monthly prices per currency (rounded to natural local numbers)
+  var MONTHLY_PRICES = {
+    HKD: { collector: 68,    elite: 128    },
+    USD: { collector: 10,    elite: 18     },
+    GBP: { collector: 8,     elite: 15     },
+    EUR: { collector: 9,     elite: 17     },
+    JPY: { collector: 1500,  elite: 2800   },
+    KRW: { collector: 14000, elite: 26000  },
+    TWD: { collector: 300,   elite: 580    },
+    CNY: { collector: 68,    elite: 128    },
+    SGD: { collector: 14,    elite: 26     },
+    AUD: { collector: 15,    elite: 28     },
+    THB: { collector: 350,   elite: 650    },
+    IDR: { collector: 155000,elite: 290000 },
+    MYR: { collector: 45,    elite: 85     },
+    CAD: { collector: 14,    elite: 26     },
+  };
+  var prices = MONTHLY_PRICES[cur.code] || MONTHLY_PRICES.HKD;
+  var monthly = prices[tier] || prices.collector;
   if (billing === 'annual') {
-    // Annual: 20% off, shown as monthly equivalent
-    base = Math.round(base * 0.85 * (cur.dec===0?1:100)) / (cur.dec===0?1:100);
+    // Annual = 85% of monthly (save 15%), shown as monthly equivalent
+    monthly = Math.round(monthly * 0.85);
   }
-  return base;
+  return monthly;
 }
 
 function updatePriceDisplay(billing) {
