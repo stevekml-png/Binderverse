@@ -2050,6 +2050,20 @@ body.light .msg-new-btn { box-shadow: 0 3px 12px rgba(59,130,246,0.25); }
 }
 .msg-thread:hover { background: rgba(255,255,255,0.04); }
 .msg-thread.active { background: rgba(59,130,246,0.12); border-right: 2px solid var(--blue,#3B82F6); }
+.msg-thread-delete-btn {
+  display: none; flex-shrink: 0;
+  background: rgba(239,68,68,0.12); border: 1px solid rgba(239,68,68,0.25);
+  color: #f87171; border-radius: 8px; padding: 5px 8px;
+  font-size: 13px; cursor: pointer; margin-left: 4px;
+  transition: all 0.15s;
+}
+.msg-thread:hover .msg-thread-delete-btn { display: flex; align-items: center; }
+.msg-thread-delete-btn:hover { background: rgba(239,68,68,0.25); }
+/* Mobile: always show delete button */
+@media (max-width: 900px) {
+  .msg-thread-delete-btn { display: flex !important; align-items: center; opacity: 0.5; }
+  .msg-thread-delete-btn:active { opacity: 1; background: rgba(239,68,68,0.3); }
+}
 .msg-thread.unread .msg-thread-name { color: var(--white); }
 .msg-thread-av {
   width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
@@ -4669,7 +4683,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v45 ✓';
+    v.textContent = 'Build v46 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4997,7 +5011,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v45</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v46</div>
   </footer>
 
 </main>
@@ -8466,6 +8480,24 @@ MSG_THREADS.forEach(thread => {
   });
 });
 
+function deleteThread(threadId) {
+  const delLabels = {zh:'刪除此對話？所有訊息將被清除。','zh-cn':'删除此对话？所有消息将被清除。',en:'Delete this conversation? All messages will be removed.',ja:'この会話を削除しますか？すべてのメッセージが削除されます。',ko:'이 대화를 삭제하시겠습니까?',fr:'Supprimer cette conversation?',es:'¿Eliminar esta conversación?',th:'ลบการสนทนานี้?',id:'Hapus percakapan ini?'};
+  if (!confirm(delLabels[lang]||delLabels.en)) return;
+  const i = MSG_THREADS.findIndex(t => t.id === threadId);
+  if (i !== -1) MSG_THREADS.splice(i, 1);
+  // If active thread was deleted, close chat view
+  if (_activeThread && _activeThread.id === threadId) {
+    _activeThread = null;
+    if (typeof closeMobileChat === 'function') closeMobileChat();
+    const cv = document.getElementById('msg-chat-view');
+    if (cv) cv.style.display = 'none';
+  }
+  renderThreadList();
+  const m = {zh:'對話已刪除','zh-cn':'对话已删除',en:'Conversation deleted',ja:'会話を削除しました',ko:'대화가 삭제되었습니다',fr:'Conversation supprimée',es:'Conversación eliminada',th:'ลบการสนทนาแล้ว',id:'Percakapan dihapus'};
+  if (typeof toast === 'function') toast('🗑 ' + (m[lang]||m.en));
+}
+
+
 let _activeThread = null;
 
 function initMessages() {
@@ -8519,6 +8551,7 @@ function renderThreadList(query='') {
         <div class="msg-thread-preview">${preview}</div>
       </div>
       ${t.unread?`<div class="msg-unread-dot"></div>`:''}
+      <button class="msg-thread-delete-btn" onclick="event.stopPropagation();deleteThread('${t.id}')" title="Delete conversation">🗑</button>
     </div>`;
   }).join('');
 }
