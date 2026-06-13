@@ -4683,7 +4683,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v49 ✓';
+    v.textContent = 'Build v50 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5011,7 +5011,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v49</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v50</div>
   </footer>
 
 </main>
@@ -12933,10 +12933,28 @@ function formatPrice(amount, cur) {
   }
 }
 
+// ── Global subscription pricing table ──
+var MONTHLY_PRICES = {
+  HKD: { collector: 68,      elite: 128,    dec: 0, thou: ','  },
+  USD: { collector: 8.99,    elite: 16.99,  dec: 2, thou: ','  },
+  GBP: { collector: 6.99,    elite: 12.99,  dec: 2, thou: ','  },
+  EUR: { collector: 7.99,    elite: 14.99,  dec: 2, thou: '.'  },
+  JPY: { collector: 1399,    elite: 2699,   dec: 0, thou: ','  },
+  KRW: { collector: 13199,   elite: 24799,  dec: 0, thou: ','  },
+  TWD: { collector: 279,     elite: 518,    dec: 0, thou: ','  },
+  CNY: { collector: 59,      elite: 119,    dec: 0, thou: ','  },
+  SGD: { collector: 11.99,   elite: 20.99,  dec: 2, thou: ','  },
+  AUD: { collector: 12.99,   elite: 23.99,  dec: 2, thou: ','  },
+  CAD: { collector: 12.99,   elite: 22.99,  dec: 2, thou: ','  },
+  THB: { collector: 289,     elite: 539,    dec: 0, thou: ','  },
+  IDR: { collector: 155499,  elite: 292699, dec: 0, thou: '.'  },
+  MYR: { collector: 35.99,   elite: 66.99,  dec: 2, thou: ','  },
+};
+
 function getTierPrice(tier, billing, cur) {
   // Clean monthly prices per currency (rounded to natural local numbers)
-  // Monthly prices — .99 pricing aligned to local App Store tiers
-  var MONTHLY_PRICES = {
+  // Use global MONTHLY_PRICES
+  var _MONTHLY_PRICES = MONTHLY_PRICES || {
     HKD: { collector: 68,      elite: 128,    dec: 0, thou: ','  },
     USD: { collector: 8.99,    elite: 16.99,  dec: 2, thou: ','  },
     GBP: { collector: 6.99,    elite: 12.99,  dec: 2, thou: ','  },
@@ -12952,7 +12970,7 @@ function getTierPrice(tier, billing, cur) {
     IDR: { collector: 155499,  elite: 292699, dec: 0, thou: '.'  },
     MYR: { collector: 35.99,   elite: 66.99,  dec: 2, thou: ','  },
   };
-  var prices = MONTHLY_PRICES[cur.code] || MONTHLY_PRICES.HKD;
+  var prices = (window.MONTHLY_PRICES||{})[cur.code] || (window.MONTHLY_PRICES||{}).HKD || {collector:68,elite:128,dec:0,thou:','};
   var monthly = prices[tier] || prices.collector;
   if (billing === 'annual') {
     // Annual = 10 months price (2 months free = ~16.7% off)
