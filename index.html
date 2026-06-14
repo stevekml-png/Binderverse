@@ -4442,6 +4442,79 @@ body:not(.light) .s-label { color: rgba(248,250,252,0.6) !important; }
 body:not(.light) .card-detail-row-label { color: rgba(248,250,252,0.6) !important; }
 body:not(.light) .sec-sub { color: rgba(248,250,252,0.65) !important; }
 
+
+/* ══ ADD CARDS / SCAN SYSTEM ══ */
+#add-cards-modal.open { display: flex !important; align-items: flex-end; }
+#page-scan-modal.open { display: flex !important; }
+#scan-review-modal.open { display: flex !important; }
+
+#page-scan-shutter:active { transform: scale(0.92); }
+
+.scan-review-cell {
+  background: var(--card, #1E2240);
+  border-radius: 12px;
+  border: 1.5px solid var(--border2);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.scan-review-cell.confirmed { border-color: #22c55e; }
+.scan-review-cell.failed { border-color: rgba(239,68,68,0.4); }
+.scan-review-cell.empty { opacity: 0.35; }
+
+.scan-review-cell-img {
+  width: 100%; aspect-ratio: 2.5/3.5;
+  object-fit: cover; display: block;
+  background: rgba(255,255,255,0.04);
+}
+.scan-review-cell-info {
+  padding: 6px 8px 8px;
+}
+.scan-review-cell-name {
+  font-size: 11px; font-weight: 900;
+  color: var(--white);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scan-review-cell-set {
+  font-size: 9px; color: var(--text-muted);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.scan-review-cell-confidence {
+  position: absolute; top: 4px; right: 4px;
+  font-size: 9px; font-weight: 900; padding: 2px 5px;
+  border-radius: 6px;
+}
+.scan-review-cell-edit {
+  position: absolute; bottom: 36px; right: 4px;
+  background: rgba(0,0,0,0.6); border: none; color: #fff;
+  border-radius: 6px; padding: 3px 6px; font-size: 9px; cursor: pointer;
+}
+.scan-cell-exclude {
+  position: absolute; top: 4px; left: 4px;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: rgba(0,0,0,0.6); border: 1.5px solid rgba(255,255,255,0.3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; cursor: pointer;
+}
+.scan-cell-exclude.excluded {
+  background: rgba(239,68,68,0.8); border-color: #f87171;
+}
+
+/* Flash animation when capture fires */
+@keyframes scanFlash {
+  0% { opacity: 0; }
+  30% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+.scan-flash {
+  position: fixed; inset: 0; z-index: 900;
+  background: white; pointer-events: none;
+  animation: scanFlash 0.4s ease-out forwards;
+}
+
 /* ══════════════════════════════════════
    MOBILE HAMBURGER + DROPDOWN MENU
 ══════════════════════════════════════ */
@@ -4683,7 +4756,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v50 ✓';
+    v.textContent = 'Build v53 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5011,7 +5084,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v50</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v53</div>
   </footer>
 
 </main>
@@ -11020,11 +11093,10 @@ function openNewBinderFlow(binder) {
     + '<div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;">'+(subL[al]||subL.en)+'</div>'
     // Upload area
     + '<input type="file" id="bv-create-file" accept="image/*" multiple style="display:none" onchange="bvCreateUploadWithScan(this)"/>'
-    + '<input type="file" id="bv-create-camera" accept="image/*" capture="environment" style="display:none" onchange="bvCreateUploadWithScan(this)"/>'
     + '<div id="bv-create-preview" style="min-height:80px;margin-bottom:16px;"></div>'
     + '<div style="display:flex;gap:8px;margin-bottom:16px;">'
     + '<button onclick="bvCreateClickFile()" style="flex:1;padding:11px;border-radius:11px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">🖼️ '+(al==='zh'?'選擇圖片':'Choose Photos')+'</button>'
-    + '<button onclick="bvCreateClickCamera()" style="padding:11px 14px;border-radius:11px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">📷</button>'
+    + '<button onclick="openAddCardsModal(_bvBinderId)" style="padding:11px 14px;border-radius:11px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">📷</button>'
     + '</div>'
     + '<div style="display:flex;gap:8px;">'
     + '<button onclick="bvCreateSkipToTheme()" style="flex:1;padding:11px;border-radius:11px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:13px;font-weight:800;cursor:pointer;">'+(skipL[al]||skipL.en)+'</button>'
@@ -11037,7 +11109,6 @@ function openNewBinderFlow(binder) {
 }
 
 function bvCreateClickFile(){ var el=document.getElementById("bv-create-file"); if(el) el.click(); }
-function bvCreateClickCamera(){ var el=document.getElementById("bv-create-camera"); if(el) el.click(); }
 function bvCreateUpload(input) {
   var bid = _bvBinderId;
   if (!bid) return;
@@ -12782,6 +12853,427 @@ function showLockedBinderModal(binder) {
     + '</div>';
 
   document.body.appendChild(modal);
+}
+
+
+
+// ══════════════════════════════════════════════
+// CARD SCANNING SYSTEM
+// ══════════════════════════════════════════════
+
+var _scanBidTarget = null;  // which binder to add cards to
+var _pageScanStream = null; // camera stream
+var _pageScanFacing = 'environment'; // back camera
+var _scanResults = [];      // array of identified cards
+var _excludedCells = {};    // cells user excluded from add
+
+// ── OPEN ADD CARDS MODAL ──
+function openAddCardsModal(bid) {
+  _scanBidTarget = bid || _bvBinderId || window._currentBinderId;
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var modal = document.getElementById('add-cards-modal');
+  if (!modal) return;
+  // Update scan counter
+  var rem = getScansRemaining();
+  var counter = document.getElementById('add-cards-scan-counter');
+  if (counter) {
+    var cL = {zh:'✨ 本月剩餘 '+rem+' 次 AI 掃描',en:'✨ '+rem+' AI scans remaining this month'};
+    counter.textContent = cL[al]||cL.en;
+  }
+  modal.style.display = 'flex';
+  modal.style.alignItems = 'flex-end';
+}
+
+function closeAddCardsModal() {
+  var modal = document.getElementById('add-cards-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+// ── MODE 1: SINGLE CARD SCAN ──
+function startSingleCardScan() {
+  closeAddCardsModal();
+  // Use the existing single-card camera input
+  var input = document.getElementById('add-single-camera');
+  if (input) { input.setAttribute('data-bid', _scanBidTarget||''); input.click(); }
+}
+
+async function handleSingleCardCapture(input) {
+  var files = Array.from(input.files||[]).filter(function(f){ return f.type.startsWith('image/'); });
+  input.value = '';
+  if (!files.length) return;
+  var bid = input.getAttribute('data-bid') || _scanBidTarget;
+  _scanBidTarget = bid;
+  // Process as single card through AI
+  await processScanFiles(files, 'single');
+}
+
+// ── MODE 2: PAGE SCAN (3×3 grid camera) ──
+function startPageScan() {
+  closeAddCardsModal();
+  var modal = document.getElementById('page-scan-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  modal.style.flexDirection = 'column';
+  startPageScanCamera();
+}
+
+async function startPageScanCamera() {
+  try {
+    var constraints = { video: { facingMode: _pageScanFacing, width: { ideal: 1920 }, height: { ideal: 1920 } } };
+    _pageScanStream = await navigator.mediaDevices.getUserMedia(constraints);
+    var video = document.getElementById('page-scan-video');
+    if (video) { video.srcObject = _pageScanStream; }
+  } catch(e) {
+    var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+    var msg = {zh:'無法開啟相機：'+e.message, en:'Cannot open camera: '+e.message};
+    toast(msg[al]||msg.en);
+    closePageScanModal();
+  }
+}
+
+function stopPageScanCamera() {
+  if (_pageScanStream) {
+    _pageScanStream.getTracks().forEach(function(t){ t.stop(); });
+    _pageScanStream = null;
+  }
+}
+
+function closePageScanModal() {
+  stopPageScanCamera();
+  var modal = document.getElementById('page-scan-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function togglePageScanFlip() {
+  _pageScanFacing = _pageScanFacing === 'environment' ? 'user' : 'environment';
+  stopPageScanCamera();
+  startPageScanCamera();
+}
+
+async function capturePageScan() {
+  var video = document.getElementById('page-scan-video');
+  var canvas = document.getElementById('page-scan-capture');
+  if (!video || !canvas) return;
+
+  // Flash effect
+  var flash = document.createElement('div');
+  flash.className = 'scan-flash';
+  document.body.appendChild(flash);
+  setTimeout(function(){ flash.remove(); }, 500);
+
+  // Shutter animation
+  var shutter = document.getElementById('page-scan-shutter');
+  if (shutter) { shutter.style.transform = 'scale(0.88)'; setTimeout(function(){ shutter.style.transform = ''; }, 150); }
+
+  // Capture frame
+  canvas.width = video.videoWidth || 1920;
+  canvas.height = video.videoHeight || 1920;
+  var ctx = canvas.getContext('2d');
+  ctx.drawImage(video, 0, 0);
+
+  // Convert to file
+  canvas.toBlob(async function(blob) {
+    var file = new File([blob], 'page-scan.jpg', { type: 'image/jpeg' });
+    closePageScanModal();
+    await processScanFiles([file], 'page');
+  }, 'image/jpeg', 0.92);
+}
+
+// ── MODE 3: LIBRARY SELECTION ──
+function startLibraryScan() {
+  closeAddCardsModal();
+  var input = document.getElementById('add-library-input');
+  if (input) { input.setAttribute('data-bid', _scanBidTarget||''); input.click(); }
+}
+
+async function handleLibrarySelection(input) {
+  var files = Array.from(input.files||[]).filter(function(f){ return f.type.startsWith('image/'); });
+  input.value = '';
+  if (!files.length) return;
+  var bid = input.getAttribute('data-bid') || _scanBidTarget;
+  _scanBidTarget = bid;
+  await processScanFiles(files, 'library');
+}
+
+// ── CORE: PROCESS SCAN FILES ──
+async function processScanFiles(files, mode) {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var rem = getScansRemaining();
+  if (rem <= 0) {
+    var msg = {zh:'本月 AI 掃描次數已用完。請升級計劃或等待下月重置。', en:'Monthly AI scans exhausted. Upgrade your plan or wait for next month.'};
+    toast(msg[al]||msg.en); return;
+  }
+
+  // Show loading overlay
+  showScanLoading(files.length, mode, al);
+
+  try {
+    var results = [];
+
+    if (mode === 'page') {
+      // Single image, detect up to 9 cards via grid segmentation
+      results = await scanPageImage(files[0], al);
+    } else {
+      // One or more images, each = one card
+      for (var i = 0; i < files.length; i++) {
+        updateScanLoadingProgress(i+1, files.length, al);
+        var result = await scanSingleImage(files[i], al);
+        results.push(result);
+      }
+    }
+
+    hideScanLoading();
+    _scanResults = results;
+    showScanReview(results, mode, al);
+
+  } catch(e) {
+    hideScanLoading();
+    var errMsg = {zh:'掃描時發生錯誤：'+e.message, en:'Scan error: '+e.message};
+    toast(errMsg[al]||errMsg.en);
+  }
+}
+
+// ── SCAN SINGLE IMAGE → 1 card ──
+async function scanSingleImage(file, al) {
+  var base64 = await fileToBase64(file);
+  var prompt = al === 'zh'
+    ? '這是一張集換式卡牌的照片。請識別這張卡片並以JSON格式回傳：{"name_en":"英文卡名","name_zh":"中文卡名","set":"套裝名稱","number":"卡號（如有）","rarity":"稀有度","game":"遊戲名稱","confidence":0.95}。只回傳JSON，不要其他文字。'
+    : 'This is a photo of a trading card. Identify this card and respond ONLY with JSON: {"name_en":"card name in English","name_zh":"card name in Traditional Chinese","set":"set/expansion name","number":"card number if visible","rarity":"rarity level","game":"game name e.g. Pokemon TCG","confidence":0.95}. Only return JSON, no other text.';
+
+  try {
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 300,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: file.type || 'image/jpeg', data: base64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+    var data = await response.json();
+    var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
+    var json = JSON.parse(text.replace(/```json|```/g,'').trim());
+    decrementScanCount();
+    return { success: true, image: base64, imageType: file.type||'image/jpeg', ...json };
+  } catch(e) {
+    return { success: false, image: base64, imageType: file.type||'image/jpeg',
+             name_en: al==='zh'?'無法識別':'Unidentified', name_zh:'無法識別',
+             set: '', rarity: '', game: '', confidence: 0, error: e.message };
+  }
+}
+
+// ── SCAN PAGE IMAGE → up to 9 cards ──
+async function scanPageImage(file, al) {
+  var base64 = await fileToBase64(file);
+  var prompt = al === 'zh'
+    ? '這是一張含有最多9張集換式卡牌排列成3×3格的照片。請識別每個格子中的卡片（從左至右、從上至下，格子1-9）。以JSON陣列格式回傳，每個元素代表一個格子：[{"cell":1,"name_en":"卡名","name_zh":"中文卡名","set":"套裝","number":"","rarity":"","game":"","confidence":0.9,"empty":false},...]。若某格沒有卡片，設empty:true。只回傳JSON陣列，不要其他文字。'
+    : 'This photo shows up to 9 trading cards arranged in a 3×3 grid. Identify each card in each cell (left to right, top to bottom, cells 1-9). Return ONLY a JSON array where each element is one cell: [{"cell":1,"name_en":"card name","name_zh":"Chinese name","set":"set name","number":"","rarity":"","game":"Pokemon TCG","confidence":0.9,"empty":false},...]. If a cell has no card, set empty:true. Only return the JSON array.';
+
+  try {
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1500,
+        messages: [{
+          role: 'user',
+          content: [
+            { type: 'image', source: { type: 'base64', media_type: file.type||'image/jpeg', data: base64 } },
+            { type: 'text', text: prompt }
+          ]
+        }]
+      })
+    });
+    var data = await response.json();
+    var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
+    var arr = JSON.parse(text.replace(/```json|```/g,'').trim());
+    decrementScanCount(arr.filter(function(c){ return !c.empty; }).length);
+    return arr.map(function(c){ return { success: !c.empty, image: base64, imageType: file.type||'image/jpeg', isPageCell: true, ...c }; });
+  } catch(e) {
+    // Return 9 failed cells
+    return Array.from({length:9}, function(_,i){ return { success:false, cell:i+1, image:base64, imageType:file.type||'image/jpeg', name_en:'Unidentified', name_zh:'無法識別', set:'', rarity:'', game:'', confidence:0, error:e.message }; });
+  }
+}
+
+// ── SCAN REVIEW SCREEN ──
+function showScanReview(results, mode, al) {
+  // Flatten page results (array of arrays) vs single results
+  var flat = [];
+  results.forEach(function(r){ if (Array.isArray(r)) { r.forEach(function(c){ flat.push(c); }); } else { flat.push(r); } });
+  _scanResults = flat;
+  _excludedCells = {};
+
+  var modal = document.getElementById('scan-review-modal');
+  if (!modal) return;
+
+  var identified = flat.filter(function(c){ return c.success && !c.empty; }).length;
+  var total = flat.filter(function(c){ return !c.empty; }).length;
+
+  var subtitleL = {zh:'AI 識別了 '+identified+' / '+total+' 張卡片。點擊任一卡片可修改。', en:identified+' of '+total+' cards identified. Tap any card to edit.'};
+  document.getElementById('scan-review-subtitle').textContent = subtitleL[al]||subtitleL.en;
+
+  var summaryL = {zh:'確認後將加入 '+identified+' 張卡片至相冊', en:'Will add '+identified+' cards to your binder'};
+  document.getElementById('scan-review-summary').textContent = summaryL[al]||summaryL.en;
+
+  // Render grid
+  var grid = document.getElementById('scan-review-grid');
+  if (!grid) return;
+  grid.style.gridTemplateColumns = mode === 'page' ? 'repeat(3,1fr)' : 'repeat(2,1fr)';
+
+  grid.innerHTML = flat.map(function(card, idx) {
+    if (card.empty) return '<div class="scan-review-cell empty"><div style="aspect-ratio:2.5/3.5;display:flex;align-items:center;justify-content:center;color:var(--text-dim);font-size:20px;">—</div><div class="scan-review-cell-info"><div class="scan-review-cell-name" style="color:var(--text-dim);">' + (al==='zh'?'空格':'Empty') + '</div></div></div>';
+    var confColor = card.confidence >= 0.85 ? '#22c55e' : card.confidence >= 0.6 ? '#fbbf24' : '#f87171';
+    var confPct = Math.round((card.confidence||0)*100) + '%';
+    var imgSrc = card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : '';
+    var displayName = al === 'zh' ? (card.name_zh || card.name_en || '未識別') : (card.name_en || '未識別');
+    return '<div class="scan-review-cell ' + (card.success?'confirmed':'failed') + '" id="scan-cell-'+idx+'">'
+      + (imgSrc ? '<img class="scan-review-cell-img" src="'+imgSrc+'" alt="card"/>' : '<div class="scan-review-cell-img" style="display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(255,255,255,0.04);">🃏</div>')
+      + '<span class="scan-cell-exclude" id="excl-'+idx+'" onclick="toggleExcludeCell('+idx+')">✓</span>'
+      + '<span class="scan-review-cell-confidence" style="background:'+confColor+'22;color:'+confColor+';">'+confPct+'</span>'
+      + '<button class="scan-review-cell-edit" onclick="editScanCell('+idx+')" class="t">✏️</button>'
+      + '<div class="scan-review-cell-info">'
+      + '<div class="scan-review-cell-name">'+displayName+'</div>'
+      + '<div class="scan-review-cell-set">'+(card.set||'')+(card.number?' · '+card.number:'')+'</div>'
+      + '</div></div>';
+  }).join('');
+
+  modal.style.display = 'flex';
+  modal.style.flexDirection = 'column';
+}
+
+function toggleExcludeCell(idx) {
+  _excludedCells[idx] = !_excludedCells[idx];
+  var excl = document.getElementById('excl-'+idx);
+  var cell = document.getElementById('scan-cell-'+idx);
+  if (excl) { excl.textContent = _excludedCells[idx] ? '✕' : '✓'; excl.classList.toggle('excluded', _excludedCells[idx]); }
+  if (cell) { cell.style.opacity = _excludedCells[idx] ? '0.4' : '1'; }
+  updateScanReviewSummary();
+}
+
+function updateScanReviewSummary() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var toAdd = _scanResults.filter(function(c,i){ return c.success && !c.empty && !_excludedCells[i]; }).length;
+  var summary = document.getElementById('scan-review-summary');
+  if (summary) {
+    var msg = {zh:'確認後將加入 '+toAdd+' 張卡片至相冊', en:'Will add '+toAdd+' cards to your binder'};
+    summary.textContent = msg[al]||msg.en;
+  }
+}
+
+function editScanCell(idx) {
+  var card = _scanResults[idx];
+  if (!card) return;
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var current = al === 'zh' ? (card.name_zh||card.name_en) : (card.name_en||card.name_zh);
+  var newName = prompt(al==='zh'?'修改卡名：':'Edit card name:', current);
+  if (newName === null) return;
+  if (al === 'zh') { _scanResults[idx].name_zh = newName; } else { _scanResults[idx].name_en = newName; }
+  _scanResults[idx].success = true;
+  _scanResults[idx].confidence = 1.0; // manually confirmed
+  showScanReview(_scanResults.map(function(r){ return r; }), _scanResults[0].isPageCell ? 'page' : 'single', al);
+}
+
+function closeScanReview() {
+  var modal = document.getElementById('scan-review-modal');
+  if (modal) modal.style.display = 'none';
+  _scanResults = [];
+  _excludedCells = {};
+}
+
+// ── CONFIRM: ADD SCANNED CARDS TO BINDER ──
+function confirmAllScans() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var bid = _scanBidTarget;
+  if (!bid) { toast(al==='zh'?'找不到目標相冊':'No target binder found'); return; }
+
+  // Load existing cards
+  var existing = [];
+  try { existing = JSON.parse(localStorage.getItem('bv_cards_'+bid)||'[]'); } catch(e){}
+
+  // Add non-excluded successful cards
+  var added = 0;
+  _scanResults.forEach(function(card, idx) {
+    if (!card.success || card.empty || _excludedCells[idx]) return;
+    var newCard = {
+      id: 'card_' + Date.now() + '_' + idx,
+      name: al === 'zh' ? (card.name_zh || card.name_en || '未識別') : (card.name_en || card.name_zh || 'Unknown'),
+      name_en: card.name_en || '',
+      name_zh: card.name_zh || '',
+      set: card.set || '',
+      number: card.number || '',
+      rarity: card.rarity || '',
+      game: card.game || '',
+      confidence: card.confidence || 0,
+      aiScanned: true,
+      addedAt: new Date().toISOString(),
+      image: card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : null
+    };
+    existing.push(newCard);
+    added++;
+  });
+
+  localStorage.setItem('bv_cards_'+bid, JSON.stringify(existing));
+  closeScanReview();
+
+  // Refresh binder view if open
+  if (typeof bvRefreshCards === 'function') bvRefreshCards();
+  if (typeof renderBinders3 === 'function') renderBinders3();
+  // Refresh create-binder wizard preview if open
+  if (typeof bvUpdateCreatePreview === 'function' && document.getElementById('bv-create-preview')) bvUpdateCreatePreview();
+
+  var msg = {zh:'✅ 已新增 '+added+' 張卡片至相冊', en:'✅ Added '+added+' cards to binder'};
+  toast(msg[al]||msg.en);
+}
+
+// ── LOADING OVERLAY ──
+function showScanLoading(count, mode, al) {
+  var existing = document.getElementById('scan-loading-overlay');
+  if (existing) existing.remove();
+  var overlay = document.createElement('div');
+  overlay.id = 'scan-loading-overlay';
+  overlay.style.cssText = 'position:fixed;inset:0;z-index:820;background:rgba(0,0,0,0.9);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;';
+  var modeLabel = mode === 'page' ? (al==='zh'?'掃描整頁卡片...':'Scanning page of cards...') : mode === 'library' ? (al==='zh'?'處理 '+count+' 張照片...':'Processing '+count+' photos...') : (al==='zh'?'識別卡片...':'Identifying card...');
+  overlay.innerHTML = '<div style="font-size:48px;animation:spin 1s linear infinite;">✨</div>'
+    + '<div style="font-size:16px;font-weight:900;color:#fff;" id="scan-loading-msg">'+modeLabel+'</div>'
+    + '<div style="font-size:12px;color:rgba(255,255,255,0.5);" id="scan-loading-sub">' + (al==='zh'?'AI 正在識別卡牌資訊...':'AI is identifying card information...') + '</div>'
+    + '<div style="width:200px;height:4px;border-radius:2px;background:rgba(255,255,255,0.1);overflow:hidden;"><div id="scan-progress-bar" style="height:100%;background:linear-gradient(90deg,#7c3aed,#3B82F6);width:10%;transition:width 0.3s;border-radius:2px;"></div></div>';
+  document.body.appendChild(overlay);
+}
+
+function updateScanLoadingProgress(current, total, al) {
+  var bar = document.getElementById('scan-progress-bar');
+  var msg = document.getElementById('scan-loading-msg');
+  if (bar) bar.style.width = Math.round(current/total*100) + '%';
+  if (msg) msg.textContent = (al==='zh' ? '識別第 '+current+'/'+total+' 張...' : 'Identifying '+current+' of '+total+'...');
+}
+
+function hideScanLoading() {
+  var overlay = document.getElementById('scan-loading-overlay');
+  if (overlay) overlay.remove();
+}
+
+// ── UTILITIES ──
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function decrementScanCount(n) {
+  n = n || 1;
+  var used = parseInt(localStorage.getItem('bv_scans_used')||'0') + n;
+  localStorage.setItem('bv_scans_used', used.toString());
+  if (typeof updateScanCounterDisplay === 'function') updateScanCounterDisplay();
 }
 
 
@@ -16223,11 +16715,8 @@ setTimeout(()=>{
 
 
 <script>
-if('serviceWorker' in navigator){
-  const sw=`const C='bv-v3';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{e.waitUntil(clients.claim())});self.addEventListener('fetch',e=>{e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))})`;
-  const b=new Blob([sw],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(b)).catch(()=>{});
-}
+// Service worker registration removed (v52) — conflicts with the
+// force-unregister/cache-clear logic above and was causing stale-cache issues.
 // _pwaPrompt defined in main script
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwaPrompt=e;setTimeout(()=>{const b=document.getElementById('pwa-banner');if(b)b.style.display='flex';},4000)});
 // installPWA defined above
@@ -16308,7 +16797,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
         <div class="t" style="font-size:13px;font-weight:800;color:#fff;margin-bottom:4px;" data-zh="新增卡片到相冊" data-en="Add Cards to Binder" data-zh-cn="添加卡片" data-ja="カードを追加" data-ko="카드 추가" data-fr="Ajouter cartes" data-es="Agregar cartas" data-th="เพิ่มการ์ด" data-id="Tambah Kartu">新增卡片到相冊</div>
         <div class="t" style="font-size:11px;color:var(--text-muted);margin-bottom:12px;" data-zh="從圖庫選擇或拍照" data-en="Choose from library or take a photo" data-zh-cn="从相册选择或拍照" data-ja="ライブラリまたは撮影" data-ko="라이브러리 또는 촬영" data-fr="Bibliothèque ou photo" data-es="Biblioteca o foto" data-th="เลือกหรือถ่ายรูป" data-id="Pilih atau foto">從圖庫選擇或拍照</div>
         <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-          <button onclick="event.stopPropagation();document.getElementById('card-file-input').click()" style="padding:8px 16px;border-radius:9px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">
+          <button onclick="event.stopPropagation();openAddCardsModal(window._currentBinderId)" style="padding:8px 16px;border-radius:9px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">
             🖼️ <span class="t" data-zh="選擇圖片" data-en="Choose Photos" data-zh-cn="选择图片" data-ja="写真を選択" data-ko="사진 선택" data-fr="Choisir" data-es="Elegir" data-th="เลือกรูป" data-id="Pilih">選擇圖片</span>
           </button>
           <button onclick="event.stopPropagation();document.getElementById('card-camera-input').click()" style="padding:8px 14px;border-radius:9px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">
@@ -16319,7 +16808,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
 
       <!-- Add more bar (shown when cards exist) -->
       <div id="bd-add-card-btn" style="display:none;margin-bottom:12px;">
-        <button onclick="event.stopPropagation();document.getElementById('card-file-input').click()" style="width:100%;padding:9px;border-radius:10px;background:rgba(59,130,246,0.1);border:1.5px dashed rgba(59,130,246,0.4);color:#60A5FA;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">
+        <button onclick="event.stopPropagation();openAddCardsModal(window._currentBinderId)" style="width:100%;padding:9px;border-radius:10px;background:rgba(59,130,246,0.1);border:1.5px dashed rgba(59,130,246,0.4);color:#60A5FA;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">
           🖼️ <span class="t" data-zh="新增更多" data-en="Add More" data-zh-cn="添加更多" data-ja="追加" data-ko="더 추가" data-fr="Ajouter" data-es="Agregar" data-th="เพิ่มอีก" data-id="Tambah">新增更多</span>
           &nbsp;·&nbsp;
           <span onclick="event.stopPropagation();document.getElementById('card-camera-input').click()" style="text-decoration:underline;cursor:pointer;" class="t" data-zh="拍照" data-en="Photo" data-zh-cn="拍照" data-ja="撮影" data-ko="촬영" data-fr="Photo" data-es="Foto" data-th="ถ่าย" data-id="Foto">拍照</span>
@@ -16405,7 +16894,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
         <input type="file" id="bv-camera-input" accept="image/*" capture="environment" style="display:none" onchange="bvHandleUploadWithScan(this)"/>
         <div id="bv-owner-controls" style="display:contents;">
           <div id="bv-scan-counter" onclick="showScanCountInfo()" style="padding:4px 8px;border-radius:7px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);font-size:10px;font-weight:800;color:#c4b5fd;white-space:nowrap;cursor:pointer;">✨ <span id="bv-scan-count">—</span></div>
-        <button onclick="document.getElementById('bv-file-input').click()" style="padding:6px 11px;border-radius:8px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:11px;font-weight:800;cursor:pointer;">+ <span class="t" data-zh="新增" data-en="Add" data-zh-cn="新增" data-ja="追加" data-ko="추가" data-fr="Ajouter" data-es="Agregar" data-th="เพิ่ม" data-id="Tambah">新增</span></button>
+        <button onclick="openAddCardsModal(_bvBinderId)" style="padding:6px 11px;border-radius:8px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:11px;font-weight:800;cursor:pointer;">+ <span class="t" data-zh="新增" data-en="Add" data-zh-cn="新增" data-ja="追加" data-ko="추가" data-fr="Ajouter" data-es="Agregar" data-th="เพิ่ม" data-id="Tambah">新增</span></button>
           <button onclick="document.getElementById('bv-camera-input').click()" style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:13px;cursor:pointer;">📷</button>
         </div>
       </div>
@@ -16731,6 +17220,132 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
   </div>
 </div>
 <!-- ══ END SUBSCRIPTION PAYMENT MODAL ══ -->
+
+<!-- ══ ADD CARDS MODAL ══ -->
+<div id="add-cards-modal" style="display:none;position:fixed;inset:0;z-index:700;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeAddCardsModal()">
+  <div style="background:var(--panel,#1A1E30);border-radius:24px 24px 0 0;border:1px solid rgba(139,92,246,0.25);width:100%;max-width:560px;padding:24px 20px 32px;box-sizing:border-box;">
+    <div style="width:36px;height:4px;border-radius:2px;background:rgba(255,255,255,0.15);margin:0 auto 20px;"></div>
+    <div style="font-size:17px;font-weight:900;color:var(--white);margin-bottom:4px;" class="t" data-zh="新增卡片" data-en="Add Cards">新增卡片</div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:20px;" class="t" data-zh="選擇掃描方式" data-en="Choose how to add cards">選擇掃描方式</div>
+
+    <!-- Option 1: Single card -->
+    <button onclick="startSingleCardScan()" style="width:100%;margin-bottom:10px;padding:16px;border-radius:14px;background:rgba(59,130,246,0.08);border:1.5px solid rgba(59,130,246,0.25);color:var(--white);font-family:'Nunito',sans-serif;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;-webkit-tap-highlight-color:transparent;">
+      <span style="font-size:32px;flex-shrink:0;">📷</span>
+      <div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:2px;" class="t" data-zh="掃描單張卡片" data-en="Scan One Card">掃描單張卡片</div>
+        <div style="font-size:11px;color:var(--text-muted);" class="t" data-zh="對準一張卡，拍照即可識別。最快最準確。" data-en="Point at one card and shoot. Fastest & most accurate.">對準一張卡，拍照即可識別。最快最準確。</div>
+      </div>
+      <span style="margin-left:auto;color:var(--blue-lt);font-size:18px;">›</span>
+    </button>
+
+    <!-- Option 2: Page scan 3×3 -->
+    <button onclick="startPageScan()" style="width:100%;margin-bottom:10px;padding:16px;border-radius:14px;background:rgba(139,92,246,0.08);border:1.5px solid rgba(139,92,246,0.25);color:var(--white);font-family:'Nunito',sans-serif;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;-webkit-tap-highlight-color:transparent;position:relative;">
+      <span style="font-size:32px;flex-shrink:0;">⊞</span>
+      <div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:2px;" class="t" data-zh="掃描一頁（最多 9 張）" data-en="Scan a Page (up to 9)">掃描一頁（最多 9 張）</div>
+        <div style="font-size:11px;color:var(--text-muted);" class="t" data-zh="按 3×3 格排列卡片，一次過掃描整頁。Binderverse 獨家功能。" data-en="Lay cards in a 3×3 grid and scan the whole page at once. Exclusive to Binderverse.">按 3×3 格排列卡片，一次過掃描整頁。</div>
+      </div>
+      <span style="position:absolute;top:10px;right:10px;font-size:9px;font-weight:900;padding:2px 7px;border-radius:20px;background:linear-gradient(135deg,#7c3aed,#3B82F6);color:#fff;" class="t" data-zh="獨家" data-en="EXCLUSIVE">獨家</span>
+    </button>
+
+    <!-- Option 3: From library -->
+    <button onclick="startLibraryScan()" style="width:100%;padding:16px;border-radius:14px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);color:var(--white);font-family:'Nunito',sans-serif;cursor:pointer;display:flex;align-items:center;gap:14px;text-align:left;-webkit-tap-highlight-color:transparent;">
+      <span style="font-size:32px;flex-shrink:0;">🖼️</span>
+      <div>
+        <div style="font-size:14px;font-weight:900;margin-bottom:2px;" class="t" data-zh="從相簿選取" data-en="Choose from Library">從相簿選取</div>
+        <div style="font-size:11px;color:var(--text-muted);" class="t" data-zh="從手機相簿選取已有的卡片照片，支援批量選取。" data-en="Pick existing photos from your library. Supports multiple selection.">從手機相簿選取已有的卡片照片，支援批量選取。</div>
+      </div>
+      <span style="margin-left:auto;color:var(--text-muted);font-size:18px;">›</span>
+    </button>
+
+    <!-- Scan counter -->
+    <div id="add-cards-scan-counter" style="margin-top:14px;text-align:center;font-size:11px;color:rgba(139,92,246,0.7);font-weight:700;"></div>
+  </div>
+</div>
+
+<!-- ══ PAGE SCAN CAMERA MODAL (3×3 grid overlay) ══ -->
+<div id="page-scan-modal" style="display:none;position:fixed;inset:0;z-index:800;background:#000;flex-direction:column;">
+  <!-- Camera feed -->
+  <video id="page-scan-video" autoplay playsinline muted style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></video>
+  <canvas id="page-scan-capture" style="display:none;"></canvas>
+
+  <!-- Top bar -->
+  <div style="position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);">
+    <button onclick="closePageScanModal()" style="padding:8px 14px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">✕ <span class="t" data-zh="取消" data-en="Cancel">取消</span></button>
+    <div style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:800;" class="t" data-zh="將最多 9 張卡放入格內" data-en="Place up to 9 cards in the grid">將最多 9 張卡放入格內</div>
+    <button onclick="togglePageScanFlip()" style="padding:8px 10px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:16px;cursor:pointer;">🔄</button>
+  </div>
+
+  <!-- Grid overlay -->
+  <div style="position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;padding:0 12px;">
+    <div id="page-scan-grid" style="width:100%;max-width:480px;aspect-ratio:1;position:relative;">
+      <!-- SVG grid overlay -->
+      <svg id="page-scan-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 300 300">
+        <!-- Corner brackets - top left -->
+        <path d="M10,30 L10,10 L30,10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <!-- top right -->
+        <path d="M270,10 L290,10 L290,30" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <!-- bottom left -->
+        <path d="M10,270 L10,290 L30,290" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <!-- bottom right -->
+        <path d="M270,290 L290,290 L290,270" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <!-- Grid lines -->
+        <line x1="10" y1="103" x2="290" y2="103" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="10" y1="197" x2="290" y2="197" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="103" y1="10" x2="103" y2="290" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="197" y1="10" x2="197" y2="290" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <!-- Cell numbers -->
+        <text x="56" y="56" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">1</text>
+        <text x="150" y="56" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">2</text>
+        <text x="244" y="56" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">3</text>
+        <text x="56" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">4</text>
+        <text x="150" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">5</text>
+        <text x="244" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">6</text>
+        <text x="56" y="244" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">7</text>
+        <text x="150" y="244" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">8</text>
+        <text x="244" y="244" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">9</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Bottom shutter bar -->
+  <div style="position:relative;z-index:2;padding:16px 24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);display:flex;align-items:center;justify-content:center;gap:24px;">
+    <div style="flex:1;font-size:11px;color:rgba(255,255,255,0.6);text-align:center;" class="t" data-zh="將卡片對齊格線後拍照" data-en="Align cards to grid then shoot">將卡片對齊格線後拍照</div>
+    <!-- Shutter button -->
+    <button id="page-scan-shutter" onclick="capturePageScan()" style="width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,0.3);cursor:pointer;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,0.5);transition:transform 0.1s;">
+    </button>
+    <div style="flex:1;"></div>
+  </div>
+</div>
+
+<!-- ══ SCAN REVIEW MODAL ══ -->
+<div id="scan-review-modal" style="display:none;position:fixed;inset:0;z-index:810;background:var(--bg,#0D0F1A);flex-direction:column;">
+  <!-- Header -->
+  <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border2);flex-shrink:0;">
+    <button onclick="closeScanReview()" style="padding:7px 12px;border-radius:9px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="← 返回" data-en="← Back">← 返回</button>
+    <div style="flex:1;">
+      <div style="font-size:14px;font-weight:900;color:var(--white);" class="t" data-zh="確認掃描結果" data-en="Review Scan Results">確認掃描結果</div>
+      <div id="scan-review-subtitle" style="font-size:11px;color:var(--text-muted);"></div>
+    </div>
+    <button onclick="confirmAllScans()" id="scan-review-add-btn" style="padding:9px 16px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;" class="t" data-zh="全部加入" data-en="Add All">全部加入</button>
+  </div>
+
+  <!-- Scrollable review grid -->
+  <div id="scan-review-grid" style="flex:1;overflow-y:auto;padding:16px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- Bottom summary -->
+  <div style="padding:12px 16px;border-top:1px solid var(--border2);flex-shrink:0;">
+    <div id="scan-review-summary" style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:10px;"></div>
+    <button onclick="confirmAllScans()" style="width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;cursor:pointer;" class="t" data-zh="加入相冊" data-en="Add to Binder">加入相冊</button>
+  </div>
+</div>
+
+<!-- Hidden file inputs for add cards -->
+<input type="file" id="add-single-camera" accept="image/*" capture="environment" style="display:none" onchange="handleSingleCardCapture(this)"/>
+<input type="file" id="add-library-input" accept="image/*" multiple style="display:none" onchange="handleLibrarySelection(this)"/>
+<!-- ══ END ADD CARDS MODALS ══ -->
 
 </body>
 </html>
