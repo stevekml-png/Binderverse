@@ -4764,7 +4764,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v59 ✓';
+    v.textContent = 'Build v61 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5099,7 +5099,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v59</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v61</div>
   </footer>
 
 </main>
@@ -13199,8 +13199,8 @@ async function scanSingleImage(file, al) {
 async function scanPageImage(file, al) {
   var base64 = await fileToBase64(file);
   var prompt = al === 'zh'
-    ? '這是一張含有最多9張集換式卡牌排列成3×3格的照片。請識別每個格子中的卡片（從左至右、從上至下，格子1-9）。以JSON陣列格式回傳，每個元素代表一個格子：[{"cell":1,"name_en":"卡名","name_zh":"中文卡名","set":"套裝","number":"","rarity":"","game":"","confidence":0.9,"empty":false},...]。若某格沒有卡片，設empty:true。只回傳JSON陣列，不要其他文字。'
-    : 'This photo shows up to 9 trading cards arranged in a 3×3 grid. Identify each card in each cell (left to right, top to bottom, cells 1-9). Return ONLY a JSON array where each element is one cell: [{"cell":1,"name_en":"card name","name_zh":"Chinese name","set":"set name","number":"","rarity":"","game":"Pokemon TCG","confidence":0.9,"empty":false},...]. If a cell has no card, set empty:true. Only return the JSON array.';
+    ? '這是一張含有最多9張集換式卡牌排列成3×3格的照片。請識別每個格子中的卡片（從左至右、從上至下，格子1-9）。以JSON陣列格式回傳，每個元素代表一個格子：[{"cell":1,"name_en":"卡名","name_zh":"中文卡名","set":"套裝","number":"","rarity":"","game":"","confidence":0.9,"empty":false,"bbox":{"x":0.01,"y":0.01,"w":0.31,"h":0.31}},...]。重要：empty 只代表該格是否有卡片存在（看到卡片就設 empty:false，即使你不確定確切的卡名/套裝/版本）。confidence 是獨立的數值，代表你對識別結果的信心程度（0到1），即使信心較低，仍請盡力填寫你認為最可能的 name_en/name_zh，不要留空。bbox 是該卡片在整張照片中的邊界框，數值為相對整張照片寬高的比例（0到1），盡量貼合卡片邊緣，不要包含背景。只回傳JSON陣列，不要其他文字。'
+    : 'This photo shows up to 9 trading cards arranged in a 3x3 grid. Identify each card in each cell (left to right, top to bottom, cells 1-9). Return ONLY a JSON array where each element is one cell: [{"cell":1,"name_en":"card name","name_zh":"Chinese name","set":"set name","number":"","rarity":"","game":"Pokemon TCG","confidence":0.9,"empty":false,"bbox":{"x":0.01,"y":0.01,"w":0.31,"h":0.31}},...]. IMPORTANT: "empty" only indicates whether a card is physically present in that cell (set empty:false whenever you can see a card, even if you are unsure of the exact name/set/edition). "confidence" is a separate score (0 to 1) reflecting how certain you are about the identification. Even with low confidence, still provide your best-guess name_en/name_zh rather than leaving them blank. "bbox" is the bounding box of the physical card within the full photo, as fractions (0 to 1) of the photo width/height — fit it tightly to the card edges, excluding background. Only return the JSON array, no other text.';
 
   if (!getScanApiKey()) {
     var crops0 = await cropPageScanCells(base64, file.type||'image/jpeg');
@@ -13228,7 +13228,8 @@ async function scanPageImage(file, al) {
     var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
     var arr = JSON.parse(text.replace(/```json|```/g,'').trim());
     decrementScanCount(arr.filter(function(c){ return !c.empty; }).length);
-    var crops = await cropPageScanCells(base64, file.type||'image/jpeg');
+    var bboxes = arr.map(function(c){ return c.bbox || null; });
+    var crops = await cropPageScanCells(base64, file.type||'image/jpeg', bboxes);
     return arr.map(function(c, i){ return { success: !c.empty, image: crops[i]||base64, imageType: file.type||'image/jpeg', isPageCell: true, ...c }; });
   } catch(e) {
     // Return 9 failed cells, still cropped so the user can see each card individually
@@ -13238,6 +13239,10 @@ async function scanPageImage(file, al) {
 }
 
 // ── SCAN REVIEW SCREEN ──
+// Shared: does this scanned card have enough info to be added to the binder?
+function hasUsableName(c) {
+  return !c.empty && !c.error && ((c.name_en && c.name_en.trim()) || (c.name_zh && c.name_zh.trim()));
+}
 function showScanReview(results, mode, al) {
   // Flatten page results (array of arrays) vs single results
   var flat = [];
@@ -13248,7 +13253,7 @@ function showScanReview(results, mode, al) {
   var modal = document.getElementById('scan-review-modal');
   if (!modal) return;
 
-  var identified = flat.filter(function(c){ return c.success && !c.empty; }).length;
+  var identified = flat.filter(hasUsableName).length;
   var total = flat.filter(function(c){ return !c.empty; }).length;
 
   var subtitleL = {zh:'AI 識別了 '+identified+' / '+total+' 張卡片。點擊任一卡片可修改。', en:identified+' of '+total+' cards identified. Tap any card to edit.'};
@@ -13289,7 +13294,7 @@ function showScanReview(results, mode, al) {
         ? (al==='zh' ? '請到設定輸入 API 金鑰' : 'Set API key in Settings')
         : (al==='zh' ? '錯誤：' : 'Error: ') + card.error;
     }
-    return '<div class="scan-review-cell ' + (card.success?'confirmed':'failed') + '" id="scan-cell-'+idx+'">'
+    return '<div class="scan-review-cell ' + (hasUsableName(card)?'confirmed':'failed') + '" id="scan-cell-'+idx+'">'
       + (imgSrc ? '<img class="scan-review-cell-img" src="'+imgSrc+'" alt="card"/>' : '<div class="scan-review-cell-img" style="display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(255,255,255,0.04);">🃏</div>')
       + '<span class="scan-cell-exclude" id="excl-'+idx+'" onclick="toggleExcludeCell('+idx+')">✓</span>'
       + '<span class="scan-review-cell-confidence" style="background:'+confColor+';color:#0a0a0f;">'+confPct+'</span>'
@@ -13315,7 +13320,7 @@ function toggleExcludeCell(idx) {
 
 function updateScanReviewSummary() {
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
-  var toAdd = _scanResults.filter(function(c,i){ return c.success && !c.empty && !_excludedCells[i]; }).length;
+  var toAdd = _scanResults.filter(function(c,i){ return hasUsableName(c) && !_excludedCells[i]; }).length;
   var summary = document.getElementById('scan-review-summary');
   if (summary) {
     var msg = {zh:'確認後將加入 '+toAdd+' 張卡片至相冊', en:'Will add '+toAdd+' cards to your binder'};
@@ -13384,37 +13389,78 @@ function confirmAllScans() {
   var bid = _scanBidTarget;
   if (!bid) { toast(al==='zh'?'找不到目標相冊':'No target binder found'); return; }
 
-  // Load existing cards
-  var existing = [];
-  try { existing = JSON.parse(localStorage.getItem('bv_cards_'+bid)||'[]'); } catch(e){}
+  // Load existing cards + metadata (parallel arrays, established format)
+  var imgKey = 'bv_cards_' + bid;
+  var metaKey = 'bv_card_meta_' + bid;
+  var existingImages = [];
+  var existingMetas = [];
+  try { existingImages = JSON.parse(localStorage.getItem(imgKey)||'[]'); } catch(e){}
+  try { existingMetas = JSON.parse(localStorage.getItem(metaKey)||'[]'); } catch(e){}
 
-  // Add non-excluded successful cards
+  // Normalize free-text rarity from AI into the rarity keys the detail view expects
+  function normalizeRarity(r) {
+    if (!r) return 'common';
+    var s = r.toString().toLowerCase();
+    if (s.indexOf('secret') !== -1) return 'secret_rare';
+    if (s.indexOf('ultra') !== -1 || s.indexOf('rare holo') !== -1) return 'ultra_rare';
+    if (s.indexOf('uncommon') !== -1) return 'uncommon';
+    if (s.indexOf('rare') !== -1) return 'rare';
+    return 'common';
+  }
+  // Normalize free-text game from AI into the game keys the detail view expects
+  function normalizeGame(g) {
+    if (!g) return 'other';
+    var s = g.toString().toLowerCase();
+    if (s.indexOf('pokemon') !== -1 || s.indexOf('pokémon') !== -1) return 'pokemon';
+    if (s.indexOf('one piece') !== -1) return 'onepiece';
+    if (s.indexOf('yu-gi-oh') !== -1 || s.indexOf('yugioh') !== -1) return 'yugioh';
+    if (s.indexOf('magic') !== -1) return 'magic';
+    return 'other';
+  }
+
+  // Add non-excluded cards that have a usable name (defensive: AI may set
+  // success/empty inconsistently even when it has identified a real card)
   var added = 0;
   _scanResults.forEach(function(card, idx) {
-    if (!card.success || card.empty || _excludedCells[idx]) return;
-    var newCard = {
-      id: 'card_' + Date.now() + '_' + idx,
+    if (_excludedCells[idx]) return;
+    if (!hasUsableName(card)) return;
+    var imgSrc = card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : '';
+    if (!imgSrc) return;
+    existingImages.push(imgSrc);
+    existingMetas.push({
+      game: normalizeGame(card.game),
+      card_type: 'Card',
       name: al === 'zh' ? (card.name_zh || card.name_en || '未識別') : (card.name_en || card.name_zh || 'Unknown'),
       name_en: card.name_en || '',
       name_zh: card.name_zh || '',
       set: card.set || '',
       number: card.number || '',
-      rarity: card.rarity || '',
-      game: card.game || '',
-      confidence: card.confidence || 0,
+      rarity: normalizeRarity(card.rarity),
+      condition: 'near_mint',
+      tradeable: false,
+      askingPrice: '',
+      graded: false,
+      grading_company: '',
+      grade: '',
       aiScanned: true,
-      addedAt: new Date().toISOString(),
-      image: card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : null
-    };
-    existing.push(newCard);
+      confidence: card.confidence || 0,
+      scannedAt: new Date().toISOString()
+    });
     added++;
   });
 
-  localStorage.setItem('bv_cards_'+bid, JSON.stringify(existing));
+  try {
+    localStorage.setItem(imgKey, JSON.stringify(existingImages));
+    localStorage.setItem(metaKey, JSON.stringify(existingMetas));
+  } catch(e) {
+    toast(al==='zh'?'⚠️ 儲存空間不足':'⚠️ Storage full — try clearing old photos');
+    return;
+  }
+
   closeScanReview();
 
   // Refresh binder view if open
-  if (typeof bvRefreshCards === 'function') bvRefreshCards();
+  if (typeof bvRenderCards === 'function') bvRenderCards();
   if (typeof renderBinders3 === 'function') renderBinders3();
   // Refresh create-binder wizard preview if open
   if (typeof bvUpdateCreatePreview === 'function' && document.getElementById('bv-create-preview')) bvUpdateCreatePreview();
@@ -13478,23 +13524,41 @@ function getScanApiHeaders() {
 // ── CROP PAGE-SCAN IMAGE INTO 9 CELLS ──
 // Returns a Promise resolving to an array of 9 base64 (no data: prefix) cell images,
 // cropped from the full page-scan photo based on the 3x3 grid (with small inset margins).
-function cropPageScanCells(base64, mimeType) {
+// Crop the page-scan image into up to 9 cell images. If `bboxes` (array of
+// {x,y,w,h} fractions, one per cell, possibly null/invalid) is provided,
+// use those for tighter per-card crops; otherwise fall back to equal 3x3 grid.
+function cropPageScanCells(base64, mimeType, bboxes) {
   return new Promise(function(resolve) {
     var img = new Image();
     img.onload = function() {
       var w = img.width, h = img.height;
       var cellW = w / 3, cellH = h / 3;
-      // Slight inset so card edges aren't clipped by grid lines
-      var insetX = cellW * 0.04, insetY = cellH * 0.04;
-      var cw = cellW - insetX*2, ch = cellH - insetY*2;
       var canvas = document.createElement('canvas');
-      canvas.width = cw; canvas.height = ch;
       var ctx = canvas.getContext('2d');
       var crops = [];
+      function isValidBbox(b) {
+        return b && typeof b.x === 'number' && typeof b.y === 'number' && typeof b.w === 'number' && typeof b.h === 'number'
+          && b.w > 0.02 && b.h > 0.02 && b.x >= 0 && b.y >= 0 && (b.x+b.w) <= 1.05 && (b.y+b.h) <= 1.05;
+      }
       for (var row=0; row<3; row++) {
         for (var col=0; col<3; col++) {
-          ctx.clearRect(0,0,cw,ch);
-          ctx.drawImage(img, col*cellW+insetX, row*cellH+insetY, cw, ch, 0, 0, cw, ch);
+          var idx = row*3 + col;
+          var sx, sy, sw, sh;
+          var b = bboxes && bboxes[idx];
+          if (isValidBbox(b)) {
+            sx = Math.max(0, b.x * w);
+            sy = Math.max(0, b.y * h);
+            sw = Math.min(w - sx, b.w * w);
+            sh = Math.min(h - sy, b.h * h);
+          } else {
+            // Fallback: equal grid cell with small inset
+            var insetX = cellW * 0.04, insetY = cellH * 0.04;
+            sx = col*cellW + insetX; sy = row*cellH + insetY;
+            sw = cellW - insetX*2; sh = cellH - insetY*2;
+          }
+          canvas.width = sw; canvas.height = sh;
+          ctx.clearRect(0,0,sw,sh);
+          ctx.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
           crops.push(canvas.toDataURL(mimeType||'image/jpeg', 0.82).split(',')[1]);
         }
       }
