@@ -4765,7 +4765,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v57 ✓';
+    v.textContent = 'Build v58 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5100,7 +5100,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v57</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v58</div>
   </footer>
 
 </main>
@@ -6499,6 +6499,18 @@ if ('serviceWorker' in navigator) {
   </div>
   <div class="settings-body">
 
+    <!-- AI Card Scanning — at top for visibility -->
+    <div id="ai-scan-key-section" style="padding:12px;border-radius:12px;background:rgba(124,58,237,0.08);border:1.5px solid rgba(124,58,237,0.3);margin-bottom:16px;">
+      <div class="s-label t" style="margin-top:0;" data-zh="🔑 AI 卡片掃描" data-en="🔑 AI Card Scanning" data-zh-cn="🔑 AI 卡片扫描" data-ja="🔑 AIカードスキャン" data-ko="🔑 AI 카드 스캔" data-fr="🔑 Scan IA" data-es="🔑 Escaneo IA" data-th="🔑 สแกนการ์ด AI" data-id="🔑 Pemindaian Kartu AI">🔑 AI 卡片掃描</div>
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;" class="t" data-zh="輸入你的 Anthropic API 金鑰以啟用 AI 卡片識別（僅供開發/個人測試使用 — 金鑰會儲存在此裝置的瀏覽器中，請勿在公用裝置上使用）" data-en="Enter your Anthropic API key to enable AI card scanning (dev/personal use only — the key is stored in this browser's local storage; do not use on shared devices)">輸入你的 Anthropic API 金鑰以啟用 AI 卡片識別（僅供開發/個人測試使用 — 金鑰會儲存在此裝置的瀏覽器中，請勿在公用裝置上使用）</div>
+      <input type="password" id="scan-api-key-input" placeholder="sk-ant-..." style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Nunito',sans-serif;font-size:12px;margin-bottom:8px;box-sizing:border-box;"/>
+      <div style="display:flex;gap:8px;">
+        <button onclick="saveScanApiKeyFromSettings()" style="flex:1;padding:9px;border-radius:10px;background:#3B82F6;border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="儲存" data-en="Save">儲存</button>
+        <button onclick="clearScanApiKeyFromSettings()" style="flex:1;padding:9px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="清除" data-en="Clear">清除</button>
+      </div>
+      <div id="scan-api-key-status" style="font-size:11px;color:var(--text-dim);margin-top:6px;"></div>
+    </div>
+
     <!-- Dark / Light mode toggle -->
     <div class="s-label t" data-zh="🌓 外觀模式" data-en="🌓 Appearance" data-zh-cn="🌓 外观模式" data-ja="🌓 外観" data-ko="🌓 외관" data-fr="🌓 Apparence" data-es="🌓 Apariencia">🌓 外觀模式</div>
     <div style="display:flex;gap:8px;margin-bottom:16px;">
@@ -6604,17 +6616,6 @@ if ('serviceWorker' in navigator) {
       </button>
     </div>
 
-    <div class="s-divider"></div>
-    <div class="s-label t" data-zh="🔑 AI 卡片掃描" data-en="🔑 AI Card Scanning" data-zh-cn="🔑 AI 卡片扫描" data-ja="🔑 AIカードスキャン" data-ko="🔑 AI 카드 스캔" data-fr="🔑 Scan IA" data-es="🔑 Escaneo IA" data-th="🔑 สแกนการ์ด AI" data-id="🔑 Pemindaian Kartu AI">🔑 AI 卡片掃描</div>
-    <div style="padding:0 4px 12px;">
-      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;" class="t" data-zh="輸入你的 Anthropic API 金鑰以啟用 AI 卡片識別（僅供開發/個人測試使用 — 金鑰會儲存在此裝置的瀏覽器中，請勿在公用裝置上使用）" data-en="Enter your Anthropic API key to enable AI card scanning (dev/personal use only — the key is stored in this browser's local storage; do not use on shared devices)">輸入你的 Anthropic API 金鑰以啟用 AI 卡片識別（僅供開發/個人測試使用 — 金鑰會儲存在此裝置的瀏覽器中，請勿在公用裝置上使用）</div>
-      <input type="password" id="scan-api-key-input" placeholder="sk-ant-..." style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Nunito',sans-serif;font-size:12px;margin-bottom:8px;box-sizing:border-box;"/>
-      <div style="display:flex;gap:8px;">
-        <button onclick="saveScanApiKeyFromSettings()" style="flex:1;padding:9px;border-radius:10px;background:#3B82F6;border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="儲存" data-en="Save">儲存</button>
-        <button onclick="clearScanApiKeyFromSettings()" style="flex:1;padding:9px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="清除" data-en="Clear">清除</button>
-      </div>
-      <div id="scan-api-key-status" style="font-size:11px;color:var(--text-dim);margin-top:6px;"></div>
-    </div>
     <div class="s-divider"></div>
     <div class="s-label t" data-zh="🏠 主頁顯示項目" data-en="🏠 Home Feed Sections" data-ja="🏠 ホームフィード" data-ko="🏠 홈 피드 섹션" data-fr="🏠 Sections" data-es="🏠 Secciones" data-th="🏠 ส่วนหน้าแรก" data-id="🏠 Bagian Beranda">🏠 主頁顯示項目</div>
     <div class="tog-row">
@@ -12974,14 +12975,35 @@ function startPageScan() {
   modal.style.display = 'flex';
   modal.style.flexDirection = 'column';
   startPageScanCamera();
+  // Briefly disable shutter to let camera autofocus settle, avoiding blurry captures
+  var shutter = document.getElementById('page-scan-shutter');
+  if (shutter) {
+    shutter.disabled = true;
+    shutter.style.opacity = '0.4';
+    setTimeout(function(){ if (shutter) { shutter.disabled = false; shutter.style.opacity = '1'; } }, 1200);
+  }
 }
 
 async function startPageScanCamera() {
   try {
-    var constraints = { video: { facingMode: _pageScanFacing, width: { ideal: 1080 }, height: { ideal: 1512 } } };
-    _pageScanStream = await navigator.mediaDevices.getUserMedia(constraints);
+    var constraints = { video: { facingMode: _pageScanFacing, width: { ideal: 1080 }, height: { ideal: 1512 }, focusMode: 'continuous' } };
+    try {
+      _pageScanStream = await navigator.mediaDevices.getUserMedia(constraints);
+    } catch(e2) {
+      // Some browsers reject unsupported focusMode constraint — retry without it
+      delete constraints.video.focusMode;
+      _pageScanStream = await navigator.mediaDevices.getUserMedia(constraints);
+    }
     var video = document.getElementById('page-scan-video');
     if (video) { video.srcObject = _pageScanStream; }
+    // Try to explicitly request continuous autofocus on the track if supported
+    try {
+      var track = _pageScanStream.getVideoTracks()[0];
+      var caps = track.getCapabilities ? track.getCapabilities() : {};
+      if (caps.focusMode && caps.focusMode.includes('continuous')) {
+        await track.applyConstraints({ advanced: [{ focusMode: 'continuous' }] });
+      }
+    } catch(e3) { /* not supported — ignore */ }
   } catch(e) {
     var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
     var msg = {zh:'無法開啟相機：'+e.message, en:'Cannot open camera: '+e.message};
@@ -15064,13 +15086,19 @@ function refreshScanApiKeyUI() {
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
   var input = document.getElementById('scan-api-key-input');
   var status = document.getElementById('scan-api-key-status');
+  var section = document.getElementById('ai-scan-key-section');
   var key = getScanApiKey();
   if (input) input.value = key;
   if (status) {
     var msg = key
       ? {zh:'✅ 已設定金鑰', en:'✅ Key is set'}
-      : {zh:'未設定金鑰 — AI 掃描功能將無法使用', en:'No key set — AI scanning will not work'};
+      : {zh:'⚠️ 未設定金鑰 — AI 掃描功能將無法使用', en:'⚠️ No key set — AI scanning will not work'};
     status.textContent = (msg[al]||msg.en);
+    status.style.color = key ? '#4ade80' : '#fbbf24';
+  }
+  if (section) {
+    section.style.borderColor = key ? 'rgba(34,197,94,0.3)' : 'rgba(251,191,36,0.4)';
+    section.style.background = key ? 'rgba(34,197,94,0.06)' : 'rgba(251,191,36,0.08)';
   }
 }
 function saveScanApiKeyFromSettings() {
