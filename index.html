@@ -4756,7 +4756,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v53 ✓';
+    v.textContent = 'Build v54 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5084,7 +5084,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v53</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v54</div>
   </footer>
 
 </main>
@@ -6588,6 +6588,17 @@ if ('serviceWorker' in navigator) {
       </button>
     </div>
 
+    <div class="s-divider"></div>
+    <div class="s-label t" data-zh="🔑 AI 卡片掃描" data-en="🔑 AI Card Scanning" data-zh-cn="🔑 AI 卡片扫描" data-ja="🔑 AIカードスキャン" data-ko="🔑 AI 카드 스캔" data-fr="🔑 Scan IA" data-es="🔑 Escaneo IA" data-th="🔑 สแกนการ์ด AI" data-id="🔑 Pemindaian Kartu AI">🔑 AI 卡片掃描</div>
+    <div style="padding:0 4px 12px;">
+      <div style="font-size:11px;color:var(--text-muted);margin-bottom:8px;" class="t" data-zh="輸入你的 Anthropic API 金鑰以啟用 AI 卡片識別（僅供開發/個人測試使用 — 金鑰會儲存在此裝置的瀏覽器中，請勿在公用裝置上使用）" data-en="Enter your Anthropic API key to enable AI card scanning (dev/personal use only — the key is stored in this browser's local storage; do not use on shared devices)">輸入你的 Anthropic API 金鑰以啟用 AI 卡片識別（僅供開發/個人測試使用 — 金鑰會儲存在此裝置的瀏覽器中，請勿在公用裝置上使用）</div>
+      <input type="password" id="scan-api-key-input" placeholder="sk-ant-..." style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Nunito',sans-serif;font-size:12px;margin-bottom:8px;box-sizing:border-box;"/>
+      <div style="display:flex;gap:8px;">
+        <button onclick="saveScanApiKeyFromSettings()" style="flex:1;padding:9px;border-radius:10px;background:#3B82F6;border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="儲存" data-en="Save">儲存</button>
+        <button onclick="clearScanApiKeyFromSettings()" style="flex:1;padding:9px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="清除" data-en="Clear">清除</button>
+      </div>
+      <div id="scan-api-key-status" style="font-size:11px;color:var(--text-dim);margin-top:6px;"></div>
+    </div>
     <div class="s-divider"></div>
     <div class="s-label t" data-zh="🏠 主頁顯示項目" data-en="🏠 Home Feed Sections" data-ja="🏠 ホームフィード" data-ko="🏠 홈 피드 섹션" data-fr="🏠 Sections" data-es="🏠 Secciones" data-th="🏠 ส่วนหน้าแรก" data-id="🏠 Bagian Beranda">🏠 主頁顯示項目</div>
     <div class="tog-row">
@@ -12919,7 +12930,7 @@ function startPageScan() {
 
 async function startPageScanCamera() {
   try {
-    var constraints = { video: { facingMode: _pageScanFacing, width: { ideal: 1920 }, height: { ideal: 1920 } } };
+    var constraints = { video: { facingMode: _pageScanFacing, width: { ideal: 1080 }, height: { ideal: 1512 } } };
     _pageScanStream = await navigator.mediaDevices.getUserMedia(constraints);
     var video = document.getElementById('page-scan-video');
     if (video) { video.srcObject = _pageScanStream; }
@@ -12966,8 +12977,8 @@ async function capturePageScan() {
   if (shutter) { shutter.style.transform = 'scale(0.88)'; setTimeout(function(){ shutter.style.transform = ''; }, 150); }
 
   // Capture frame
-  canvas.width = video.videoWidth || 1920;
-  canvas.height = video.videoHeight || 1920;
+  canvas.width = video.videoWidth || 1080;
+  canvas.height = video.videoHeight || 1512;
   var ctx = canvas.getContext('2d');
   ctx.drawImage(video, 0, 0);
 
@@ -13040,10 +13051,16 @@ async function scanSingleImage(file, al) {
     ? '這是一張集換式卡牌的照片。請識別這張卡片並以JSON格式回傳：{"name_en":"英文卡名","name_zh":"中文卡名","set":"套裝名稱","number":"卡號（如有）","rarity":"稀有度","game":"遊戲名稱","confidence":0.95}。只回傳JSON，不要其他文字。'
     : 'This is a photo of a trading card. Identify this card and respond ONLY with JSON: {"name_en":"card name in English","name_zh":"card name in Traditional Chinese","set":"set/expansion name","number":"card number if visible","rarity":"rarity level","game":"game name e.g. Pokemon TCG","confidence":0.95}. Only return JSON, no other text.';
 
+  if (!getScanApiKey()) {
+    return { success: false, image: base64, imageType: file.type||'image/jpeg',
+             name_en:'No API key set', name_zh:'未設定 API 金鑰',
+             set: '', rarity: '', game: '', confidence: 0, error: 'missing_api_key' };
+  }
+
   try {
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getScanApiHeaders(),
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 300,
@@ -13057,6 +13074,7 @@ async function scanSingleImage(file, al) {
       })
     });
     var data = await response.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
     var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
     var json = JSON.parse(text.replace(/```json|```/g,'').trim());
     decrementScanCount();
@@ -13075,10 +13093,15 @@ async function scanPageImage(file, al) {
     ? '這是一張含有最多9張集換式卡牌排列成3×3格的照片。請識別每個格子中的卡片（從左至右、從上至下，格子1-9）。以JSON陣列格式回傳，每個元素代表一個格子：[{"cell":1,"name_en":"卡名","name_zh":"中文卡名","set":"套裝","number":"","rarity":"","game":"","confidence":0.9,"empty":false},...]。若某格沒有卡片，設empty:true。只回傳JSON陣列，不要其他文字。'
     : 'This photo shows up to 9 trading cards arranged in a 3×3 grid. Identify each card in each cell (left to right, top to bottom, cells 1-9). Return ONLY a JSON array where each element is one cell: [{"cell":1,"name_en":"card name","name_zh":"Chinese name","set":"set name","number":"","rarity":"","game":"Pokemon TCG","confidence":0.9,"empty":false},...]. If a cell has no card, set empty:true. Only return the JSON array.';
 
+  if (!getScanApiKey()) {
+    var crops0 = await cropPageScanCells(base64, file.type||'image/jpeg');
+    return Array.from({length:9}, function(_,i){ return { success:false, cell:i+1, image:crops0[i]||base64, imageType:file.type||'image/jpeg', name_en:'No API key set', name_zh:'未設定 API 金鑰', set:'', rarity:'', game:'', confidence:0, error:'missing_api_key' }; });
+  }
+
   try {
     var response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: getScanApiHeaders(),
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 1500,
@@ -13092,13 +13115,16 @@ async function scanPageImage(file, al) {
       })
     });
     var data = await response.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
     var text = (data.content||[]).map(function(b){ return b.text||''; }).join('');
     var arr = JSON.parse(text.replace(/```json|```/g,'').trim());
     decrementScanCount(arr.filter(function(c){ return !c.empty; }).length);
-    return arr.map(function(c){ return { success: !c.empty, image: base64, imageType: file.type||'image/jpeg', isPageCell: true, ...c }; });
+    var crops = await cropPageScanCells(base64, file.type||'image/jpeg');
+    return arr.map(function(c, i){ return { success: !c.empty, image: crops[i]||base64, imageType: file.type||'image/jpeg', isPageCell: true, ...c }; });
   } catch(e) {
-    // Return 9 failed cells
-    return Array.from({length:9}, function(_,i){ return { success:false, cell:i+1, image:base64, imageType:file.type||'image/jpeg', name_en:'Unidentified', name_zh:'無法識別', set:'', rarity:'', game:'', confidence:0, error:e.message }; });
+    // Return 9 failed cells, still cropped so the user can see each card individually
+    var crops2 = await cropPageScanCells(base64, file.type||'image/jpeg');
+    return Array.from({length:9}, function(_,i){ return { success:false, cell:i+1, image:crops2[i]||base64, imageType:file.type||'image/jpeg', name_en:'Unidentified', name_zh:'無法識別', set:'', rarity:'', game:'', confidence:0, error:e.message }; });
   }
 }
 
@@ -13266,6 +13292,51 @@ function fileToBase64(file) {
     reader.onload = function(e) { resolve(e.target.result.split(',')[1]); };
     reader.onerror = reject;
     reader.readAsDataURL(file);
+  });
+}
+
+// ── AI SCAN API KEY (BYOK — bring your own key, for dev/personal use) ──
+function getScanApiKey() {
+  try { return localStorage.getItem('bv_scan_apikey') || ''; } catch(e) { return ''; }
+}
+function setScanApiKey(key) {
+  try { localStorage.setItem('bv_scan_apikey', key||''); } catch(e) {}
+}
+function getScanApiHeaders() {
+  var key = getScanApiKey();
+  var headers = { 'Content-Type': 'application/json', 'anthropic-version': '2023-06-01' };
+  if (key) headers['x-api-key'] = key;
+  headers['anthropic-dangerous-direct-browser-access'] = 'true';
+  return headers;
+}
+
+// ── CROP PAGE-SCAN IMAGE INTO 9 CELLS ──
+// Returns a Promise resolving to an array of 9 base64 (no data: prefix) cell images,
+// cropped from the full page-scan photo based on the 3x3 grid (with small inset margins).
+function cropPageScanCells(base64, mimeType) {
+  return new Promise(function(resolve) {
+    var img = new Image();
+    img.onload = function() {
+      var w = img.width, h = img.height;
+      var cellW = w / 3, cellH = h / 3;
+      // Slight inset so card edges aren't clipped by grid lines
+      var insetX = cellW * 0.04, insetY = cellH * 0.04;
+      var cw = cellW - insetX*2, ch = cellH - insetY*2;
+      var canvas = document.createElement('canvas');
+      canvas.width = cw; canvas.height = ch;
+      var ctx = canvas.getContext('2d');
+      var crops = [];
+      for (var row=0; row<3; row++) {
+        for (var col=0; col<3; col++) {
+          ctx.clearRect(0,0,cw,ch);
+          ctx.drawImage(img, col*cellW+insetX, row*cellH+insetY, cw, ch, 0, 0, cw, ch);
+          crops.push(canvas.toDataURL(mimeType||'image/jpeg', 0.82).split(',')[1]);
+        }
+      }
+      resolve(crops);
+    };
+    img.onerror = function(){ resolve(Array.from({length:9}, function(){ return base64; })); };
+    img.src = 'data:' + (mimeType||'image/jpeg') + ';base64,' + base64;
   });
 }
 
@@ -14863,6 +14934,36 @@ function openSettings() {
   setTimeout(function() { if (typeof updateSubUI === 'function') updateSubUI(); }, 50);
   document.getElementById('s-drawer').classList.add('open');
   setTimeout(updateStorageUI, 100);
+  setTimeout(refreshScanApiKeyUI, 50);
+}
+
+// ── AI SCAN API KEY (settings UI) ──
+function refreshScanApiKeyUI() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var input = document.getElementById('scan-api-key-input');
+  var status = document.getElementById('scan-api-key-status');
+  var key = getScanApiKey();
+  if (input) input.value = key;
+  if (status) {
+    var msg = key
+      ? {zh:'✅ 已設定金鑰', en:'✅ Key is set'}
+      : {zh:'未設定金鑰 — AI 掃描功能將無法使用', en:'No key set — AI scanning will not work'};
+    status.textContent = (msg[al]||msg.en);
+  }
+}
+function saveScanApiKeyFromSettings() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var input = document.getElementById('scan-api-key-input');
+  var key = input ? input.value.trim() : '';
+  setScanApiKey(key);
+  refreshScanApiKeyUI();
+  toast((al==='zh'?'✅ 已儲存 API 金鑰':'✅ API key saved'));
+}
+function clearScanApiKeyFromSettings() {
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  setScanApiKey('');
+  refreshScanApiKeyUI();
+  toast((al==='zh'?'🗑️ 已清除 API 金鑰':'🗑️ API key cleared'));
 }
 function closeSettings() {
   document.getElementById('s-backdrop').classList.remove('show');
@@ -17278,32 +17379,32 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
 
   <!-- Grid overlay -->
   <div style="position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;padding:0 12px;">
-    <div id="page-scan-grid" style="width:100%;max-width:480px;aspect-ratio:1;position:relative;">
-      <!-- SVG grid overlay -->
-      <svg id="page-scan-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 300 300">
+    <div id="page-scan-grid" style="width:100%;max-width:420px;aspect-ratio:300/420;position:relative;">
+      <!-- SVG grid overlay (cells sized to ~2.5:3.5 card aspect ratio) -->
+      <svg id="page-scan-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 300 420">
         <!-- Corner brackets - top left -->
         <path d="M10,30 L10,10 L30,10" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
         <!-- top right -->
         <path d="M270,10 L290,10 L290,30" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
         <!-- bottom left -->
-        <path d="M10,270 L10,290 L30,290" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <path d="M10,390 L10,410 L30,410" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
         <!-- bottom right -->
-        <path d="M270,290 L290,290 L290,270" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
-        <!-- Grid lines -->
-        <line x1="10" y1="103" x2="290" y2="103" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
-        <line x1="10" y1="197" x2="290" y2="197" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
-        <line x1="103" y1="10" x2="103" y2="290" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
-        <line x1="197" y1="10" x2="197" y2="290" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <path d="M270,410 L290,410 L290,390" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"/>
+        <!-- Grid lines (3 cols x 3 rows, cell ~93x133) -->
+        <line x1="10" y1="143" x2="290" y2="143" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="10" y1="277" x2="290" y2="277" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="103" y1="10" x2="103" y2="410" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
+        <line x1="197" y1="10" x2="197" y2="410" stroke="rgba(255,255,255,0.5)" stroke-width="1" stroke-dasharray="4,3"/>
         <!-- Cell numbers -->
-        <text x="56" y="56" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">1</text>
-        <text x="150" y="56" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">2</text>
-        <text x="244" y="56" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">3</text>
-        <text x="56" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">4</text>
-        <text x="150" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">5</text>
-        <text x="244" y="150" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">6</text>
-        <text x="56" y="244" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">7</text>
-        <text x="150" y="244" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">8</text>
-        <text x="244" y="244" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">9</text>
+        <text x="56" y="80" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">1</text>
+        <text x="150" y="80" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">2</text>
+        <text x="244" y="80" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">3</text>
+        <text x="56" y="214" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">4</text>
+        <text x="150" y="214" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">5</text>
+        <text x="244" y="214" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">6</text>
+        <text x="56" y="348" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">7</text>
+        <text x="150" y="348" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">8</text>
+        <text x="244" y="348" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-size="20" font-family="Nunito,sans-serif" font-weight="900">9</text>
       </svg>
     </div>
   </div>
