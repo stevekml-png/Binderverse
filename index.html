@@ -4450,6 +4450,12 @@ body:not(.light) .sec-sub { color: rgba(248,250,252,0.65) !important; }
 #add-cards-modal.open { display: flex !important; align-items: flex-end; }
 #page-scan-modal.open { display: flex !important; }
 #scan-review-modal.open { display: flex !important; }
+#page-scan-modal, #scan-review-modal {
+  height: 100dvh;
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  box-sizing: border-box;
+}
 
 #page-scan-shutter:active { transform: scale(0.92); }
 
@@ -4759,7 +4765,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v56 ✓';
+    v.textContent = 'Build v57 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -4811,6 +4817,9 @@ if ('serviceWorker' in navigator) {
     <button class="nav-icon-btn" onclick="navigate('messages')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     </button>
+    <button class="nav-icon-btn" onclick="installPWA()" title="Install App" id="nav-install-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 17V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg>
+    </button>
     <button class="nav-icon-btn" onclick="openSettings()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
     </button>
@@ -4850,6 +4859,10 @@ if ('serviceWorker' in navigator) {
     <button class="mobile-nav-item" onclick="mobileNavTo('profile')">
       <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
       <span class="mobile-nav-label t" data-zh="我的頁面" data-en="Profile" data-ja="プロフィール" data-ko="프로필" data-fr="Profil" data-es="Perfil" data-th="โปรไฟล์" data-id="Profil" data-zh-cn="我的页面">我的頁面</span>
+    </button>
+    <button class="mobile-nav-item" onclick="installPWA();closeMobileMenu()">
+      <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 17V3"/><path d="M7 8l5-5 5 5"/><path d="M5 21h14"/></svg></span>
+      <span class="mobile-nav-label t" data-zh="安裝應用" data-en="Install App" data-zh-cn="安装应用" data-ja="アプリをインストール" data-ko="앱 설치" data-fr="Installer l'app" data-es="Instalar app" data-th="ติดตั้งแอป" data-id="Pasang Aplikasi">安裝應用</span>
     </button>
     <button class="mobile-nav-item" onclick="openSettings();closeMobileMenu()">
       <span class="mobile-nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></span>
@@ -5087,7 +5100,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v56</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v57</div>
   </footer>
 
 </main>
@@ -9358,7 +9371,18 @@ function installPWA() {
 }
 function showIOSInstallModal() {
   var m = document.getElementById('ios-install-modal');
-  if (m) m.style.display = 'flex';
+  if (m) {
+    m.style.display = 'flex';
+    // Ensure modal text reflects current language even if it was added after setLang() last ran
+    var attrLang = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn') ? 'zh' : 'en';
+    var dataKey = 'data-' + lang;
+    var fallKey = 'data-' + attrLang;
+    m.querySelectorAll('.t').forEach(function(el){
+      if (el.children.length > 0) return;
+      var val = el.getAttribute(dataKey) || el.getAttribute('data-' + lang.split('-')[0]) || el.getAttribute(fallKey);
+      if (val) el.textContent = val;
+    });
+  }
 }
 function closeIOSInstallModal() {
   var m = document.getElementById('ios-install-modal');
@@ -12899,6 +12923,7 @@ var _scanBidTarget = null;  // which binder to add cards to
 var _pageScanStream = null; // camera stream
 var _pageScanFacing = 'environment'; // back camera
 var _scanResults = [];      // array of identified cards
+var _lastScanMode = null;   // 'page' | 'single' | 'library' — for retake
 var _excludedCells = {};    // cells user excluded from add
 
 // ── OPEN ADD CARDS MODAL ──
@@ -13079,6 +13104,8 @@ async function processScanFiles(files, mode) {
   // Show loading overlay
   showScanLoading(files.length, mode, al);
 
+  _lastScanMode = mode;
+
   try {
     var results = [];
 
@@ -13209,6 +13236,21 @@ function showScanReview(results, mode, al) {
   var summaryL = {zh:'確認後將加入 '+identified+' 張卡片至相冊', en:'Will add '+identified+' cards to your binder'};
   document.getElementById('scan-review-summary').textContent = summaryL[al]||summaryL.en;
 
+  // Show a banner if all scans failed due to missing API key
+  var noKeyBanner = document.getElementById('scan-review-nokey-banner');
+  var allMissingKey = flat.length > 0 && flat.every(function(c){ return c.empty || c.error === 'missing_api_key'; });
+  if (noKeyBanner) {
+    if (allMissingKey) {
+      noKeyBanner.style.display = 'flex';
+      var bannerMsg = {zh:'尚未設定 AI 掃描的 API 金鑰，無法識別卡片。', en:'No AI scan API key set — cards could not be identified.'};
+      var bannerBtn = {zh:'前往設定', en:'Open Settings'};
+      noKeyBanner.querySelector('.nokey-msg').textContent = bannerMsg[al]||bannerMsg.en;
+      noKeyBanner.querySelector('.nokey-btn').textContent = bannerBtn[al]||bannerBtn.en;
+    } else {
+      noKeyBanner.style.display = 'none';
+    }
+  }
+
   // Render grid
   var grid = document.getElementById('scan-review-grid');
   if (!grid) return;
@@ -13220,6 +13262,12 @@ function showScanReview(results, mode, al) {
     var confPct = Math.round((card.confidence||0)*100) + '%';
     var imgSrc = card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : '';
     var displayName = al === 'zh' ? (card.name_zh || card.name_en || '未識別') : (card.name_en || '未識別');
+    var displaySet = (card.set||'')+(card.number?' · '+card.number:'');
+    if (!card.success && card.error) {
+      displaySet = card.error === 'missing_api_key'
+        ? (al==='zh' ? '請到設定輸入 API 金鑰' : 'Set API key in Settings')
+        : (al==='zh' ? '錯誤：' : 'Error: ') + card.error;
+    }
     return '<div class="scan-review-cell ' + (card.success?'confirmed':'failed') + '" id="scan-cell-'+idx+'">'
       + (imgSrc ? '<img class="scan-review-cell-img" src="'+imgSrc+'" alt="card"/>' : '<div class="scan-review-cell-img" style="display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(255,255,255,0.04);">🃏</div>')
       + '<span class="scan-cell-exclude" id="excl-'+idx+'" onclick="toggleExcludeCell('+idx+')">✓</span>'
@@ -13227,7 +13275,7 @@ function showScanReview(results, mode, al) {
       + '<button class="scan-review-cell-edit" onclick="editScanCell('+idx+')" class="t">✏️</button>'
       + '<div class="scan-review-cell-info">'
       + '<div class="scan-review-cell-name">'+displayName+'</div>'
-      + '<div class="scan-review-cell-set">'+(card.set||'')+(card.number?' · '+card.number:'')+'</div>'
+      + '<div class="scan-review-cell-set" style="' + (!card.success && card.error ? 'color:#f87171;' : '') + '">'+displaySet+'</div>'
       + '</div></div>';
   }).join('');
 
@@ -13272,6 +13320,19 @@ function closeScanReview() {
   if (modal) modal.style.display = 'none';
   _scanResults = [];
   _excludedCells = {};
+}
+
+function retakeScan() {
+  closeScanReview();
+  if (_lastScanMode === 'page') {
+    startPageScan();
+  } else if (_lastScanMode === 'single') {
+    startSingleCardScan();
+  } else if (_lastScanMode === 'library') {
+    startLibraryScan();
+  } else {
+    openAddCardsModal(_scanBidTarget);
+  }
 }
 
 // ── CONFIRM: ADD SCANNED CARDS TO BINDER ──
@@ -16879,16 +16940,18 @@ setTimeout(()=>{
 <div id="ios-install-modal" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeIOSInstallModal()">
   <div style="background:var(--panel,#161A2C);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:420px;text-align:center;">
     <div style="font-size:40px;margin-bottom:8px;">🃏</div>
-    <div style="font-size:16px;font-weight:900;color:var(--white);margin-bottom:8px;" class="t" data-zh="安裝 Binderverse" data-en="Install Binderverse" data-zh-cn="安装 Binderverse" data-ja="Binderverseをインストール" data-ko="Binderverse 설치" data-fr="Installer Binderverse" data-es="Instalar Binderverse">安裝 Binderverse</div>
+    <div style="font-size:16px;font-weight:900;color:var(--white);margin-bottom:8px;" class="t" data-zh="安裝 Binderverse" data-en="Install Binderverse" data-zh-cn="安装 Binderverse" data-ja="Binderverseをインストール" data-ko="Binderverse 설치" data-fr="Installer Binderverse" data-es="Instalar Binderverse" data-th="ติดตั้ง Binderverse" data-id="Pasang Binderverse">安裝 Binderverse</div>
     <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;" class="t"
-      data-zh="在 Safari 工具列點擊「分享」按鈕，然後選擇「加入主畫面」"
-      data-en="Tap the Share button in Safari's toolbar, then select 'Add to Home Screen'"
-      data-zh-cn="在 Safari 工具栏点击「分享」按钮，然后选择「添加到主屏幕」"
-      data-ja="Safariのツールバーで共有ボタンをタップし、「ホーム画面に追加」を選択してください"
-      data-ko="Safari 도구 모음에서 공유 버튼을 누른 다음 '홈 화면에 추가'를 선택하세요"
-      data-fr="Appuyez sur le bouton Partager dans la barre d'outils Safari, puis sélectionnez « Sur l'écran d'accueil »"
-      data-es="Toca el botón Compartir en la barra de Safari y luego selecciona 'Añadir a pantalla de inicio'">在 Safari 工具列點擊「分享」按鈕 <span style="display:inline-block;transform:translateY(3px);">⬆️</span>，然後選擇「加入主畫面」 ➕</div>
-    <button onclick="closeIOSInstallModal()" style="width:100%;padding:12px;border-radius:12px;background:var(--blue,#3B82F6);border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;" class="t" data-zh="知道了" data-en="Got it" data-zh-cn="知道了" data-ja="わかりました" data-ko="확인" data-fr="J'ai compris" data-es="Entendido">知道了</button>
+      data-zh="在 Safari 工具列點擊「分享」按鈕 ⬆️，然後選擇「加入主畫面」 ➕"
+      data-en="Tap the Share button ⬆️ in Safari's toolbar, then select 'Add to Home Screen' ➕"
+      data-zh-cn="在 Safari 工具栏点击「分享」按钮 ⬆️，然后选择「添加到主屏幕」 ➕"
+      data-ja="Safariのツールバーで共有ボタン ⬆️ をタップし、「ホーム画面に追加」➕ を選択してください"
+      data-ko="Safari 도구 모음에서 공유 버튼 ⬆️ 을 누른 다음 '홈 화면에 추가' ➕ 를 선택하세요"
+      data-fr="Appuyez sur le bouton Partager ⬆️ dans la barre d'outils Safari, puis sélectionnez « Sur l'écran d'accueil » ➕"
+      data-es="Toca el botón Compartir ⬆️ en la barra de Safari y luego selecciona 'Añadir a pantalla de inicio' ➕"
+      data-th="แตะปุ่มแชร์ ⬆️ ในแถบเครื่องมือ Safari แล้วเลือก 'เพิ่มไปยังหน้าจอหลัก' ➕"
+      data-id="Ketuk tombol Bagikan ⬆️ di toolbar Safari, lalu pilih 'Tambah ke Layar Utama' ➕">在 Safari 工具列點擊「分享」按鈕 ⬆️，然後選擇「加入主畫面」 ➕</div>
+    <button onclick="closeIOSInstallModal()" style="width:100%;padding:12px;border-radius:12px;background:var(--blue,#3B82F6);border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;" class="t" data-zh="知道了" data-en="Got it" data-zh-cn="知道了" data-ja="わかりました" data-ko="확인" data-fr="J'ai compris" data-es="Entendido" data-th="เข้าใจแล้ว" data-id="Mengerti">知道了</button>
   </div>
 </div>
 
@@ -17499,13 +17562,22 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
 <!-- ══ SCAN REVIEW MODAL ══ -->
 <div id="scan-review-modal" style="display:none;position:fixed;inset:0;z-index:810;background:var(--bg,#0D0F1A);flex-direction:column;">
   <!-- Header -->
-  <div style="display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--border2);flex-shrink:0;">
+  <div style="display:flex;align-items:center;gap:8px;padding:16px;border-bottom:1px solid var(--border2);flex-shrink:0;flex-wrap:wrap;">
     <button onclick="closeScanReview()" style="padding:7px 12px;border-radius:9px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="← 返回" data-en="← Back">← 返回</button>
-    <div style="flex:1;">
+    <div style="flex:1;min-width:0;">
       <div style="font-size:14px;font-weight:900;color:var(--white);" class="t" data-zh="確認掃描結果" data-en="Review Scan Results">確認掃描結果</div>
       <div id="scan-review-subtitle" style="font-size:11px;color:var(--text-muted);"></div>
     </div>
-    <button onclick="confirmAllScans()" id="scan-review-add-btn" style="padding:9px 16px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;" class="t" data-zh="全部加入" data-en="Add All">全部加入</button>
+    <button onclick="retakeScan()" style="padding:7px 12px;border-radius:9px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);color:#fbbf24;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;" class="t"
+      data-zh="🔄 重拍" data-en="🔄 Retake" data-zh-cn="🔄 重拍" data-ja="🔄 再撮影" data-ko="🔄 다시 찍기" data-fr="🔄 Reprendre" data-es="🔄 Repetir">🔄 重拍</button>
+    <button onclick="confirmAllScans()" id="scan-review-add-btn" style="padding:9px 16px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;" class="t" data-zh="全部加入" data-en="Add All">全部加入</button>
+  </div>
+
+  <!-- No API key banner -->
+  <div id="scan-review-nokey-banner" style="display:none;align-items:center;gap:10px;padding:10px 16px;background:rgba(239,68,68,0.1);border-bottom:1px solid rgba(239,68,68,0.25);flex-shrink:0;">
+    <span style="font-size:18px;flex-shrink:0;">⚠️</span>
+    <div class="nokey-msg" style="flex:1;font-size:12px;color:#f87171;"></div>
+    <button class="nokey-btn" onclick="closeScanReview();openSettings();" style="padding:6px 12px;border-radius:8px;background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.35);color:#f87171;font-family:Nunito,sans-serif;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;"></button>
   </div>
 
   <!-- Scrollable review grid -->
