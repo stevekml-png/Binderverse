@@ -4451,6 +4451,8 @@ body:not(.light) .sec-sub { color: rgba(248,250,252,0.65) !important; }
 #page-scan-modal.open { display: flex !important; }
 #scan-review-modal.open { display: flex !important; }
 #page-scan-modal, #scan-review-modal {
+  height: 100vh;
+  height: -webkit-fill-available;
   height: 100dvh;
   box-sizing: border-box;
 }
@@ -4764,7 +4766,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v63 ✓';
+    v.textContent = 'Build v65 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5099,7 +5101,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v63</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v65</div>
   </footer>
 
 </main>
@@ -12973,6 +12975,14 @@ function startPageScan() {
   if (!modal) return;
   modal.style.display = 'flex';
   modal.style.flexDirection = 'column';
+  // Force a reflow so iOS Safari recalculates 100dvh/safe-area correctly
+  // (otherwise the bottom shutter bar can render off-screen until the
+  // user touches the screen, which triggers Safari's toolbar to settle).
+  void modal.offsetHeight;
+  requestAnimationFrame(function(){
+    modal.style.height = '100vh';
+    requestAnimationFrame(function(){ modal.style.height = ''; });
+  });
   startPageScanCamera();
   // Briefly disable shutter to let camera autofocus settle, avoiding blurry captures
   var shutter = document.getElementById('page-scan-shutter');
@@ -13157,8 +13167,8 @@ async function processScanFiles(files, mode) {
 async function scanSingleImage(file, al) {
   var base64 = await fileToBase64(file);
   var prompt = al === 'zh'
-    ? '這是一張集換式卡牌的照片。請識別這張卡片並以JSON格式回傳：{"name_en":"英文卡名","name_zh":"中文卡名","set":"套裝名稱","number":"卡號（如有）","rarity":"稀有度","game":"遊戲名稱","confidence":0.95}。只回傳JSON，不要其他文字。'
-    : 'This is a photo of a trading card. Identify this card and respond ONLY with JSON: {"name_en":"card name in English","name_zh":"card name in Traditional Chinese","set":"set/expansion name","number":"card number if visible","rarity":"rarity level","game":"game name e.g. Pokemon TCG","confidence":0.95}. Only return JSON, no other text.';
+    ? '這是一張集換式卡牌的照片。請識別這張卡片並以JSON格式回傳：{"name_en":"英文卡名","name_zh":"中文卡名","set":"套裝名稱","number":"卡號（如有）","rarity":"稀有度","game":"遊戲名稱","card_type":"卡片類型（例如：寶可夢、訓練家、能量、生物、法術、陷阱等，依該遊戲的分類）","confidence":0.95}。只回傳JSON，不要其他文字。'
+    : 'This is a photo of a trading card. Identify this card and respond ONLY with JSON: {"name_en":"card name in English","name_zh":"card name in Traditional Chinese","set":"set/expansion name","number":"card number if visible","rarity":"rarity level","game":"game name e.g. Pokemon TCG","card_type":"the card type/category within its game (e.g. for Pokemon TCG: Pokemon, Trainer, Energy; for Magic: Creature, Instant, Sorcery, Land; for Yu-Gi-Oh: Monster, Spell, Trap)","confidence":0.95}. Only return JSON, no other text.';
 
   if (!getScanApiKey()) {
     return { success: false, image: base64, imageType: file.type||'image/jpeg',
@@ -13199,8 +13209,8 @@ async function scanSingleImage(file, al) {
 async function scanPageImage(file, al) {
   var base64 = await fileToBase64(file);
   var prompt = al === 'zh'
-    ? '這是一張含有最多9張集換式卡牌排列成3×3格的照片。請識別每個格子中的卡片（從左至右、從上至下，格子1-9）。以JSON陣列格式回傳，每個元素代表一個格子：[{"cell":1,"name_en":"卡名","name_zh":"中文卡名","set":"套裝","number":"","rarity":"","game":"","confidence":0.9,"empty":false,"bbox":{"x":0.01,"y":0.01,"w":0.31,"h":0.31}},...]。重要：empty 只代表該格是否有卡片存在（看到卡片就設 empty:false，即使你不確定確切的卡名/套裝/版本）。confidence 是獨立的數值，代表你對識別結果的信心程度（0到1），即使信心較低，仍請盡力填寫你認為最可能的 name_en/name_zh，不要留空。bbox 是該卡片在整張照片中的邊界框，數值為相對整張照片寬高的比例（0到1），盡量貼合卡片邊緣，不要包含背景。只回傳JSON陣列，不要其他文字。'
-    : 'This photo shows up to 9 trading cards arranged in a 3x3 grid. Identify each card in each cell (left to right, top to bottom, cells 1-9). Return ONLY a JSON array where each element is one cell: [{"cell":1,"name_en":"card name","name_zh":"Chinese name","set":"set name","number":"","rarity":"","game":"Pokemon TCG","confidence":0.9,"empty":false,"bbox":{"x":0.01,"y":0.01,"w":0.31,"h":0.31}},...]. IMPORTANT: "empty" only indicates whether a card is physically present in that cell (set empty:false whenever you can see a card, even if you are unsure of the exact name/set/edition). "confidence" is a separate score (0 to 1) reflecting how certain you are about the identification. Even with low confidence, still provide your best-guess name_en/name_zh rather than leaving them blank. "bbox" is the bounding box of the physical card within the full photo, as fractions (0 to 1) of the photo width/height — fit it tightly to the card edges, excluding background. Only return the JSON array, no other text.';
+    ? '這是一張含有最多9張集換式卡牌排列成3×3格的照片。請識別每個格子中的卡片（從左至右、從上至下，格子1-9）。以JSON陣列格式回傳，每個元素代表一個格子：[{"cell":1,"name_en":"卡名","name_zh":"中文卡名","set":"套裝","number":"","rarity":"","game":"","card_type":"卡片類型","confidence":0.9,"empty":false,"bbox":{"x":0.01,"y":0.01,"w":0.31,"h":0.31}},...]。重要：empty 只代表該格是否有卡片存在（看到卡片就設 empty:false，即使你不確定確切的卡名/套裝/版本）。confidence 是獨立的數值，代表你對識別結果的信心程度（0到1），即使信心較低，仍請盡力填寫你認為最可能的 name_en/name_zh，不要留空。bbox 是該卡片在整張照片中的邊界框，數值為相對整張照片寬高的比例（0到1），盡量貼合卡片邊緣，不要包含背景。只回傳JSON陣列，不要其他文字。'
+    : 'This photo shows up to 9 trading cards arranged in a 3x3 grid. Identify each card in each cell (left to right, top to bottom, cells 1-9). Return ONLY a JSON array where each element is one cell: [{"cell":1,"name_en":"card name","name_zh":"Chinese name","set":"set name","number":"","rarity":"","game":"Pokemon TCG","card_type":"card type (e.g. Pokemon/Trainer/Energy)","confidence":0.9,"empty":false,"bbox":{"x":0.01,"y":0.01,"w":0.31,"h":0.31}},...]. IMPORTANT: "empty" only indicates whether a card is physically present in that cell (set empty:false whenever you can see a card, even if you are unsure of the exact name/set/edition). "confidence" is a separate score (0 to 1) reflecting how certain you are about the identification. Even with low confidence, still provide your best-guess name_en/name_zh rather than leaving them blank. "bbox" is the bounding box of the physical card within the full photo, as fractions (0 to 1) of the photo width/height — fit it tightly to the card edges, excluding background. Only return the JSON array, no other text.';
 
   if (!getScanApiKey()) {
     var crops0 = await cropPageScanCells(base64, file.type||'image/jpeg');
@@ -13240,11 +13250,19 @@ async function scanPageImage(file, al) {
 
 // ── SCAN REVIEW SCREEN ──
 // Shared: does this scanned card have enough info to be added to the binder?
+var PLACEHOLDER_CARD_NAMES = ['unidentified','無法識別','unknown','n/a','none','-','未識別'];
+function isRealCardName(s) {
+  if (!s) return false;
+  var t = s.toString().trim();
+  if (!t) return false;
+  return PLACEHOLDER_CARD_NAMES.indexOf(t.toLowerCase()) === -1;
+}
 function hasUsableName(c) {
   if (c.error) return false;
   // A real name from the AI is sufficient evidence a card is present,
   // even if the AI's own "empty" flag inconsistently says true.
-  return !!((c.name_en && c.name_en.trim()) || (c.name_zh && c.name_zh.trim()));
+  // Placeholder strings like "Unidentified" don't count as real names.
+  return isRealCardName(c.name_en) || isRealCardName(c.name_zh);
 }
 function showScanReview(results, mode, al) {
   // Flatten page results (array of arrays) vs single results
@@ -13465,13 +13483,19 @@ function confirmAllScans() {
     if (!hasUsableName(card)) return;
     var imgSrc = card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : '';
     if (!imgSrc) return;
+    // The AI sometimes writes a literal placeholder ("Unidentified", "無法識別",
+    // "Unknown") into name_en/name_zh when it can't translate/transliterate a
+    // card name (e.g. untranslated Japanese cards). Treat these as empty so we
+    // fall back to whichever field actually has a real name.
+    var nameEn = isRealCardName(card.name_en) ? card.name_en.toString().trim() : '';
+    var nameZh = isRealCardName(card.name_zh) ? card.name_zh.toString().trim() : '';
     existingImages.push(imgSrc);
     existingMetas.push({
       game: normalizeGame(card.game),
-      card_type: 'Card',
-      name: al === 'zh' ? (card.name_zh || card.name_en || '未識別') : (card.name_en || card.name_zh || 'Unknown'),
-      name_en: card.name_en || '',
-      name_zh: card.name_zh || '',
+      card_type: (card.card_type && card.card_type.toString().trim()) || 'Card',
+      name: al === 'zh' ? (nameZh || nameEn || '未識別') : (nameEn || nameZh || 'Unknown'),
+      name_en: nameEn,
+      name_zh: nameZh,
       set: card.set || '',
       number: card.number || '',
       rarity: normalizeRarity(card.rarity),
@@ -14219,6 +14243,49 @@ function convertPriceFromHKD(hkdAmount, cur) {
   return cur.symbol + amount.toFixed(cur.dec);
 }
 
+// ══ WEB-SEARCH-BASED MARKET PRICE (real search, reference only) ══
+// Calls the Anthropic API with the web_search tool to look up current
+// asking/sold prices for a card and return an estimate in the user's
+// display currency. Result is a rough reference, not a guarantee.
+async function fetchMarketPriceEstimate(meta) {
+  if (!getScanApiKey()) {
+    return { error: 'missing_api_key' };
+  }
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var cur = getUserCurrency();
+  var cardName = meta.name_en || meta.name_zh || meta.name || '';
+  var queryParts = [cardName, meta.set, meta.number, meta.game].filter(Boolean);
+  var cardDesc = queryParts.join(' ');
+  var condLabel = meta.graded ? ((meta.grading_company||'PSA') + ' ' + (meta.grade||'')) : (meta.condition || 'near mint');
+
+  var prompt = al === 'zh'
+    ? '請搜尋網上市場（例如 TCGPlayer、eBay、Cardmarket 等）目前針對以下集換式卡牌的售價或叫價：「'+cardDesc+'」，狀況約為「'+condLabel+'」。根據搜尋結果，給出一個大致的市場參考價範圍，並換算為 '+cur.code+'（'+cur.symbol+'）。只回傳JSON，不要其他文字，格式為：{"low":數字,"high":數字,"currency":"'+cur.code+'","summary":"一句話簡短說明（中文，20字以內）"}。若找不到相關資訊，回傳 {"low":null,"high":null,"currency":"'+cur.code+'","summary":"找不到市場參考價"}。'
+    : 'Please search the web (e.g. TCGPlayer, eBay, Cardmarket) for the current asking/sold price of this trading card: "'+cardDesc+'", condition approximately "'+condLabel+'". Based on the search results, give a rough market reference price range converted to '+cur.code+' ('+cur.symbol+'). Respond ONLY with JSON, no other text, in this format: {"low":number,"high":number,"currency":"'+cur.code+'","summary":"one short sentence (under 20 words)"}. If you cannot find relevant information, respond with {"low":null,"high":null,"currency":"'+cur.code+'","summary":"No market reference found"}.';
+
+  try {
+    var response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: getScanApiHeaders(),
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        messages: [{ role: 'user', content: prompt }],
+        tools: [{ type: 'web_search_20250305', name: 'web_search' }]
+      })
+    });
+    var data = await response.json();
+    if (data.error) throw new Error(data.error.message || 'API error');
+    var textBlocks = (data.content||[]).filter(function(b){ return b.type==='text'; }).map(function(b){ return b.text||''; });
+    var text = textBlocks.join('').trim();
+    // Extract the JSON object even if surrounded by other text
+    var match = text.match(/\{[^{}]*"low"[\s\S]*?\}/);
+    var json = JSON.parse((match ? match[0] : text).replace(/```json|```/g,'').trim());
+    return json;
+  } catch(e) {
+    return { error: e.message };
+  }
+}
+
 
 // ══ CARD DETAIL VIEW ══
 
@@ -14285,6 +14352,7 @@ function openCardDetail(cardIndex, binderId) {
     game:        {zh:'遊戲',en:'Game',ja:'ゲーム',ko:'게임',fr:'Jeu',es:'Juego',th:'เกม',id:'Game'},
     type:        {zh:'卡牌類型',en:'Card Type',ja:'カードタイプ',ko:'카드 타입',fr:'Type',es:'Tipo',th:'ประเภท',id:'Tipe'},
     set:         {zh:'套裝系列',en:'Set / Series',ja:'セット',ko:'세트',fr:'Set',es:'Set',th:'ชุด',id:'Set'},
+    number:      {zh:'卡號',en:'Card Number',ja:'カード番号',ko:'카드 번호',fr:'Numéro',es:'Número',th:'หมายเลขการ์ด',id:'Nomor Kartu'},
     rarity:      {zh:'稀有度',en:'Rarity',ja:'レアリティ',ko:'레어도',fr:'Rareté',es:'Rareza',th:'ความหายาก',id:'Kelangkaan'},
     condition:   {zh:'品相',en:'Condition',ja:'コンディション',ko:'상태',fr:'État',es:'Estado',th:'สภาพ',id:'Kondisi'},
     confidence:  {zh:'AI 準確率',en:'AI Confidence',ja:'AI精度',ko:'AI 정확도',fr:'Confiance IA',es:'Confianza IA',th:'ความแม่นยำ AI',id:'Akurasi AI'},
@@ -14407,6 +14475,22 @@ function openCardDetail(cardIndex, binderId) {
   }
   scroll.appendChild(tradeBadge);
 
+  // Market price reference (web-search based, on-demand)
+  var priceRefBox = document.createElement('div');
+  priceRefBox.id = 'card-detail-price-ref';
+  priceRefBox.style.cssText = 'margin:14px 0;padding:14px;border-radius:14px;background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);';
+  var cachedPrice = meta.marketPriceEstimate;
+  if (cachedPrice && !cachedPrice.error) {
+    priceRefBox.innerHTML = bvRenderMarketPriceResult(cachedPrice, al);
+  } else {
+    var checkLabel = {zh:'💰 查詢市場參考價', en:'💰 Check Market Price Reference'};
+    var checkDescL = {zh:'透過網上搜尋估算大致售價範圍（僅供參考）', en:'Search the web for a rough price range (reference only)'};
+    priceRefBox.innerHTML = '<div style="font-size:10px;font-weight:900;color:rgba(34,197,94,0.8);text-transform:uppercase;margin-bottom:6px;">'+(checkLabel[al]||checkLabel.en)+'</div>'
+      + '<div style="font-size:11px;color:var(--text-dim);margin-bottom:10px;">'+(checkDescL[al]||checkDescL.en)+'</div>'
+      + '<button id="card-detail-price-btn" onclick="bvCDCheckPrice()" style="padding:9px 16px;border-radius:10px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.35);color:#4ade80;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">'+(checkLabel[al]||checkLabel.en)+'</button>';
+  }
+  scroll.appendChild(priceRefBox);
+
   // Info rows
   var rows = document.createElement('div');
   rows.style.marginTop = '12px';
@@ -14425,6 +14509,8 @@ function openCardDetail(cardIndex, binderId) {
     return row;
   }
   rows.appendChild(makeRow(t('type'),      meta.card_type || '—'));
+  if (meta.set) rows.appendChild(makeRow(t('set'), meta.set));
+  if (meta.number) rows.appendChild(makeRow(t('number'), meta.number));
   rows.appendChild(makeRow(t('rarity'),    rarSt + ' ' + rarLbl));
   if (meta.graded) {
     // Graded card — show grading info instead of condition
@@ -14481,6 +14567,79 @@ function openCardDetail(cardIndex, binderId) {
 
   body.appendChild(actionsDiv);
   document.body.appendChild(modal);
+}
+
+// Render the result block for a market price estimate, including the
+// "reference only" disclaimer.
+function bvRenderMarketPriceResult(result, al) {
+  var cur = getUserCurrency();
+  var disclaimerL = {zh:'⚠️ 此價格僅來自網上搜尋的粗略估算，僅供參考，並非保證售價或估值。',en:'⚠️ This is a rough estimate from web search results, for reference only — not a guaranteed price or valuation.'};
+  var refreshL = {zh:'🔄 重新查詢', en:'🔄 Refresh'};
+  var label = {zh:'💰 市場參考價', en:'💰 Market Price Reference'};
+  var noDataL = {zh:'找不到市場參考價', en:'No market reference found'};
+
+  var priceLine;
+  if (result.low == null || result.high == null) {
+    priceLine = '<div style="font-size:13px;color:var(--text-muted);margin-bottom:6px;">'+(result.summary || noDataL[al] || noDataL.en)+'</div>';
+  } else {
+    var lowStr = formatPrice(Math.round(result.low), cur);
+    var highStr = formatPrice(Math.round(result.high), cur);
+    var rangeStr = (result.low === result.high) ? lowStr : (lowStr + ' – ' + highStr);
+    priceLine = '<div style="font-size:24px;font-weight:900;color:#4ade80;letter-spacing:-0.02em;margin-bottom:4px;">'+rangeStr+'</div>'
+      + (result.summary ? '<div style="font-size:11px;color:var(--text-dim);margin-bottom:6px;">'+result.summary+'</div>' : '');
+  }
+
+  return '<div style="font-size:10px;font-weight:900;color:rgba(34,197,94,0.8);text-transform:uppercase;margin-bottom:6px;">'+(label[al]||label.en)+'</div>'
+    + priceLine
+    + '<div style="font-size:10px;color:rgba(251,191,36,0.85);line-height:1.5;margin:8px 0;">'+(disclaimerL[al]||disclaimerL.en)+'</div>'
+    + '<button onclick="bvCDCheckPrice(true)" style="padding:7px 14px;border-radius:9px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:11px;font-weight:800;cursor:pointer;">'+(refreshL[al]||refreshL.en)+'</button>';
+}
+
+// Top-level handler: look up (or refresh) the market price reference for the
+// currently-open card detail, persist the result, and re-render.
+async function bvCDCheckPrice(forceRefresh) {
+  var d = window._bvCD || {};
+  var m = d.meta || {}, al = d.al || 'en';
+  var bid = window._cdBid || _bvBinderId;
+  var idx = window._cdIdx;
+  var box = document.getElementById('card-detail-price-ref');
+  if (!box) return;
+
+  if (!getScanApiKey()) {
+    var keyMsgL = {zh:'⚠️ 請先到設定輸入 AI 掃描 API 金鑰，才能查詢市場參考價。', en:'⚠️ Set your AI scanning API key in Settings first to look up market price references.'};
+    box.innerHTML = '<div style="font-size:12px;color:#f87171;">'+(keyMsgL[al]||keyMsgL.en)+'</div>';
+    return;
+  }
+
+  var loadingL = {zh:'🔍 正在搜尋市場參考價…', en:'🔍 Searching for market price reference…'};
+  box.innerHTML = '<div style="font-size:12px;color:var(--text-muted);">'+(loadingL[al]||loadingL.en)+'</div>';
+
+  var result = await fetchMarketPriceEstimate(m);
+
+  if (result.error) {
+    var errL = {zh:'查詢失敗：', en:'Lookup failed: '};
+    var retryL = {zh:'重試', en:'Retry'};
+    box.innerHTML = '<div style="font-size:12px;color:#f87171;margin-bottom:8px;">'+(errL[al]||errL.en)+result.error+'</div>'
+      + '<button onclick="bvCDCheckPrice(true)" style="padding:7px 14px;border-radius:9px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);color:var(--text-muted);font-family:Nunito,sans-serif;font-size:11px;font-weight:800;cursor:pointer;">'+(retryL[al]||retryL.en)+'</button>';
+    return;
+  }
+
+  box.innerHTML = bvRenderMarketPriceResult(result, al);
+
+  // Persist the result so it doesn't need to be re-fetched every time the
+  // card detail page is opened
+  if (bid != null && idx != null) {
+    try {
+      var metaKey = 'bv_card_meta_' + bid;
+      var metas = JSON.parse(localStorage.getItem(metaKey)||'[]');
+      if (metas[idx]) {
+        metas[idx].marketPriceEstimate = result;
+        metas[idx].marketPriceEstimatedAt = new Date().toISOString();
+        localStorage.setItem(metaKey, JSON.stringify(metas));
+        m.marketPriceEstimate = result; // keep in-memory copy in sync
+      }
+    } catch(e) {}
+  }
 }
 
 // Top-level card detail button handlers — always available globally
@@ -17731,17 +17890,17 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
 </div>
 
 <!-- ══ SCAN REVIEW MODAL ══ -->
-<div id="scan-review-modal" style="display:none;position:fixed;inset:0;z-index:810;background:var(--bg,#0D0F1A);flex-direction:column;">
+<div id="scan-review-modal" style="display:none;position:fixed;inset:0;z-index:810;background:var(--bg,#0D0F1A);flex-direction:column;overflow-x:hidden;">
   <!-- Header -->
-  <div style="display:flex;align-items:center;gap:8px;padding:calc(16px + env(safe-area-inset-top)) 16px 16px;border-bottom:1px solid var(--border2);flex-shrink:0;flex-wrap:wrap;">
-    <button onclick="closeScanReview()" style="padding:7px 12px;border-radius:9px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="← 返回" data-en="← Back">← 返回</button>
-    <div style="flex:1;min-width:0;">
+  <div style="display:flex;align-items:center;gap:8px;padding:calc(16px + env(safe-area-inset-top)) 16px 16px;border-bottom:1px solid var(--border2);flex-shrink:0;flex-wrap:wrap;box-sizing:border-box;">
+    <button onclick="closeScanReview()" style="padding:7px 12px;border-radius:9px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;flex-shrink:0;" class="t" data-zh="← 返回" data-en="← Back">← 返回</button>
+    <div style="flex:1 1 100%;min-width:0;order:3;">
       <div style="font-size:14px;font-weight:900;color:var(--white);" class="t" data-zh="確認掃描結果" data-en="Review Scan Results">確認掃描結果</div>
       <div id="scan-review-subtitle" style="font-size:11px;color:var(--text-muted);"></div>
     </div>
-    <button onclick="retakeScan()" style="padding:7px 12px;border-radius:9px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);color:#fbbf24;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;" class="t"
+    <button onclick="retakeScan()" style="padding:7px 12px;border-radius:9px;background:rgba(251,191,36,0.1);border:1px solid rgba(251,191,36,0.25);color:#fbbf24;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;flex-shrink:0;margin-left:auto;" class="t"
       data-zh="🔄 重拍" data-en="🔄 Retake" data-zh-cn="🔄 重拍" data-ja="🔄 再撮影" data-ko="🔄 다시 찍기" data-fr="🔄 Reprendre" data-es="🔄 Repetir">🔄 重拍</button>
-    <button onclick="confirmAllScans()" id="scan-review-add-btn" style="padding:9px 16px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;" class="t" data-zh="全部加入" data-en="Add All">全部加入</button>
+    <button onclick="confirmAllScans()" id="scan-review-add-btn" style="padding:9px 16px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:13px;font-weight:900;cursor:pointer;white-space:nowrap;flex-shrink:0;" class="t" data-zh="全部加入" data-en="Add All">全部加入</button>
   </div>
 
   <!-- No API key banner -->
