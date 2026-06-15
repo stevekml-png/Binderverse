@@ -4366,8 +4366,11 @@ body.light .guild-sidebar { background: rgba(255,255,255,0.6); border-color: rgb
   .profile-avatar { width: 66px; height: 66px; }
   .profile-stats { gap: 10px; }
   .binder-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
-  .tab-pill-wrap { padding: 8px 14px; gap: 5px; overflow-x: auto; flex-wrap: nowrap; }
-  .tab-pill { white-space: nowrap; }
+  .tab-pill-wrap { padding: 8px 14px; gap: 8px; flex-wrap: wrap; }
+  .tab-pill { white-space: nowrap; overflow-x: auto; max-width: 100%; }
+  .tab-actions { width: 100%; }
+  .tab-actions .btn-new-binder { flex: 1; justify-content: center; }
+  .tab-actions button[onclick*="navigate('messages')"] { flex: 1; justify-content: center; }
   .hero-title em { font-size: 26px !important; }
   .hero-title > span { font-size: 16px !important; }
   .hero-sub { font-size: 12px; }
@@ -4756,7 +4759,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v54 ✓';
+    v.textContent = 'Build v56 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5084,7 +5087,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v54</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v56</div>
   </footer>
 
 </main>
@@ -9333,13 +9336,33 @@ window.addEventListener('beforeinstallprompt', e => {
     if (b) b.style.display = 'flex';
   }, 3000);
 });
+function isIOSDevice() {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
 function installPWA() {
   const b = document.getElementById('pwa-install-banner');
   if (b) b.style.display = 'none';
   if (_pwaPrompt) {
     _pwaPrompt.prompt();
     _pwaPrompt.userChoice.then(r => { _pwaPrompt = null; });
+    return;
   }
+  if (isIOSDevice()) {
+    showIOSInstallModal();
+    return;
+  }
+  // Android/Chrome but no captured prompt yet (e.g. already installed, or criteria not met)
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  toast(al==='zh' ? 'ℹ️ 此瀏覽器暫不支援一鍵安裝，請使用瀏覽器選單中的「新增至主畫面」' : 'ℹ️ One-tap install isn\'t available — use your browser menu\'s "Add to Home Screen" option');
+}
+function showIOSInstallModal() {
+  var m = document.getElementById('ios-install-modal');
+  if (m) m.style.display = 'flex';
+}
+function closeIOSInstallModal() {
+  var m = document.getElementById('ios-install-modal');
+  if (m) m.style.display = 'none';
 }
 window.addEventListener('appinstalled', () => {
   toast('🎉 ' + (lang==='zh'||lang==='zh-cn'?'Binderverse 已安裝！':lang==='ja'?'Binderverseがインストールされました！':lang==='ko'?'Binderverse가 설치되었습니다!':lang==='fr'?'Binderverse installé !':lang==='es'?'¡Binderverse instalado!':'Binderverse installed!'));
@@ -12976,11 +12999,49 @@ async function capturePageScan() {
   var shutter = document.getElementById('page-scan-shutter');
   if (shutter) { shutter.style.transform = 'scale(0.88)'; setTimeout(function(){ shutter.style.transform = ''; }, 150); }
 
-  // Capture frame
-  canvas.width = video.videoWidth || 1080;
-  canvas.height = video.videoHeight || 1512;
+  // ── Compute the on-screen grid overlay's position within the video's
+  //    source frame, accounting for object-fit:cover, so the captured
+  //    image corresponds exactly to what the user sees inside the overlay. ──
+  var srcW = video.videoWidth || 1080;
+  var srcH = video.videoHeight || 1512;
+  var srcAR = srcW / srcH;
+
+  var videoRect = video.getBoundingClientRect();
+  var dispW = videoRect.width, dispH = videoRect.height;
+  var dispAR = dispW / dispH;
+
+  // object-fit:cover scale + offset (source -> display)
+  var scale, offX = 0, offY = 0;
+  if (srcAR > dispAR) {
+    // source wider than display -> source width is cropped
+    scale = dispH / srcH;
+    offX = (srcW * scale - dispW) / 2;
+  } else {
+    // source taller than display -> source height is cropped
+    scale = dispW / srcW;
+    offY = (srcH * scale - dispH) / 2;
+  }
+
+  var grid = document.getElementById('page-scan-grid');
+  var gridRect = grid ? grid.getBoundingClientRect() : { left:0, top:0, width:dispW, height:dispH };
+
+  // Map overlay rect (display coords, relative to video element) -> source pixel coords
+  var relLeft = (gridRect.left - videoRect.left + offX) / scale;
+  var relTop  = (gridRect.top  - videoRect.top  + offY) / scale;
+  var relW    = gridRect.width  / scale;
+  var relH    = gridRect.height / scale;
+
+  // Clamp to source bounds
+  relLeft = Math.max(0, Math.min(relLeft, srcW));
+  relTop  = Math.max(0, Math.min(relTop, srcH));
+  relW    = Math.max(1, Math.min(relW, srcW - relLeft));
+  relH    = Math.max(1, Math.min(relH, srcH - relTop));
+
+  // Capture only the region inside the grid overlay
+  canvas.width = relW;
+  canvas.height = relH;
   var ctx = canvas.getContext('2d');
-  ctx.drawImage(video, 0, 0);
+  ctx.drawImage(video, relLeft, relTop, relW, relH, 0, 0, relW, relH);
 
   // Convert to file
   canvas.toBlob(async function(blob) {
@@ -16814,21 +16875,30 @@ setTimeout(()=>{
   <button onclick="document.getElementById('pwa-install-banner').style.display='none'" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:16px;padding:2px">✕</button>
 </div>
 
+<!-- ══ iOS INSTALL INSTRUCTIONS MODAL ══ -->
+<div id="ios-install-modal" style="display:none;position:fixed;inset:0;z-index:900;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeIOSInstallModal()">
+  <div style="background:var(--panel,#161A2C);border-radius:20px 20px 0 0;padding:24px 20px 32px;width:100%;max-width:420px;text-align:center;">
+    <div style="font-size:40px;margin-bottom:8px;">🃏</div>
+    <div style="font-size:16px;font-weight:900;color:var(--white);margin-bottom:8px;" class="t" data-zh="安裝 Binderverse" data-en="Install Binderverse" data-zh-cn="安装 Binderverse" data-ja="Binderverseをインストール" data-ko="Binderverse 설치" data-fr="Installer Binderverse" data-es="Instalar Binderverse">安裝 Binderverse</div>
+    <div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6;" class="t"
+      data-zh="在 Safari 工具列點擊「分享」按鈕，然後選擇「加入主畫面」"
+      data-en="Tap the Share button in Safari's toolbar, then select 'Add to Home Screen'"
+      data-zh-cn="在 Safari 工具栏点击「分享」按钮，然后选择「添加到主屏幕」"
+      data-ja="Safariのツールバーで共有ボタンをタップし、「ホーム画面に追加」を選択してください"
+      data-ko="Safari 도구 모음에서 공유 버튼을 누른 다음 '홈 화면에 추가'를 선택하세요"
+      data-fr="Appuyez sur le bouton Partager dans la barre d'outils Safari, puis sélectionnez « Sur l'écran d'accueil »"
+      data-es="Toca el botón Compartir en la barra de Safari y luego selecciona 'Añadir a pantalla de inicio'">在 Safari 工具列點擊「分享」按鈕 <span style="display:inline-block;transform:translateY(3px);">⬆️</span>，然後選擇「加入主畫面」 ➕</div>
+    <button onclick="closeIOSInstallModal()" style="width:100%;padding:12px;border-radius:12px;background:var(--blue,#3B82F6);border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;cursor:pointer;" class="t" data-zh="知道了" data-en="Got it" data-zh-cn="知道了" data-ja="わかりました" data-ko="확인" data-fr="J'ai compris" data-es="Entendido">知道了</button>
+  </div>
+</div>
+
 
 <script>
 // Service worker registration removed (v52) — conflicts with the
 // force-unregister/cache-clear logic above and was causing stale-cache issues.
-// _pwaPrompt defined in main script
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();_pwaPrompt=e;setTimeout(()=>{const b=document.getElementById('pwa-banner');if(b)b.style.display='flex';},4000)});
-// installPWA defined above
+// _pwaPrompt and installPWA are defined in the main script
 window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'));
 </script>
-<div id="pwa-banner" style="display:none;position:fixed;bottom:72px;left:50%;transform:translateX(-50%);z-index:300;background:var(--panel);border:1px solid rgba(59,130,246,0.35);border-radius:16px;padding:12px 16px;width:calc(100% - 32px);max-width:360px;box-shadow:0 8px 32px rgba(0,0,0,0.4);align-items:center;gap:12px">
-  <div style="font-size:26px">🃏</div>
-  <div style="flex:1"><div style="font-size:13px;font-weight:900;color:var(--white)" class="t" data-zh="安裝 Binderverse" data-en="Install Binderverse" data-zh-cn="安装 Binderverse" data-ja="インストール" data-ko="설치" data-fr="Installer" data-es="Instalar">安裝 Binderverse</div><div style="font-size:11px;color:var(--dim)" class="t" data-zh="加至主畫面" data-en="Add to home screen" data-zh-cn="添加到主屏幕" data-ja="ホーム画面に追加" data-ko="홈 화면에 추가" data-fr="Ajouter à l'écran" data-es="Añadir al inicio">加至主畫面</div></div>
-  <button onclick="installPWA()" style="padding:7px 14px;border-radius:10px;background:var(--blue,#3B82F6);border:none;color:white;font-family:'Nunito',sans-serif;font-size:12px;font-weight:800;cursor:pointer" class="t" data-zh="安裝" data-en="Install" data-zh-cn="安装" data-ja="インストール" data-ko="설치" data-fr="Installer" data-es="Instalar">安裝</button>
-  <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;color:var(--dim);cursor:pointer;font-size:18px;line-height:1">✕</button>
-</div>
 
 <!-- ══ SHARE PROFILE MODAL ══ -->
 <div class="share-modal" id="share-modal" style="display:none" onclick="if(event.target===this)closeShareModal()">
@@ -17373,7 +17443,14 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
   <!-- Top bar -->
   <div style="position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);">
     <button onclick="closePageScanModal()" style="padding:8px 14px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">✕ <span class="t" data-zh="取消" data-en="Cancel">取消</span></button>
-    <div style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:800;" class="t" data-zh="將最多 9 張卡放入格內" data-en="Place up to 9 cards in the grid">將最多 9 張卡放入格內</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:800;text-align:center;line-height:1.4;" class="t"
+      data-zh="將最多 9 張卡緊貼排列，填滿格內範圍"
+      data-en="Place up to 9 cards edge-to-edge, filling the frame"
+      data-zh-cn="将最多9张卡紧贴排列，填满格内范围"
+      data-ja="最大9枚のカードを隙間なく並べ、枠内を埋めてください"
+      data-ko="최대 9장의 카드를 빈틈없이 배치하여 프레임을 채워주세요"
+      data-fr="Placez jusqu'à 9 cartes côte à côte, en remplissant le cadre"
+      data-es="Coloca hasta 9 cartas una junto a otra, llenando el marco">將最多 9 張卡緊貼排列，填滿格內範圍</div>
     <button onclick="togglePageScanFlip()" style="padding:8px 10px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:16px;cursor:pointer;">🔄</button>
   </div>
 
