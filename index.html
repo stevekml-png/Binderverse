@@ -4452,8 +4452,6 @@ body:not(.light) .sec-sub { color: rgba(248,250,252,0.65) !important; }
 #scan-review-modal.open { display: flex !important; }
 #page-scan-modal, #scan-review-modal {
   height: 100dvh;
-  padding-top: env(safe-area-inset-top);
-  padding-bottom: env(safe-area-inset-bottom);
   box-sizing: border-box;
 }
 
@@ -4491,8 +4489,9 @@ body:not(.light) .sec-sub { color: rgba(248,250,252,0.65) !important; }
 }
 .scan-review-cell-confidence {
   position: absolute; top: 4px; right: 4px;
-  font-size: 9px; font-weight: 900; padding: 2px 5px;
+  font-size: 10px; font-weight: 900; padding: 3px 7px;
   border-radius: 6px;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.5);
 }
 .scan-review-cell-edit {
   position: absolute; bottom: 36px; right: 4px;
@@ -4765,7 +4764,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v58 ✓';
+    v.textContent = 'Build v59 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5100,7 +5099,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v58</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v59</div>
   </footer>
 
 </main>
@@ -13293,7 +13292,7 @@ function showScanReview(results, mode, al) {
     return '<div class="scan-review-cell ' + (card.success?'confirmed':'failed') + '" id="scan-cell-'+idx+'">'
       + (imgSrc ? '<img class="scan-review-cell-img" src="'+imgSrc+'" alt="card"/>' : '<div class="scan-review-cell-img" style="display:flex;align-items:center;justify-content:center;font-size:32px;background:rgba(255,255,255,0.04);">🃏</div>')
       + '<span class="scan-cell-exclude" id="excl-'+idx+'" onclick="toggleExcludeCell('+idx+')">✓</span>'
-      + '<span class="scan-review-cell-confidence" style="background:'+confColor+'22;color:'+confColor+';">'+confPct+'</span>'
+      + '<span class="scan-review-cell-confidence" style="background:'+confColor+';color:#0a0a0f;">'+confPct+'</span>'
       + '<button class="scan-review-cell-edit" onclick="editScanCell('+idx+')" class="t">✏️</button>'
       + '<div class="scan-review-cell-info">'
       + '<div class="scan-review-cell-name">'+displayName+'</div>'
@@ -13324,17 +13323,39 @@ function updateScanReviewSummary() {
   }
 }
 
+var _editScanCellIdx = null;
 function editScanCell(idx) {
   var card = _scanResults[idx];
   if (!card) return;
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
-  var current = al === 'zh' ? (card.name_zh||card.name_en) : (card.name_en||card.name_zh);
-  var newName = prompt(al==='zh'?'修改卡名：':'Edit card name:', current);
-  if (newName === null) return;
-  if (al === 'zh') { _scanResults[idx].name_zh = newName; } else { _scanResults[idx].name_en = newName; }
-  _scanResults[idx].success = true;
-  _scanResults[idx].confidence = 1.0; // manually confirmed
-  showScanReview(_scanResults.map(function(r){ return r; }), _scanResults[0].isPageCell ? 'page' : 'single', al);
+  _editScanCellIdx = idx;
+  var current = al === 'zh' ? (card.name_zh||card.name_en||'') : (card.name_en||card.name_zh||'');
+  var modal = document.getElementById('scan-cell-edit-modal');
+  var input = document.getElementById('scan-cell-edit-input');
+  var img = document.getElementById('scan-cell-edit-img');
+  if (input) input.value = current;
+  if (img) img.src = card.image ? 'data:' + (card.imageType||'image/jpeg') + ';base64,' + card.image : '';
+  if (modal) modal.style.display = 'flex';
+}
+function closeScanCellEditModal() {
+  var modal = document.getElementById('scan-cell-edit-modal');
+  if (modal) modal.style.display = 'none';
+  _editScanCellIdx = null;
+}
+function saveScanCellEdit() {
+  var idx = _editScanCellIdx;
+  if (idx === null || !_scanResults[idx]) { closeScanCellEditModal(); return; }
+  var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  var input = document.getElementById('scan-cell-edit-input');
+  var newName = input ? input.value.trim() : '';
+  if (newName) {
+    if (al === 'zh') { _scanResults[idx].name_zh = newName; } else { _scanResults[idx].name_en = newName; }
+    _scanResults[idx].success = true;
+    _scanResults[idx].confidence = 1.0; // manually confirmed
+    delete _scanResults[idx].error;
+  }
+  closeScanCellEditModal();
+  showScanReview(_scanResults.map(function(r){ return r; }), (_scanResults[0] && _scanResults[0].isPageCell) ? 'page' : 'single', al);
 }
 
 function closeScanReview() {
@@ -17157,7 +17178,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
         <div id="bv-owner-controls" style="display:contents;">
           <div id="bv-scan-counter" onclick="showScanCountInfo()" style="padding:4px 8px;border-radius:7px;background:rgba(139,92,246,0.15);border:1px solid rgba(139,92,246,0.3);font-size:10px;font-weight:800;color:#c4b5fd;white-space:nowrap;cursor:pointer;">✨ <span id="bv-scan-count">—</span></div>
         <button onclick="openAddCardsModal(_bvBinderId)" style="padding:6px 11px;border-radius:8px;background:#3B82F6;border:none;color:white;font-family:Nunito,sans-serif;font-size:11px;font-weight:800;cursor:pointer;">+ <span class="t" data-zh="新增" data-en="Add" data-zh-cn="新增" data-ja="追加" data-ko="추가" data-fr="Ajouter" data-es="Agregar" data-th="เพิ่ม" data-id="Tambah">新增</span></button>
-          <button onclick="document.getElementById('bv-camera-input').click()" style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:13px;cursor:pointer;">📷</button>
+          <button onclick="openAddCardsModal(_bvBinderId)" style="padding:6px 10px;border-radius:8px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:13px;cursor:pointer;">📷</button>
         </div>
       </div>
 
@@ -17532,7 +17553,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
   <canvas id="page-scan-capture" style="display:none;"></canvas>
 
   <!-- Top bar -->
-  <div style="position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;padding:16px 16px 8px;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);">
+  <div style="position:relative;z-index:2;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;background:linear-gradient(to bottom,rgba(0,0,0,0.7),transparent);">
     <button onclick="closePageScanModal()" style="padding:8px 14px;border-radius:10px;background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.2);color:#fff;font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;">✕ <span class="t" data-zh="取消" data-en="Cancel">取消</span></button>
     <div style="font-size:12px;color:rgba(255,255,255,0.8);font-weight:800;text-align:center;line-height:1.4;" class="t"
       data-zh="將最多 9 張卡緊貼排列，填滿格內範圍"
@@ -17546,7 +17567,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
   </div>
 
   <!-- Grid overlay -->
-  <div style="position:relative;z-index:2;flex:1;display:flex;align-items:center;justify-content:center;padding:0 12px;">
+  <div style="position:relative;z-index:2;flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:8px 12px;overflow:hidden;">
     <div id="page-scan-grid" style="width:100%;max-width:420px;aspect-ratio:300/420;position:relative;">
       <!-- SVG grid overlay (cells sized to ~2.5:3.5 card aspect ratio) -->
       <svg id="page-scan-svg" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" viewBox="0 0 300 420">
@@ -17578,19 +17599,32 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
   </div>
 
   <!-- Bottom shutter bar -->
-  <div style="position:relative;z-index:2;padding:16px 24px 32px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);display:flex;align-items:center;justify-content:center;gap:24px;">
+  <div style="position:relative;z-index:2;flex-shrink:0;padding:10px 20px calc(16px + env(safe-area-inset-bottom));background:linear-gradient(to top,rgba(0,0,0,0.85),transparent);display:flex;align-items:center;justify-content:center;gap:20px;">
     <div style="flex:1;font-size:11px;color:rgba(255,255,255,0.6);text-align:center;" class="t" data-zh="將卡片對齊格線後拍照" data-en="Align cards to grid then shoot">將卡片對齊格線後拍照</div>
     <!-- Shutter button -->
-    <button id="page-scan-shutter" onclick="capturePageScan()" style="width:68px;height:68px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,0.3);cursor:pointer;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,0.5);transition:transform 0.1s;">
+    <button id="page-scan-shutter" onclick="capturePageScan()" style="width:60px;height:60px;border-radius:50%;background:#fff;border:4px solid rgba(255,255,255,0.3);cursor:pointer;flex-shrink:0;box-shadow:0 0 0 2px rgba(255,255,255,0.5);transition:transform 0.1s;">
     </button>
     <div style="flex:1;"></div>
+  </div>
+</div>
+
+<!-- ══ SCAN CELL EDIT MODAL ══ -->
+<div id="scan-cell-edit-modal" style="display:none;position:fixed;inset:0;z-index:830;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);align-items:flex-end;justify-content:center;" onclick="if(event.target===this)closeScanCellEditModal()">
+  <div style="background:var(--panel,#161A2C);border-radius:20px 20px 0 0;padding:20px;width:100%;max-width:420px;">
+    <div style="font-size:14px;font-weight:900;color:var(--white);margin-bottom:12px;" class="t" data-zh="編輯卡片名稱" data-en="Edit Card Name" data-zh-cn="编辑卡片名称" data-ja="カード名を編集" data-ko="카드 이름 편집" data-fr="Modifier le nom" data-es="Editar nombre">編輯卡片名稱</div>
+    <img id="scan-cell-edit-img" src="" alt="" style="width:100px;aspect-ratio:2.5/3.5;object-fit:cover;border-radius:8px;margin-bottom:12px;display:block;"/>
+    <input type="text" id="scan-cell-edit-input" style="width:100%;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Nunito',sans-serif;font-size:14px;margin-bottom:12px;box-sizing:border-box;"/>
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeScanCellEditModal()" style="flex:1;padding:11px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;" class="t" data-zh="取消" data-en="Cancel" data-zh-cn="取消" data-ja="キャンセル" data-ko="취소" data-fr="Annuler" data-es="Cancelar">取消</button>
+      <button onclick="saveScanCellEdit()" style="flex:1;padding:11px;border-radius:10px;background:#3B82F6;border:none;color:#fff;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;cursor:pointer;" class="t" data-zh="儲存" data-en="Save" data-zh-cn="保存" data-ja="保存" data-ko="저장" data-fr="Enregistrer" data-es="Guardar">儲存</button>
+    </div>
   </div>
 </div>
 
 <!-- ══ SCAN REVIEW MODAL ══ -->
 <div id="scan-review-modal" style="display:none;position:fixed;inset:0;z-index:810;background:var(--bg,#0D0F1A);flex-direction:column;">
   <!-- Header -->
-  <div style="display:flex;align-items:center;gap:8px;padding:16px;border-bottom:1px solid var(--border2);flex-shrink:0;flex-wrap:wrap;">
+  <div style="display:flex;align-items:center;gap:8px;padding:calc(16px + env(safe-area-inset-top)) 16px 16px;border-bottom:1px solid var(--border2);flex-shrink:0;flex-wrap:wrap;">
     <button onclick="closeScanReview()" style="padding:7px 12px;border-radius:9px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);color:var(--white);font-family:Nunito,sans-serif;font-size:12px;font-weight:800;cursor:pointer;" class="t" data-zh="← 返回" data-en="← Back">← 返回</button>
     <div style="flex:1;min-width:0;">
       <div style="font-size:14px;font-weight:900;color:var(--white);" class="t" data-zh="確認掃描結果" data-en="Review Scan Results">確認掃描結果</div>
@@ -17614,7 +17648,7 @@ window.addEventListener('appinstalled',()=>toast('🎉 Binderverse installed!'))
   </div>
 
   <!-- Bottom summary -->
-  <div style="padding:12px 16px;border-top:1px solid var(--border2);flex-shrink:0;">
+  <div style="padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--border2);flex-shrink:0;">
     <div id="scan-review-summary" style="font-size:11px;color:var(--text-muted);text-align:center;margin-bottom:10px;"></div>
     <button onclick="confirmAllScans()" style="width:100%;padding:13px;border-radius:12px;background:linear-gradient(135deg,#7c3aed,#3B82F6);border:none;color:#fff;font-family:Nunito,sans-serif;font-size:14px;font-weight:900;cursor:pointer;" class="t" data-zh="加入相冊" data-en="Add to Binder">加入相冊</button>
   </div>
