@@ -4766,7 +4766,7 @@ if ('serviceWorker' in navigator) {
       if (inp) inp.placeholder = _sp[_cl] || '搜尋…';
     }
     var v = document.createElement('div');
-    v.textContent = 'Build v65 ✓';
+    v.textContent = 'Build v66 ✓';
     v.style.cssText = 'position:fixed;top:60px;right:12px;z-index:9999;background:#22c55e;color:#fff;font-size:11px;font-weight:800;padding:4px 10px;border-radius:20px;font-family:Nunito,sans-serif;pointer-events:none;';
     document.body.appendChild(v);
     setTimeout(function(){ v.style.opacity='0'; v.style.transition='opacity 0.5s'; setTimeout(function(){ v.remove(); }, 600); }, 3000);
@@ -5101,7 +5101,7 @@ if ('serviceWorker' in navigator) {
     </div>
     </div><!-- /footer-top -->
     <div class="footer-copy">© 2026 Binderverse. All rights reserved.</div>
-    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v65</div>
+    <div style="font-size:9px;color:var(--text-dim);text-align:center;padding:4px 0 2px;letter-spacing:1px;">v66</div>
   </footer>
 
 </main>
@@ -13443,6 +13443,14 @@ function retakeScan() {
 // ── CONFIRM: ADD SCANNED CARDS TO BINDER ──
 function confirmAllScans() {
   var al = (lang==='zh'||lang==='zh-tw'||lang==='zh-cn')?'zh':lang;
+  try {
+    _confirmAllScansInner(al);
+  } catch(e) {
+    var msg = {zh:'❌ 加入卡片時發生錯誤：', en:'❌ Error adding cards: '};
+    toast((msg[al]||msg.en) + (e && e.message ? e.message : e));
+  }
+}
+function _confirmAllScansInner(al) {
   var bid = _scanBidTarget;
   if (!bid) { toast(al==='zh'?'找不到目標相冊':'No target binder found'); return; }
 
@@ -13522,8 +13530,13 @@ function confirmAllScans() {
 
   closeScanReview();
 
-  // Refresh binder view if open
-  if (typeof bvRenderCards === 'function') bvRenderCards();
+  // Show the binder's cards view (not just the cover) so newly-added cards
+  // are immediately visible, and refresh all relevant renders.
+  if (added > 0 && typeof bvOpenCards === 'function' && _bvBinderId === bid) {
+    bvOpenCards();
+  } else if (typeof bvRenderCards === 'function') {
+    bvRenderCards();
+  }
   if (typeof renderBinders3 === 'function') renderBinders3();
   // Refresh create-binder wizard preview if open
   if (typeof bvUpdateCreatePreview === 'function' && document.getElementById('bv-create-preview')) bvUpdateCreatePreview();
